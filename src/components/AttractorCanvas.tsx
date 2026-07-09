@@ -1,0 +1,343 @@
+import { useRef, useEffect } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three-stdlib";
+import type { AttractorSystem, Vector3 } from "../systems";
+import { continueIntegrate, integrate } from "../integrate";
+
+// ─── Props ─────────────────────────────────────────────────────
+
+interface AttractorCanvasProps {
+  system: AttractorSystem;
+  params: number[];
+  stepsPerFrame: number;
+  colorSpeed: number;
+  pointSize: number;
+  autoRotate: boolean;
+  resetKey: number;
+}
+
+// ─── Shared config object (mutable, read by animation loop) ─────
+
+const config = {
+  system: null as unknown as AttractorSystem,
+  params: null as unknown as number[],
+  stepsPerFrame: 50,
+  colorSpeed: 1,
+  pointSize: 1.5,
+  autoRotate: true,
+};
+
+// ─── Shaders ───────────────────────────────────────────────────
+
+const VERT = /* glsl */ `
+  attribute vec3 aColor;
+  attribute float aSize;
+  varying vec3 vColor;
+  void main() {
+    vColor = aColor;
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    gl_PointSize = aSize * (200.0 / -mvPos.z);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const FRAG = /* glsl */ `
+  varying vec3 vColor;
+  void main() {
+    float d = length(gl_PointCoord - vec2(0.5));
+    if (d > 0.5) discard;
+    float alpha = 1.0 - smoothstep(0.3, 0.5, d);
+    gl_FragColor = vec4(vColor, alpha * 0.85);
+  }
+`;
+
+// ─── Helpers ───────────────────────────────────────────────────
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  let r: number, g: number, b: number;
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const hue2rgb = (p: number, q: number, t: number) => {
+      const t2 = ((t % 1) + 1) % 1;
+      if (t2 < 1 / 6) return p + (q - p) * 6 * t2;
+      if (t2 < 1 / 2) return q;
+      if (t2 < 2 / 3) return p + (q - p) * (2 / 3 - t2) * 6;
+      return p;
+    };
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+  return [r, g, b];
+}
+
+// ─── Scene factory ─────────────────────────────────────────────
+
+let renderer: THREE.WebGLRenderer | null = null;
+let scene: THREE.Scene | null = null;
+let camera: THREE.PerspectiveCamera | null = null;
+let controls: OrbitControls | null = null;
+let pointsObj: THREE.Points | null = null;
+let geometry: THREE.BufferGeometry | null = null;
+let material: THREE.ShaderMaterial | null = null;
+let positions: Float32Array | null = null;
+let colors: Float32Array | null = null;
+let sizes: Float32Array | null = null;
+let frameCount = 0;
+let lastState: Vector3 = [0, 0, 0];
+let resizeObserver: ResizeObserver | null = null;
+let running = false;
+let animId = 0;
+
+const MAX_POINTS = 2_000_000;
+
+function initScene(mount: HTMLDivElement) {
+  const width = mount.clientWidth;
+  const height = mount.clientHeight;
+
+  // Renderer
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(width, height);
+  renderer.setClearColor(0x000000, 1);
+  mount.appendChild(renderer.domElement);
+
+  // Scene
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 2000);
+
+  // Controls
+  controls = new OrbitControls(camera, renderer.domElement!);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+
+  scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+  // Buffers
+  positions = new Float32Array(MAX_POINTS * 3);
+  colors = new Float32Array(MAX_POINTS * 3);
+  sizes = new Float32Array(MAX_POINTS);
+
+  geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("aColor", new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
+  geometry.setDrawRange(0, 0);
+
+  material = new THREE.ShaderMaterial({
+    vertexShader: VERT,
+    fragmentShader: FRAG,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+
+  pointsObj = new THREE.Points(geometry, material);
+  scene.add(pointsObj);
+
+  // Resize
+  resizeObserver = new ResizeObserver(() => {
+    const w = mount.clientWidth;
+    const h = mount.clientHeight;
+    camera!.aspect = w / h;
+    camera!.updateProjectionMatrix();
+    renderer!.setSize(w, h);
+  });
+  resizeObserver.observe(mount);
+}
+
+function doReset() {
+  if (!geometry || !positions || !colors || !sizes) return;
+  const sys = config.system;
+  if (!sys) return;
+
+  positions.fill(0);
+  colors.fill(0);
+  sizes.fill(config.pointSize);
+  frameCount = 0;
+  geometry.setDrawRange(0, 0);
+
+  const data = integrate(sys, 50_000, 0.005, config.params);
+  const count = Math.min(data.length / 3, MAX_POINTS);
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = data[i * 3];
+    positions[i * 3 + 1] = data[i * 3 + 1];
+    positions[i * 3 + 2] = data[i * 3 + 2];
+    const t = (i / count) % 1;
+    const [r, g, b] = hslToRgb((t * config.colorSpeed) % 1, 0.8, 0.55);
+    colors[i * 3] = r;
+    colors[i * 3 + 1] = g;
+    colors[i * 3 + 2] = b;
+  }
+  geometry.setDrawRange(0, count);
+  geometry.attributes.position.needsUpdate = true;
+  geometry.attributes.aColor.needsUpdate = true;
+  frameCount = count;
+  lastState = [
+    positions[(count - 1) * 3],
+    positions[(count - 1) * 3 + 1],
+    positions[(count - 1) * 3 + 2],
+  ] as Vector3;
+}
+
+function frameCamera() {
+  if (!camera || !controls) return;
+  const sys = config.system;
+  if (!sys || !sys.limits) return;
+
+  const cx = ((sys.limits.xlim?.[0] ?? -10) + (sys.limits.xlim?.[1] ?? 10)) / 2;
+  const cy = ((sys.limits.ylim?.[0] ?? -10) + (sys.limits.ylim?.[1] ?? 10)) / 2;
+  const cz = ((sys.limits.zlim?.[0] ?? -10) + (sys.limits.zlim?.[1] ?? 10)) / 2;
+  const sx = (sys.limits.xlim?.[1] ?? 20) - (sys.limits.xlim?.[0] ?? -20);
+  const sy = (sys.limits.ylim?.[1] ?? 20) - (sys.limits.ylim?.[0] ?? -20);
+  const sz = (sys.limits.zlim?.[1] ?? 20) - (sys.limits.zlim?.[0] ?? -20);
+  const maxDim = Math.max(sx, sy, sz, 1);
+  camera.position.set(cx + maxDim, cy + maxDim * 0.6, cz + maxDim);
+  controls.target.set(cx, cy, cz);
+}
+
+function animate() {
+  if (!running) return;
+  animId = requestAnimationFrame(animate);
+
+  controls?.update();
+
+  const toAdd = Math.min(config.stepsPerFrame, MAX_POINTS - frameCount);
+  if (toAdd > 0 && config.system && config.params) {
+    const { data, lastState: newState } = continueIntegrate(
+      config.system,
+      lastState,
+      toAdd,
+      0.005,
+      config.params,
+    );
+    lastState = newState;
+
+    for (let i = 0; i < toAdd; i++) {
+      const src = i * 3;
+      const dst = (frameCount + i) * 3;
+      positions![dst] = data[src];
+      positions![dst + 1] = data[src + 1];
+      positions![dst + 2] = data[src + 2];
+      const t = ((frameCount + i) / MAX_POINTS) % 1;
+      const [r, g, b] = hslToRgb((t * config.colorSpeed) % 1, 0.85, 0.55);
+      colors![dst] = r;
+      colors![dst + 1] = g;
+      colors![dst + 2] = b;
+    }
+
+    geometry!.attributes.position.needsUpdate = true;
+    geometry!.attributes.aColor.needsUpdate = true;
+    geometry!.setDrawRange(0, frameCount + toAdd);
+    frameCount += toAdd;
+  }
+
+  renderer?.render(scene!, camera!);
+}
+
+function startAnimation() {
+  running = true;
+  animate();
+}
+
+function stopAnimation() {
+  running = false;
+  cancelAnimationFrame(animId);
+}
+
+function dispose() {
+  stopAnimation();
+  resizeObserver?.disconnect();
+  if (renderer && renderer.domElement.parentNode) {
+    renderer.domElement.parentNode.removeChild(renderer.domElement);
+  }
+  renderer?.dispose();
+  geometry?.dispose();
+  material?.dispose();
+  renderer = null;
+  scene = null;
+  camera = null;
+  controls = null;
+  pointsObj = null;
+  geometry = null;
+  material = null;
+  positions = null;
+  colors = null;
+  sizes = null;
+  frameCount = 0;
+}
+
+// ─── Component ─────────────────────────────────────────────────
+
+export function AttractorCanvas({
+  system,
+  params,
+  stepsPerFrame,
+  colorSpeed,
+  pointSize,
+  autoRotate,
+  resetKey,
+}: AttractorCanvasProps) {
+  const mountRef = useRef<HTMLDivElement>(null);
+
+  // Sync config on mount and when system changes
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
+
+    // If scene doesn't exist yet, initialize it
+    if (!renderer) {
+      initScene(mount);
+    }
+
+    config.params = params;
+    config.stepsPerFrame = stepsPerFrame;
+    config.colorSpeed = colorSpeed;
+    config.pointSize = pointSize;
+    config.autoRotate = autoRotate;
+
+    // If this is the first init (no points yet), do the reset
+    if (frameCount === 0) {
+      doReset();
+      frameCamera();
+    }
+
+    // Start animation
+    startAnimation();
+
+    return () => {
+      // Don't dispose on unmount if we're switching systems —
+      // the cleanup for the previous system's effect will handle it
+    };
+  }, []); // Run once
+
+  // Update mutable config on every render (animation loop reads from config)
+  useEffect(() => {
+    config.system = system;
+    config.params = params;
+    config.stepsPerFrame = stepsPerFrame;
+    config.colorSpeed = colorSpeed;
+    config.pointSize = pointSize;
+    config.autoRotate = autoRotate;
+    sizes?.fill(pointSize);
+    if (geometry?.attributes.aSize) geometry.attributes.aSize.needsUpdate = true;
+  }, [system, params, stepsPerFrame, colorSpeed, pointSize, autoRotate]);
+
+  // Handle system change: rebuild buffers and reset
+  useEffect(() => {
+    if (!geometry || !positions || !colors) return;
+    doReset();
+    frameCamera();
+  }, [system.id]); // Only when the system type changes
+
+  // Handle explicit reset
+  useEffect(() => {
+    if (!geometry || !positions || !colors) return;
+    doReset();
+  }, [resetKey]);
+
+  return <div ref={mountRef} style={{ width: "100%", height: "100%" }} />;
+}
