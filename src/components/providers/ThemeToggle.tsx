@@ -80,16 +80,25 @@ function MoonIcon() {
 
 export function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const [spinning, setSpinning] = useState(false);
+
+  const handleToggle = useCallback(() => {
+    setSpinning(true);
+    toggle();
+    setTimeout(() => setSpinning(false), 400);
+  }, [toggle]);
 
   return (
     <Button
       variant="ghost"
       size="icon-sm"
-      onClick={toggle}
+      onClick={handleToggle}
       className="h-8 w-8 rounded-lg"
       title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
     >
-      {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+      <div className={`transition-transform duration-400 ${spinning ? "rotate-[360deg] scale-110" : "rotate-0 scale-100"}`}>
+        {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+      </div>
     </Button>
   );
 }

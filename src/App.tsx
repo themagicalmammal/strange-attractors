@@ -4,7 +4,8 @@ import type { AttractorSystem } from "./systems";
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
 import { ThemeToggle } from "./components/providers/ThemeToggle";
-import { ComponentDocs } from "./components/ComponentDocs";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // ─── URL params (for share links) ────────────────────────
 
@@ -98,9 +99,8 @@ export default function App() {
   const [autoRotate, setAutoRotate] = useState(urlParams.autoRotate ?? true);
 
   const [resetKey, setResetKey] = useState(0);
-  const [openDocs, setOpenDocs] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"code" | "link" | null>(null);
 
   const handleParamChange = useCallback((index: number, value: number) => {
     setParams((prev) => {
@@ -128,40 +128,53 @@ export default function App() {
   const shareCode = generateShareCode(system, params, stepsPerFrame, colorSpeed, pointSize, autoRotate);
   const shareUrl = encodeShareUrl(system, params, stepsPerFrame, colorSpeed, pointSize, autoRotate);
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = useCallback(async (type: "code" | "link") => {
     try {
-      await navigator.clipboard.writeText(shareCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const text = type === "code" ? shareCode : shareUrl;
+      await navigator.clipboard.writeText(text);
+      setCopied(type);
+      setTimeout(() => setCopied(null), 2000);
     } catch {}
-  }, [shareCode]);
-
-  const handleShareLink = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {}
-  }, [shareUrl]);
+  }, [shareCode, shareUrl]);
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
       {/* Theme background behind canvas */}
-      <div className="absolute inset-0 bg-background z-0" />
+      <div className="absolute inset-0 bg-background z-0 transition-colors duration-500" />
 
       {/* Header controls — top-right */}
-      <div className="absolute top-6 right-6 z-20 flex items-center gap-3">
-        <ThemeToggle />
-        <button
-          className="inline-flex items-center justify-center h-10 px-4 text-sm font-medium rounded-lg border border-border bg-background text-foreground hover:bg-muted hover:text-foreground transition-colors"
-          onClick={() => setOpenDocs(true)}
-        >
-          <svg className="size-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4M12 8h.01" />
-          </svg>
-          Docs
-        </button>
+      <div className="absolute top-6 right-6 z-20 flex items-center gap-4">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <ThemeToggle />
+            </TooltipTrigger>
+            <TooltipContent side="bottom" sideOffset={8}>
+              Toggle theme
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <button
+                className="inline-flex items-center justify-center h-12 px-6 text-base font-medium rounded-xl border border-border/50 bg-background/80 text-foreground hover:bg-muted/60 hover:border-border transition-smooth shadow-sm"
+                onClick={() => setShareOpen(true)}
+              >
+                <svg className="size-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                  <polyline points="16 6 12 2 8 6" />
+                  <line x1="12" y1="2" x2="12" y2="15" />
+                </svg>
+                Share
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" sideOffset={8}>
+              Share this configuration
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Canvas */}
@@ -197,35 +210,25 @@ export default function App() {
         onShare={() => setShareOpen(true)}
       />
 
-      {/* Docs Modal */}
-      {openDocs && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => setOpenDocs(false)}
-        >
-          <div
-            className="relative w-full max-w-3xl max-h-[80vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ComponentDocs onClose={() => setOpenDocs(false)} />
-          </div>
-        </div>
-      )}
-
       {/* Share Modal */}
       {shareOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-backdrop-fade"
           onClick={() => setShareOpen(false)}
         >
           <div
-            className="relative w-full max-w-3xl max-h-[80vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl flex flex-col"
+            className="relative w-full max-w-2xl max-h-[80vh] overflow-hidden rounded-2xl border border-border/50 bg-background shadow-2xl flex flex-col animate-modal-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-5 border-b border-border">
-              <h2 className="text-sm font-semibold">Share This Configuration</h2>
+            <div className="flex items-center justify-between px-8 py-6 border-b border-border/50">
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold tracking-tight">Share This Configuration</h2>
+                <Badge variant="outline" className="text-sm font-medium rounded-full px-4 py-1.5">
+                  {system.name}
+                </Badge>
+              </div>
               <button
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-smooth rounded-xl p-2 hover:bg-muted/50"
                 onClick={() => setShareOpen(false)}
               >
                 <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -234,37 +237,47 @@ export default function App() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-auto p-5 space-y-4">
+            <div className="flex-1 overflow-auto px-10 py-8 space-y-8">
               {/* Code block */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-muted-foreground">Component Code</span>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-base font-medium text-muted-foreground">Component Code</span>
                   <button
-                    className={`text-xs px-2 py-1 rounded transition-colors ${copied ? "bg-green-600 text-white" : "bg-muted text-foreground hover:bg-muted/80"}`}
-                    onClick={handleCopy}
+                    className={`text-sm font-medium rounded-xl px-5 py-2 transition-smooth ${
+                      copied === "code"
+                        ? "bg-green-500/10 text-green-600 dark:text-green-400"
+                        : "bg-muted text-foreground hover:bg-muted/80"
+                    }`}
+                    onClick={() => handleCopy("code")}
                   >
-                    {copied ? "Copied!" : "Copy Code"}
+                    {copied === "code" ? "✓ Copied!" : "Copy Code"}
                   </button>
                 </div>
-                <pre className="p-3 rounded-lg bg-muted/50 text-xs font-mono text-foreground overflow-auto max-h-60 whitespace-pre-wrap">
+                <pre className="p-5 rounded-xl bg-muted/30 text-sm font-mono text-foreground overflow-auto max-h-64 whitespace-pre-wrap leading-relaxed border border-border/30">
                   {shareCode}
                 </pre>
               </div>
 
               {/* Share link */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-muted-foreground">Shareable Link</span>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-base font-medium text-muted-foreground">Shareable Link</span>
                   <button
-                    className={`text-xs px-2 py-1 rounded transition-colors ${copied ? "bg-green-600 text-white" : "bg-muted text-foreground hover:bg-muted/80"}`}
-                    onClick={handleShareLink}
+                    className={`text-sm font-medium rounded-xl px-5 py-2 transition-smooth ${
+                      copied === "link"
+                        ? "bg-green-500/10 text-green-600 dark:text-green-400"
+                        : "bg-muted text-foreground hover:bg-muted/80"
+                    }`}
+                    onClick={() => handleCopy("link")}
                   >
-                    {copied ? "Copied!" : "Copy Link"}
+                    {copied === "link" ? "✓ Copied!" : "Copy Link"}
                   </button>
                 </div>
-                <pre className="p-3 rounded-lg bg-muted/50 text-xs font-mono text-foreground overflow-hidden text-ellipsis">
-                  {shareUrl}
-                </pre>
+                <div className="relative">
+                  <pre className="p-5 rounded-xl bg-muted/30 text-sm font-mono text-foreground overflow-x-auto border border-border/30 select-all whitespace-nowrap leading-relaxed">
+                    {shareUrl}
+                  </pre>
+                </div>
               </div>
             </div>
           </div>
