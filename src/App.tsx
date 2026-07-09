@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { getSystem, systems } from "./systems";
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
+import { ThemeToggle } from "./components/providers/ThemeToggle";
 
 export default function App() {
   const [selectedId, setSelectedId] = useState("lorenz");
@@ -41,7 +42,12 @@ export default function App() {
   }, [selectedId]);
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+    <div className="relative w-screen h-screen bg-background overflow-hidden">
+      {/* Theme toggle — top-right */}
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle />
+      </div>
+
       <AttractorCanvas
         system={system}
         params={params}
