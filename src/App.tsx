@@ -150,13 +150,13 @@ export default function App() {
       <div className="absolute inset-0 bg-background z-0" />
 
       {/* Header controls — top-right */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+      <div className="absolute top-6 right-6 z-20 flex items-center gap-3">
         <ThemeToggle />
         <button
-          className="inline-flex items-center justify-center h-8 px-3 text-sm font-medium rounded-lg border border-border bg-background text-foreground hover:bg-muted hover:text-foreground transition-colors"
+          className="inline-flex items-center justify-center h-10 px-4 text-sm font-medium rounded-lg border border-border bg-background text-foreground hover:bg-muted hover:text-foreground transition-colors"
           onClick={() => setOpenDocs(true)}
         >
-          <svg className="size-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <svg className="size-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="12" cy="12" r="10" />
             <path d="M12 16v-4M12 8h.01" />
           </svg>
@@ -204,7 +204,7 @@ export default function App() {
           onClick={() => setOpenDocs(false)}
         >
           <div
-            className="relative w-full max-w-2xl max-h-[80vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl"
+            className="relative w-full max-w-3xl max-h-[80vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <ComponentDocs onClose={() => setOpenDocs(false)} />
@@ -219,7 +219,7 @@ export default function App() {
           onClick={() => setShareOpen(false)}
         >
           <div
-            className="relative w-full max-w-2xl max-h-[80vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl flex flex-col"
+            className="relative w-full max-w-3xl max-h-[80vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-5 border-b border-border">

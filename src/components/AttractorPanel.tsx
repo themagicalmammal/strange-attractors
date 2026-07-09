@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import StyledSlider from "./StyledSlider";
 
 interface AttractorPanelProps {
   system: AttractorSystem;
@@ -35,36 +35,41 @@ function formatNum(v: number, min: number, max: number): string {
   return v.toFixed(1);
 }
 
-function ParamRow({
+const sliderColors = [
+  "oklch(0.65 0.22 264.376)", // blue
+  "oklch(0.68 0.20 162.48)",  // green
+  "oklch(0.70 0.18 35.5)",     // orange
+  "oklch(0.65 0.22 295.5)",    // purple
+  "oklch(0.68 0.21 55.0)",     // pink
+];
+
+function ParamCol({
   name,
   value,
   min,
   max,
   onChange,
+  colorIndex = 0,
 }: {
   name: string;
   value: number;
   min: number;
   max: number;
   onChange: (v: number) => void;
+  colorIndex?: number;
 }) {
+  const color = sliderColors[colorIndex % sliderColors.length];
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <Label className="text-xs text-muted-foreground">{name}</Label>
-        <span className="text-xs text-muted-foreground tabular-nums">
-          {formatNum(value, min, max)}
-        </span>
-      </div>
-      <Slider
-        min={min}
-        max={max}
-        step={(max - min) / 200}
-        value={[value]}
-        onValueChange={(vals) => onChange(Array.isArray(vals) ? vals[0] : vals)}
-        className="w-full"
-      />
-    </div>
+    <StyledSlider
+      min={min}
+      max={max}
+      step={(max - min) / 200}
+      value={value}
+      onChange={onChange}
+      label={name}
+      color={color}
+      format={(v) => formatNum(v, min, max)}
+    />
   );
 }
 
@@ -87,19 +92,19 @@ export function AttractorPanel({
   onShare,
 }: AttractorPanelProps) {
   return (
-    <div className="fixed top-4 left-4 z-10 w-[300px] pointer-events-auto">
+    <div className="fixed top-4 left-4 z-10 w-[380px] pointer-events-auto">
       <Card className="border-border/10 bg-background/85 backdrop-blur-md shadow-lg">
-        <CardHeader className="px-6 py-5 pb-3">
+        <CardHeader className="px-8 py-5 pb-3">
           <CardTitle className="text-sm font-semibold tracking-wide">
             Strange Attractors
           </CardTitle>
         </CardHeader>
 
-        <ScrollArea className="max-h-[calc(100vh-130px)] px-2">
-          <CardContent className="px-6">
+        <ScrollArea className="max-h-[calc(100vh-130px)] px-3">
+          <CardContent className="px-8">
             {/* Attractor selector */}
-            <div className="space-y-2 mb-3">
-              <Label className="text-xs text-muted-foreground">System</Label>
+            <div className="mb-5">
+              <Label className="text-xs text-muted-foreground mb-2 block">System</Label>
               <Select value={selectedId} onValueChange={(v: string | null) => onSystemChange(v ?? selectedId)}>
                 <SelectTrigger className="w-full">
                   <SelectValue />
@@ -114,66 +119,61 @@ export function AttractorPanel({
               </Select>
             </div>
 
-            {/* Parameters */}
-            {system.params.defaults.map((defaultVal, i) => (
-              <div key={system.params.names[i]} className="mb-3">
-                <ParamRow
+            {/* Parameter grid — 2 columns */}
+            <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+              {system.params.defaults.map((defaultVal, i) => (
+                <ParamCol
+                  key={system.params.names[i]}
                   name={system.params.names[i]}
                   value={params[i] ?? defaultVal}
                   min={system.params.min[i] ?? defaultVal * 0.1}
                   max={system.params.max[i] ?? defaultVal * 5}
                   onChange={(v) => onParamChange(i, v)}
+                  colorIndex={i}
                 />
-              </div>
-            ))}
+              ))}
+            </div>
 
             {/* Display section */}
-            <Separator className="my-4" />
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+            <Separator className="my-5" />
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
               Display
             </h3>
 
-            <div className="mb-3">
-              <ParamRow
+            {/* Display grid — 2 columns */}
+            <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+              <ParamCol
                 name="Color speed"
                 value={colorSpeed}
                 min={0.1}
                 max={10}
                 onChange={onColorSpeedChange}
+                colorIndex={3}
               />
-            </div>
-
-            <div className="mb-3">
-              <ParamRow
+              <ParamCol
                 name="Point size"
                 value={pointSize}
                 min={0.5}
                 max={8}
                 onChange={onPointSizeChange}
+                colorIndex={4}
               />
             </div>
 
-            <div className="space-y-3 mb-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs text-muted-foreground">
-                  Steps per frame
-                </Label>
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  {stepsPerFrame}
-                </span>
-              </div>
-              <Slider
+            {/* Steps per frame — full width */}
+            <div className="mt-5">
+              <ParamCol
+                name="Steps per frame"
+                value={stepsPerFrame}
                 min={1}
                 max={1000}
-                step={1}
-                value={[stepsPerFrame]}
-                onValueChange={(vals) => onStepsChange(Array.isArray(vals) ? vals[0] : vals)}
-                className="w-full"
+                onChange={onStepsChange}
+                colorIndex={0}
               />
             </div>
 
             {/* Toggles */}
-            <div className="flex items-center gap-3 mt-4">
+            <div className="flex items-center gap-3 mt-6">
               <Switch
                 checked={autoRotate}
                 onCheckedChange={onAutoRotateChange}
@@ -188,11 +188,11 @@ export function AttractorPanel({
             </div>
 
             {/* Action buttons */}
-            <div className="mt-5 flex flex-col gap-2">
+            <div className="mt-6 flex gap-3">
               <Button
                 variant="outline"
                 onClick={onShare}
-                className="w-full py-2"
+                className="flex-1 py-2.5"
               >
                 <svg className="size-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
@@ -204,7 +204,7 @@ export function AttractorPanel({
               <Button
                 variant="outline"
                 onClick={onReset}
-                className="w-full py-2"
+                className="flex-1 py-2.5"
               >
                 Reset
               </Button>
