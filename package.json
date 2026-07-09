@@ -1,11 +1,36 @@
 {
   "name": "attractor-react",
   "version": "1.0.0",
-  "private": true,
+  "description": "Interactive 3D strange attractor visualization with real-time parameter control",
   "type": "module",
+  "main": "./dist/attractor-react.cjs",
+  "module": "./dist/attractor-react.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/attractor-react.js"
+      },
+      "require": {
+        "types": "./dist/types/cjs/index.d.ts",
+        "default": "./dist/attractor-react.cjs"
+      }
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:esm": "vite build --config vite.esm.config.ts",
+    "build:cjs": "vite build --config vite.cjs.config.ts",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types --noEmit false",
+    "build:types:cjs": "tsc --declaration --emitDeclarationOnly --outDir dist/types/cjs --noEmit false",
+    "build:package": "rm -rf dist dist-esm dist-cjs && npm run build:esm -- --outDir dist-esm && npm run build:cjs -- --outDir dist-cjs && npm run build:types && npm run build:types:cjs && mkdir -p dist && cp -r dist-esm/* dist/ && cp -r dist-cjs/* dist/ && rm -rf dist-esm dist-cjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -31,6 +56,15 @@
     "three": "^0.175.0",
     "three-stdlib": "^2.36.1",
     "tw-animate-css": "^1.4.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@radix-ui/react-slot": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^19.1.9",
