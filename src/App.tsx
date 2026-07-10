@@ -157,7 +157,7 @@ export default function App() {
         <AnimatedThemeToggler
           theme={themeCtx.theme === "dark" ? "dark" : "light"}
           onThemeChange={(t) => themeCtx.setTheme(t as "light" | "dark")}
-          className="h-10 w-10 rounded-xl border border-border/50 bg-background/80 text-foreground hover:bg-muted/60 transition-smooth shadow-sm"
+          className="h-9 w-9 rounded-lg border border-border/50 bg-background/80 text-foreground hover:bg-muted/60 transition-smooth shadow-sm"
         />
 
       </div>
