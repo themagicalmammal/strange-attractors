@@ -189,7 +189,7 @@ export function AttractorPanel({
   ];
 
   return (
-    <div className="fixed top-5 left-5 z-10 w-[440px] pointer-events-auto animate-panel-entrance">
+    <div className="fixed top-5 left-5 z-10 w-110 pointer-events-auto animate-panel-entrance">
       <Card className="border-border/40 bg-background/90 backdrop-blur-xl shadow-xl rounded-2xl">
         <CardHeader className="px-8 py-5 pb-3">
           <div className="flex items-center justify-between">
@@ -205,7 +205,7 @@ export function AttractorPanel({
           </div>
         </CardHeader>
 
-        <ScrollArea className="max-h-[calc(100vh-120px)] px-3">
+        <ScrollArea className="max-h-[calc(100vh-120px)]">
           <CardContent className="px-8">
             {/* System selector */}
             <div className="mb-10">

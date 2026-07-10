@@ -96,7 +96,7 @@ export function ThemeToggle() {
       className="h-8 w-8 rounded-lg"
       title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
     >
-      <div className={`transition-transform duration-400 ${spinning ? "rotate-[360deg] scale-110" : "rotate-0 scale-100"}`}>
+      <div className={`transition-transform duration-400 ${spinning ? "rotate-360 scale-110" : "rotate-0 scale-100"}`}>
         {theme === "dark" ? <SunIcon /> : <MoonIcon />}
       </div>
     </Button>
