@@ -7,11 +7,24 @@ import { ZoomControls } from "./components/ZoomControls";
 import { useTheme } from "./components/providers/ThemeToggle";
 import { Badge } from "@/components/ui/badge";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // ─── URL params (for share links) ────────────────────────
 
-function encodeShareUrl(system: AttractorSystem, params: number[], stepsPerFrame: number, colorSpeed: number, pointSize: number, speed: number, autoRotate: boolean): string {
+function encodeShareUrl(
+  system: AttractorSystem,
+  params: number[],
+  stepsPerFrame: number,
+  colorSpeed: number,
+  pointSize: number,
+  speed: number,
+  autoRotate: boolean,
+): string {
   const sp = new URLSearchParams();
   sp.set("system", system.id);
   params.forEach((v, i) => sp.set(`p${i}`, String(v)));
@@ -24,7 +37,15 @@ function encodeShareUrl(system: AttractorSystem, params: number[], stepsPerFrame
   return `${base}?${sp.toString()}`;
 }
 
-function parseUrlParams(): { systemId?: string; params?: number[]; steps?: number; colorSpeed?: number; pointSize?: number; speed?: number; autoRotate?: boolean } {
+function parseUrlParams(): {
+  systemId?: string;
+  params?: number[];
+  steps?: number;
+  colorSpeed?: number;
+  pointSize?: number;
+  speed?: number;
+  autoRotate?: boolean;
+} {
   const sp = new URLSearchParams(window.location.search);
   const result: any = {};
   if (sp.has("system")) result.systemId = sp.get("system")!;
@@ -43,8 +64,18 @@ function parseUrlParams(): { systemId?: string; params?: number[]; steps?: numbe
   return result;
 }
 
-function generateShareCode(system: AttractorSystem, params: number[], stepsPerFrame: number, colorSpeed: number, pointSize: number, speed: number, autoRotate: boolean): string {
-  const paramLines = params.map((v, i) => `    ${system.params.names[i]}: ${v}`);
+function generateShareCode(
+  system: AttractorSystem,
+  params: number[],
+  stepsPerFrame: number,
+  colorSpeed: number,
+  pointSize: number,
+  speed: number,
+  autoRotate: boolean,
+): string {
+  const paramLines = params.map(
+    (v, i) => `    ${system.params.names[i]}: ${v}`,
+  );
   return `// Attractor — ${system.name}
 // Params: ${system.params.names.join(", ")}
 ${paramLines.join("\n")}
@@ -101,7 +132,9 @@ export default function App() {
   const themeCtx = useTheme();
 
   const [selectedId, setSelectedId] = useState(urlParams.systemId ?? "lorenz");
-  const [params, setParams] = useState<number[]>(() => urlParams.params ?? [...getSystem("lorenz")!.params.defaults]);
+  const [params, setParams] = useState<number[]>(
+    () => urlParams.params ?? [...getSystem("lorenz")!.params.defaults],
+  );
   const [stepsPerFrame, setStepsPerFrame] = useState(urlParams.steps ?? 50);
   const [colorSpeed, setColorSpeed] = useState(urlParams.colorSpeed ?? 1);
   const [pointSize, setPointSize] = useState(urlParams.pointSize ?? 1.5);
@@ -135,17 +168,36 @@ export default function App() {
     if (s) setParams([...s.params.defaults]);
   }, [selectedId]);
 
-  const shareCode = generateShareCode(system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate);
-  const shareUrl = encodeShareUrl(system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate);
+  const shareCode = generateShareCode(
+    system,
+    params,
+    stepsPerFrame,
+    colorSpeed,
+    pointSize,
+    speed,
+    autoRotate,
+  );
+  const shareUrl = encodeShareUrl(
+    system,
+    params,
+    stepsPerFrame,
+    colorSpeed,
+    pointSize,
+    speed,
+    autoRotate,
+  );
 
-  const handleCopy = useCallback(async (type: "code" | "link") => {
-    try {
-      const text = type === "code" ? shareCode : shareUrl;
-      await navigator.clipboard.writeText(text);
-      setCopied(type);
-      setTimeout(() => setCopied(null), 2000);
-    } catch {}
-  }, [shareCode, shareUrl]);
+  const handleCopy = useCallback(
+    async (type: "code" | "link") => {
+      try {
+        const text = type === "code" ? shareCode : shareUrl;
+        await navigator.clipboard.writeText(text);
+        setCopied(type);
+        setTimeout(() => setCopied(null), 2000);
+      } catch {}
+    },
+    [shareCode, shareUrl],
+  );
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
@@ -157,9 +209,8 @@ export default function App() {
         <AnimatedThemeToggler
           theme={themeCtx.theme === "dark" ? "dark" : "light"}
           onThemeChange={(t) => themeCtx.setTheme(t as "light" | "dark")}
-          className="h-9 w-9 rounded-lg border border-border/50 bg-background/80 text-foreground hover:bg-muted/60 transition-smooth shadow-sm"
+          className="h-10 w-10 rounded-xl bg-background/90 text-foreground transition-smooth active:scale-95"
         />
-
       </div>
 
       {/* Canvas */}
@@ -213,8 +264,13 @@ export default function App() {
           >
             <div className="flex items-center justify-between px-8 py-6 border-b border-border/50">
               <div className="flex items-center gap-3">
-                <h2 className="text-lg font-semibold tracking-tight">Share This Configuration</h2>
-                <Badge variant="outline" className="text-sm font-medium rounded-full px-4 py-1.5">
+                <h2 className="text-lg font-semibold tracking-tight">
+                  Share This Configuration
+                </h2>
+                <Badge
+                  variant="outline"
+                  className="text-sm font-medium rounded-full px-4 py-1.5"
+                >
                   {system.name}
                 </Badge>
               </div>
@@ -222,7 +278,13 @@ export default function App() {
                 className="text-muted-foreground hover:text-foreground transition-smooth rounded-xl p-2 hover:bg-muted/50"
                 onClick={() => setShareOpen(false)}
               >
-                <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <svg
+                  className="size-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -232,7 +294,9 @@ export default function App() {
               {/* Code block */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-base font-medium text-muted-foreground">Component Code</span>
+                  <span className="text-base font-medium text-muted-foreground">
+                    Component Code
+                  </span>
                   <button
                     className={`text-sm font-medium rounded-xl px-5 py-2 transition-smooth ${
                       copied === "code"
@@ -252,7 +316,9 @@ export default function App() {
               {/* Share link */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-base font-medium text-muted-foreground">Shareable Link</span>
+                  <span className="text-base font-medium text-muted-foreground">
+                    Shareable Link
+                  </span>
                   <button
                     className={`text-sm font-medium rounded-xl px-5 py-2 transition-smooth ${
                       copied === "link"
