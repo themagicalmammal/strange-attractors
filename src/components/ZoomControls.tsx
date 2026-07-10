@@ -1,9 +1,10 @@
 import { useRef } from "react";
+
 import { zoomCamera } from "./AttractorCanvas";
 
 export function ZoomControls() {
-  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const zoomInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const holdTimer = useRef<null | ReturnType<typeof setTimeout>>(null);
+  const zoomInterval = useRef<null | ReturnType<typeof setInterval>>(null);
 
   const startZoom = (direction: number) => {
     // One small step immediately on press
@@ -18,8 +19,8 @@ export function ZoomControls() {
   };
 
   const stopZoom = () => {
-    holdTimer.current && clearTimeout(holdTimer.current);
-    zoomInterval.current && clearInterval(zoomInterval.current);
+    if (holdTimer.current) clearTimeout(holdTimer.current);
+    if (zoomInterval.current) clearInterval(zoomInterval.current);
     holdTimer.current = null;
     zoomInterval.current = null;
   };
@@ -28,18 +29,25 @@ export function ZoomControls() {
     <div className="fixed bottom-6 right-6 z-10 flex flex-col gap-2">
       {/* Zoom in */}
       <button
+        aria-label="Zoom in"
         className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-border/40 bg-background/90 text-foreground shadow-sm backdrop-blur-sm transition-smooth hover:border-border/70 hover:shadow-md active:scale-95 dark:border-border/20 dark:bg-background/80"
         onMouseDown={() => startZoom(1)}
-        onMouseUp={stopZoom}
         onMouseLeave={stopZoom}
+        onMouseUp={stopZoom}
+        onTouchEnd={stopZoom}
         onTouchStart={(e) => {
           e.preventDefault();
           startZoom(1);
         }}
-        onTouchEnd={stopZoom}
-        aria-label="Zoom in"
       >
-        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
+        <svg
+          className="size-4"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth={2.5}
+          viewBox="0 0 24 24"
+        >
           <circle cx="11" cy="11" r="7" />
           <path d="M21 21l-4.35-4.35" />
           <path d="M11 8v6M8 11h6" />
@@ -51,18 +59,25 @@ export function ZoomControls() {
 
       {/* Zoom out */}
       <button
+        aria-label="Zoom out"
         className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-border/40 bg-background/90 text-foreground shadow-sm backdrop-blur-sm transition-smooth hover:border-border/70 hover:shadow-md active:scale-95 dark:border-border/20 dark:bg-background/80"
         onMouseDown={() => startZoom(-1)}
-        onMouseUp={stopZoom}
         onMouseLeave={stopZoom}
+        onMouseUp={stopZoom}
+        onTouchEnd={stopZoom}
         onTouchStart={(e) => {
           e.preventDefault();
           startZoom(-1);
         }}
-        onTouchEnd={stopZoom}
-        aria-label="Zoom out"
       >
-        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
+        <svg
+          className="size-4"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth={2.5}
+          viewBox="0 0 24 24"
+        >
           <circle cx="11" cy="11" r="7" />
           <path d="M21 21l-4.35-4.35" />
           <path d="M8 11h6" />

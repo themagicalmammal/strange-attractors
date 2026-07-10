@@ -1,29 +1,30 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import { Button } from "@/components/ui/button";
 
 type Theme = "dark" | "light";
 
 interface ThemeContextValue {
-  theme: Theme;
   setTheme: (theme: Theme) => void;
+  theme: Theme;
 }
 
-const ThemeContext = createContext<ThemeContextValue | null>(null);
+const ThemeContext = createContext<null | ThemeContextValue>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem("theme");
     if (stored === "light" || stored === "dark") return stored;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   });
-
-  const toggle = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === "dark" ? "light" : "dark";
-      localStorage.setItem("theme", next);
-      return next;
-    });
-  }, []);
 
   useEffect(() => {
     document.documentElement.classList.remove("dark", "light");
@@ -31,7 +32,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ setTheme, theme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -46,14 +47,14 @@ export function useTheme(): ThemeContextValue {
 function SunIcon() {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className="size-4"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="size-4"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <circle cx="12" cy="12" r={4} />
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
@@ -64,14 +65,14 @@ function SunIcon() {
 function MoonIcon() {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className="size-4"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="size-4"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
     </svg>
@@ -79,7 +80,7 @@ function MoonIcon() {
 }
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
   const [spinning, setSpinning] = useState(false);
 
   const handleToggle = useCallback(() => {
@@ -90,13 +91,15 @@ export function ThemeToggle() {
 
   return (
     <Button
-      variant="ghost"
-      size="icon-sm"
-      onClick={handleToggle}
       className="h-8 w-8 rounded-lg"
+      onClick={handleToggle}
+      size="icon-sm"
       title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      variant="ghost"
     >
-      <div className={`transition-transform duration-400 ${spinning ? "rotate-360 scale-110" : "rotate-0 scale-100"}`}>
+      <div
+        className={`transition-transform duration-400 ${spinning ? "rotate-360 scale-110" : "rotate-0 scale-100"}`}
+      >
         {theme === "dark" ? <SunIcon /> : <MoonIcon />}
       </div>
     </Button>

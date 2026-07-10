@@ -6,4 +6,10 @@
 export { AttractorCanvas } from "./components/AttractorCanvas";
 export { AttractorPanel } from "./components/AttractorPanel";
 export { getSystem, systems } from "./systems";
-export type { AttractorSystem, AttractorParams, AttractorLimits, Vector3, EqFn } from "./systems";
+export type {
+  AttractorLimits,
+  AttractorParams,
+  AttractorSystem,
+  EqFn,
+  Vector3,
+} from "./systems";

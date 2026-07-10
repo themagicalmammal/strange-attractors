@@ -1,6 +1,9 @@
 import type { AttractorSystem } from "../systems";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -9,37 +12,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 import StyledSlider from "./StyledSlider";
 
 interface AttractorPanelProps {
-  system: AttractorSystem;
-  selectedId: string;
-  systems: AttractorSystem[];
-  params: number[];
-  stepsPerFrame: number;
-  colorSpeed: number;
-  pointSize: number;
-  speed: number;
   autoRotate: boolean;
-  onSystemChange: (id: string) => void;
-  onParamChange: (index: number, value: number) => void;
-  onStepsChange: (value: number) => void;
-  onColorSpeedChange: (value: number) => void;
-  onPointSizeChange: (value: number) => void;
-  onSpeedChange: (value: number) => void;
+  colorSpeed: number;
   onAutoRotateChange: (value: boolean) => void;
+  onColorSpeedChange: (value: number) => void;
+  onParamChange: (index: number, value: number) => void;
+  onPointSizeChange: (value: number) => void;
   onReset: () => void;
   onShare: () => void;
+  onSpeedChange: (value: number) => void;
+  onStepsChange: (value: number) => void;
+  onSystemChange: (id: string) => void;
+  params: number[];
+  pointSize: number;
+  selectedId: string;
+  speed: number;
+  stepsPerFrame: number;
+  system: AttractorSystem;
+  systems: AttractorSystem[];
 }
 
 function formatParam(v: number): string {
@@ -55,14 +57,14 @@ const sliderColors = [
 ];
 
 function ParamCell({
-  name,
-  value,
-  min,
-  max,
-  onChange,
   colorIndex,
   description,
+  max,
+  min,
+  name,
+  onChange,
   step,
+  value,
 }: {
   name: string;
   value: number;
@@ -84,16 +86,16 @@ function ParamCell({
               <TooltipTrigger>
                 <svg
                   className="size-3.5 text-muted-foreground/60 cursor-help shrink-0"
-                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
+                  viewBox="0 0 24 24"
                 >
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 16v-2M12 8h.01" />
                 </svg>
               </TooltipTrigger>
-              <TooltipContent side="top" sideOffset={6} className="max-w-xs">
+              <TooltipContent className="max-w-xs" side="top" sideOffset={6}>
                 <p>{description}</p>
               </TooltipContent>
             </Tooltip>
@@ -101,90 +103,90 @@ function ParamCell({
         )}
       </div>
       <StyledSlider
-        min={min}
-        max={max}
-        step={step ?? (max - min) / 200}
-        value={value}
-        onChange={onChange}
-        label=""
         color={color}
         format={formatParam}
+        label=""
+        max={max}
+        min={min}
+        onChange={onChange}
+        step={step ?? (max - min) / 200}
+        value={value}
       />
     </div>
   );
 }
 
 const paramDescriptions: Record<string, string> = {
-  "σ (sigma)": "Controls the horizontal spreading of the attractor",
-  "ρ (rho)": "Represents the rate of convection",
-  "β (beta)": "Relates to the vertical dimension compression",
   a: "Parameter a — system coefficient",
   b: "Parameter b — system coefficient",
+  B: "Parameter B — system coefficient",
   c: "Parameter c — system coefficient",
   d: "Parameter d — system coefficient",
   e: "Parameter e — system coefficient",
-  k: "Parameter k — system coefficient",
-  s: "Parameter s — system coefficient",
-  v: "Parameter v — system coefficient",
-  t: "Parameter t — system coefficient",
-  r: "Parameter r — system coefficient",
-  "α (alpha)": "Parameter alpha — system coefficient",
-  λ: "Parameter lambda — system coefficient",
-  ω: "Parameter omega — system coefficient",
-  ε: "Parameter epsilon — system coefficient",
   f: "Parameter f — system coefficient",
   g: "Parameter g — system coefficient",
   h: "Parameter h — system coefficient",
-  B: "Parameter B — system coefficient",
-  μ: "Parameter mu — system coefficient",
+  k: "Parameter k — system coefficient",
   p: "Parameter p — system coefficient",
   q: "Parameter q — system coefficient",
+  r: "Parameter r — system coefficient",
+  s: "Parameter s — system coefficient",
+  t: "Parameter t — system coefficient",
+  v: "Parameter v — system coefficient",
+  "α (alpha)": "Parameter alpha — system coefficient",
+  "β (beta)": "Relates to the vertical dimension compression",
+  ε: "Parameter epsilon — system coefficient",
+  λ: "Parameter lambda — system coefficient",
+  μ: "Parameter mu — system coefficient",
+  "ρ (rho)": "Represents the rate of convection",
+  "σ (sigma)": "Controls the horizontal spreading of the attractor",
+  ω: "Parameter omega — system coefficient",
 };
 
 export function AttractorPanel({
-  system,
-  selectedId,
-  systems,
-  params,
-  stepsPerFrame,
-  colorSpeed,
-  pointSize,
-  speed,
   autoRotate,
-  onSystemChange,
-  onParamChange,
-  onStepsChange,
-  onColorSpeedChange,
-  onPointSizeChange,
-  onSpeedChange,
+  colorSpeed,
   onAutoRotateChange,
+  onColorSpeedChange,
+  onParamChange,
+  onPointSizeChange,
   onReset,
   onShare,
+  onSpeedChange,
+  onStepsChange,
+  onSystemChange,
+  params,
+  pointSize,
+  selectedId,
+  speed,
+  stepsPerFrame,
+  system,
+  systems,
 }: AttractorPanelProps) {
   // Separate attractor params from display settings
   const displayParams = [
     {
-      name: "Color speed",
-      value: colorSpeed,
-      min: 0.1,
       max: 10,
-      onChange: onColorSpeedChange,
-    },
-    {
-      name: "Point size",
-      value: pointSize,
-      min: 0.5,
-      max: 8,
-      onChange: onPointSizeChange,
-    },
-    {
-      name: "Animation speed",
-      value: speed,
       min: 0.1,
-      max: 5,
-      step: 0.1,
-      onChange: onSpeedChange,
+      name: "Color speed",
+      onChange: onColorSpeedChange,
+      value: colorSpeed,
+    },
+    {
+      max: 8,
+      min: 0.5,
+      name: "Point size",
+      onChange: onPointSizeChange,
+      value: pointSize,
+    },
+    {
       description: "Multiplier for the number of points drawn each frame",
+      max: 5,
+      min: 0.1,
+      name: "Animation speed",
+      onChange: onSpeedChange,
+      step: 0.1,
+      value: speed,
     },
   ];
 
@@ -197,8 +199,8 @@ export function AttractorPanel({
               Strange Attractors
             </CardTitle>
             <Badge
-              variant="outline"
               className="text-sm font-medium rounded-full px-4 py-1.5"
+              variant="outline"
             >
               {system.name}
             </Badge>
@@ -213,17 +215,17 @@ export function AttractorPanel({
                 System
               </Label>
               <Select
-                value={selectedId}
-                onValueChange={(v: string | null) =>
+                onValueChange={(v: null | string) =>
                   onSystemChange(v ?? selectedId)
                 }
+                value={selectedId}
               >
                 <SelectTrigger className="w-full h-11 bg-muted/20 border-border/40 rounded-xl text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {systems.map((s) => (
-                    <SelectItem key={s.id} value={s.id} className="text-base">
+                    <SelectItem className="text-base" key={s.id} value={s.id}>
                       {s.name}
                     </SelectItem>
                   ))}
@@ -239,14 +241,14 @@ export function AttractorPanel({
               <div className="grid grid-cols-3 gap-x-8 gap-y-8">
                 {system.params.defaults.map((defaultVal, i) => (
                   <ParamCell
-                    key={system.params.names[i]}
-                    name={system.params.names[i]}
-                    value={params[i] ?? defaultVal}
-                    min={system.params.min[i] ?? defaultVal * 0.1}
-                    max={system.params.max[i] ?? defaultVal * 5}
-                    onChange={(v) => onParamChange(i, v)}
                     colorIndex={i % 3}
                     description={paramDescriptions[system.params.names[i]]}
+                    key={system.params.names[i]}
+                    max={system.params.max[i] ?? defaultVal * 5}
+                    min={system.params.min[i] ?? defaultVal * 0.1}
+                    name={system.params.names[i]}
+                    onChange={(v) => onParamChange(i, v)}
+                    value={params[i] ?? defaultVal}
                   />
                 ))}
               </div>
@@ -262,33 +264,33 @@ export function AttractorPanel({
             <div className="grid grid-cols-3 gap-x-8 gap-y-8 mb-8">
               {displayParams.map((dp) => (
                 <ParamCell
-                  key={dp.name}
-                  name={dp.name}
-                  value={dp.value}
-                  min={dp.min}
-                  max={dp.max}
-                  onChange={dp.onChange}
                   colorIndex={(displayParams.indexOf(dp) + 3) % 3}
+                  key={dp.name}
+                  max={dp.max}
+                  min={dp.min}
+                  name={dp.name}
+                  onChange={dp.onChange}
+                  value={dp.value}
                 />
               ))}
               {/* Fill remaining slots for consistent grid alignment */}
               {Array.from({
                 length: Math.max(0, 3 - displayParams.length),
               }).map((_, i) => (
-                <div key={`fill-${i}`} className="col-span-1" />
+                <div className="col-span-1" key={`fill-${i}`} />
               ))}
             </div>
 
             {/* Steps per frame — full width */}
             <div className="mb-8">
               <ParamCell
-                name="Steps per frame"
-                value={stepsPerFrame}
-                min={1}
-                max={1000}
-                onChange={onStepsChange}
                 colorIndex={0}
                 description="Number of integration steps drawn per animation frame"
+                max={1000}
+                min={1}
+                name="Steps per frame"
+                onChange={onStepsChange}
+                value={stepsPerFrame}
               />
             </div>
 
@@ -297,13 +299,13 @@ export function AttractorPanel({
               <div className="flex items-center gap-3">
                 <Switch
                   checked={autoRotate}
-                  onCheckedChange={onAutoRotateChange}
                   id="auto-rotate"
+                  onCheckedChange={onAutoRotateChange}
                 />
                 <div>
                   <Label
-                    htmlFor="auto-rotate"
                     className="text-base font-medium text-foreground cursor-pointer"
+                    htmlFor="auto-rotate"
                   >
                     Auto-rotate
                   </Label>
@@ -317,38 +319,38 @@ export function AttractorPanel({
             {/* Action buttons */}
             <div className="flex gap-3">
               <Button
-                variant="outline"
-                onClick={onShare}
                 className="flex-1 h-12 rounded-xl text-base font-medium"
+                onClick={onShare}
+                variant="outline"
               >
                 <svg
                   className="size-4 mr-2"
-                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
                 >
                   <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
                   <polyline points="16 6 12 2 8 6" />
-                  <line x1="12" y1="2" x2="12" y2="15" />
+                  <line x1="12" x2="12" y1="2" y2="15" />
                 </svg>
                 Share
               </Button>
               <Button
-                variant="outline"
-                onClick={onReset}
                 className="flex-1 h-12 rounded-xl text-base font-medium"
+                onClick={onReset}
+                variant="outline"
               >
                 <svg
                   className="size-4 mr-2"
-                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
                 >
                   <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
                   <path d="M21 3v5h-5" />

@@ -1,10 +1,7 @@
 import type { Vector3 } from "./systems";
 import type { AttractorSystem } from "./systems";
 
-type EqFn = (
-  state: Vector3,
-  params: number[],
-) => Vector3;
+type EqFn = (state: Vector3, params: number[]) => Vector3;
 
 /**
  * Runge-Kutta 4th-order integrator.

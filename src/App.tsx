@@ -1,18 +1,15 @@
-import { useState, useCallback, useEffect } from "react";
-import { getSystem, systems } from "./systems";
 import type { AttractorSystem } from "./systems";
+
+import { useCallback, useEffect, useState } from "react";
+
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Badge } from "@/components/ui/badge";
+
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
-import { ZoomControls } from "./components/ZoomControls";
 import { useTheme } from "./components/providers/ThemeToggle";
-import { Badge } from "@/components/ui/badge";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { ZoomControls } from "./components/ZoomControls";
+import { getSystem, systems } from "./systems";
 
 // ─── URL params (for share links) ────────────────────────
 
@@ -47,7 +44,7 @@ function parseUrlParams(): {
   autoRotate?: boolean;
 } {
   const sp = new URLSearchParams(window.location.search);
-  const result: any = {};
+  const result: Record<string, unknown> = {};
   if (sp.has("system")) result.systemId = sp.get("system")!;
   const params: number[] = [];
   let i = 0;
@@ -194,7 +191,9 @@ export default function App() {
         await navigator.clipboard.writeText(text);
         setCopied(type);
         setTimeout(() => setCopied(null), 2000);
-      } catch {}
+      } catch {
+        /* intentional no-op */
+      }
     },
     [shareCode, shareUrl],
   );
@@ -207,46 +206,46 @@ export default function App() {
       {/* Header controls — top-right */}
       <div className="absolute top-6 right-6 z-20 flex items-center gap-4">
         <AnimatedThemeToggler
-          theme={themeCtx.theme === "dark" ? "dark" : "light"}
-          onThemeChange={(t) => themeCtx.setTheme(t as "light" | "dark")}
           className="h-10 w-10 rounded-xl bg-background/90 text-foreground transition-smooth active:scale-95"
+          onThemeChange={(t) => themeCtx.setTheme(t as "dark" | "light")}
+          theme={themeCtx.theme === "dark" ? "dark" : "light"}
         />
       </div>
 
       {/* Canvas */}
       <div className="absolute inset-0 z-10">
         <AttractorCanvas
-          system={system}
-          params={params}
-          stepsPerFrame={stepsPerFrame}
-          colorSpeed={colorSpeed}
-          pointSize={pointSize}
-          speed={speed}
           autoRotate={autoRotate}
+          colorSpeed={colorSpeed}
+          params={params}
+          pointSize={pointSize}
           resetKey={resetKey}
+          speed={speed}
+          stepsPerFrame={stepsPerFrame}
+          system={system}
         />
       </div>
 
       {/* Panel */}
       <AttractorPanel
-        system={system}
-        selectedId={selectedId}
-        systems={systems}
-        params={params}
-        stepsPerFrame={stepsPerFrame}
-        colorSpeed={colorSpeed}
-        pointSize={pointSize}
-        speed={speed}
         autoRotate={autoRotate}
-        onSystemChange={handleSystemChange}
-        onParamChange={handleParamChange}
-        onStepsChange={setStepsPerFrame}
-        onColorSpeedChange={setColorSpeed}
-        onPointSizeChange={setPointSize}
-        onSpeedChange={setSpeed}
+        colorSpeed={colorSpeed}
         onAutoRotateChange={setAutoRotate}
+        onColorSpeedChange={setColorSpeed}
+        onParamChange={handleParamChange}
+        onPointSizeChange={setPointSize}
         onReset={handleReset}
         onShare={() => setShareOpen(true)}
+        onSpeedChange={setSpeed}
+        onStepsChange={setStepsPerFrame}
+        onSystemChange={handleSystemChange}
+        params={params}
+        pointSize={pointSize}
+        selectedId={selectedId}
+        speed={speed}
+        stepsPerFrame={stepsPerFrame}
+        system={system}
+        systems={systems}
       />
 
       {/* Zoom controls — bottom-right */}
@@ -268,8 +267,8 @@ export default function App() {
                   Share This Configuration
                 </h2>
                 <Badge
-                  variant="outline"
                   className="text-sm font-medium rounded-full px-4 py-1.5"
+                  variant="outline"
                 >
                   {system.name}
                 </Badge>
@@ -280,10 +279,10 @@ export default function App() {
               >
                 <svg
                   className="size-4"
-                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
+                  viewBox="0 0 24 24"
                 >
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>

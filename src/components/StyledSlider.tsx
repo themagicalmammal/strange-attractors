@@ -1,29 +1,29 @@
 import { useState } from "react";
 
 interface StyledSliderProps {
-  min: number;
-  max: number;
-  step: number;
-  value: number;
-  onChange: (v: number) => void;
-  label?: string;
-  valueSuffix?: string;
   color?: string;
   format?: (v: number) => string;
+  label?: string;
+  max: number;
+  min: number;
+  onChange: (v: number) => void;
+  step: number;
+  value: number;
+  valueSuffix?: string;
 }
 
 const defaultColor = "oklch(0.55 0.20 264.376)";
 
 function StyledSlider({
-  min,
-  max,
-  step,
-  value,
-  onChange,
-  label,
-  valueSuffix = "",
   color = defaultColor,
   format,
+  label,
+  max,
+  min,
+  onChange,
+  step,
+  value,
+  valueSuffix = "",
 }: StyledSliderProps) {
   const pct = ((value - min) / (max - min)) * 100;
   const displayValue = format
@@ -38,9 +38,9 @@ function StyledSlider({
     <span
       className="text-sm font-mono font-semibold rounded-md px-3 py-1.5 transition-smooth slider-badge"
       style={{
-        color,
         backgroundColor: `${color}12`,
         border: `1px solid ${color}25`,
+        color,
       }}
     >
       {displayValue}
@@ -70,18 +70,18 @@ function StyledSlider({
         <div
           className="absolute h-3 rounded-full transition-none"
           style={{
+            background: `linear-gradient(90deg, ${color}, ${color}bb)`,
             left: 0,
             right: `${100 - pct}%`,
-            background: `linear-gradient(90deg, ${color}, ${color}bb)`,
           }}
         />
         {/* Thumb glow */}
         <div
           className="absolute h-6 w-6 rounded-full pointer-events-none transition-all"
           style={{
-            left: `calc(${pct}% - 12px)`,
             backgroundColor: `${color}20`,
             filter: "blur(6px)",
+            left: `calc(${pct}% - 12px)`,
             opacity: isDragging ? 1 : 0,
             transform: isDragging ? "scale(1.8)" : "scale(1)",
             transition: "all 0.3s ease-out",
@@ -91,9 +91,9 @@ function StyledSlider({
         <div
           className="absolute h-6 w-6 rounded-full border-[2.5px] bg-white shadow-lg pointer-events-none cursor-grab active:cursor-grabbing transition-smooth"
           style={{
-            left: `calc(${pct}% - 12px)`,
             borderColor: color,
             boxShadow: `0 0 0 3px ${color}18, 0 2px 8px ${color}30`,
+            left: `calc(${pct}% - 12px)`,
             transform: isDragging ? "scale(1.25)" : "scale(1)",
           }}
         >
@@ -101,25 +101,25 @@ function StyledSlider({
             className="w-1.5 h-1.5 rounded-full absolute"
             style={{
               backgroundColor: color,
-              top: "50%",
               left: "50%",
+              top: "50%",
               transform: "translate(-50%, -50%)",
             }}
           />
         </div>
         {/* Transparent input overlay */}
         <input
-          type="range"
-          min={min}
+          className="absolute inset-x-0 h-full opacity-0 cursor-pointer z-10"
           max={max}
-          step={step}
-          value={value}
+          min={min}
           onChange={(e) => onChange(parseFloat(e.target.value))}
           onMouseDown={() => setIsDragging(true)}
           onMouseUp={() => setIsDragging(false)}
-          onTouchStart={() => setIsDragging(true)}
           onTouchEnd={() => setIsDragging(false)}
-          className="absolute inset-x-0 h-full opacity-0 cursor-pointer z-10"
+          onTouchStart={() => setIsDragging(true)}
+          step={step}
+          type="range"
+          value={value}
         />
       </div>
     </div>

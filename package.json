@@ -31,6 +31,8 @@
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types --noEmit false",
     "build:types:cjs": "tsc --declaration --emitDeclarationOnly --outDir dist/types/cjs --noEmit false",
     "build:package": "rm -rf dist dist-esm dist-cjs && npm run build:esm -- --outDir dist-esm && npm run build:cjs -- --outDir dist-cjs && npm run build:types && npm run build:types:cjs && mkdir -p dist && cp -r dist-esm/* dist/ && cp -r dist-cjs/* dist/ && rm -rf dist-esm dist-cjs",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -67,11 +69,19 @@
     }
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@types/three": "^0.175.0",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
     "@vitejs/plugin-react": "^4.6.0",
-    "typescript": "^5.9.2",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-perfectionist": "^5.10.0",
+    "eslint-plugin-prettier": "^5.5.6",
+    "prettier": "^3.9.4",
+    "typescript": "^5.9.3",
     "vite": "^6.3.5"
   }
 }

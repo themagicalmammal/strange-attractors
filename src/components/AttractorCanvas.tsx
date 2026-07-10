@@ -1,32 +1,34 @@
-import { useRef, useEffect } from "react";
+import type { AttractorSystem, Vector3 } from "../systems";
+
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three-stdlib";
-import type { AttractorSystem, Vector3 } from "../systems";
+
 import { continueIntegrate, integrate } from "../integrate";
 
 // ─── Props ─────────────────────────────────────────────────────
 
 interface AttractorCanvasProps {
-  system: AttractorSystem;
-  params: number[];
-  stepsPerFrame: number;
-  colorSpeed: number;
-  pointSize: number;
-  speed: number;
   autoRotate: boolean;
+  colorSpeed: number;
+  params: number[];
+  pointSize: number;
   resetKey: number;
+  speed: number;
+  stepsPerFrame: number;
+  system: AttractorSystem;
 }
 
 // ─── Shared config object (mutable, read by animation loop) ─────
 
 const config = {
-  system: null as unknown as AttractorSystem,
-  params: null as unknown as number[],
-  stepsPerFrame: 50,
+  autoRotate: true,
   colorSpeed: 1,
+  params: null as unknown as number[],
   pointSize: 1.5,
   speed: 0.5,
-  autoRotate: true,
+  stepsPerFrame: 50,
+  system: null as unknown as AttractorSystem,
 };
 
 // ─── Shaders ───────────────────────────────────────────────────
@@ -78,21 +80,21 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 
 // ─── Scene factory ─────────────────────────────────────────────
 
-let renderer: THREE.WebGLRenderer | null = null;
-let scene: THREE.Scene | null = null;
-let camera: THREE.PerspectiveCamera | null = null;
-let controls: OrbitControls | null = null;
+let renderer: null | THREE.WebGLRenderer = null;
+let scene: null | THREE.Scene = null;
+let camera: null | THREE.PerspectiveCamera = null;
+let controls: null | OrbitControls = null;
 
 const ZOOM_STEP = 0.06; // fraction of current distance per step
-let pointsObj: THREE.Points | null = null;
-let geometry: THREE.BufferGeometry | null = null;
-let material: THREE.ShaderMaterial | null = null;
+let pointsObj: null | THREE.Points = null;
+let geometry: null | THREE.BufferGeometry = null;
+let material: null | THREE.ShaderMaterial = null;
 let positions: Float32Array | null = null;
 let colors: Float32Array | null = null;
 let sizes: Float32Array | null = null;
 let frameCount = 0;
 let lastState: Vector3 = [0, 0, 0];
-let resizeObserver: ResizeObserver | null = null;
+let resizeObserver: null | ResizeObserver = null;
 let running = false;
 let animId = 0;
 
@@ -103,7 +105,7 @@ function initScene(mount: HTMLDivElement) {
   const height = mount.clientHeight;
 
   // Renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(width, height);
   renderer.setClearColor(0x000000, 1);
@@ -132,11 +134,11 @@ function initScene(mount: HTMLDivElement) {
   geometry.setDrawRange(0, 0);
 
   material = new THREE.ShaderMaterial({
-    vertexShader: VERT,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
     fragmentShader: FRAG,
     transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
+    vertexShader: VERT,
   });
 
   pointsObj = new THREE.Points(geometry, material);
@@ -209,7 +211,10 @@ function animate() {
 
   controls?.update();
 
-  const toAdd = Math.min(Math.round(config.stepsPerFrame * config.speed), MAX_POINTS - frameCount);
+  const toAdd = Math.min(
+    Math.round(config.stepsPerFrame * config.speed),
+    MAX_POINTS - frameCount,
+  );
   if (toAdd > 0 && config.system && config.params) {
     const { data, lastState: newState } = continueIntegrate(
       config.system,
@@ -261,9 +266,10 @@ export function zoomCamera(direction: number) {
 
   // Zoom in steps shrink, zoom out steps grow
   const step = dist * ZOOM_STEP;
-  const newDist = direction > 0
-    ? Math.max(dist - step, 0.5) // zoom in: don't go closer than 0.5
-    : dist + step;                // zoom out
+  const newDist =
+    direction > 0
+      ? Math.max(dist - step, 0.5) // zoom in: don't go closer than 0.5
+      : dist + step; // zoom out
 
   dir.normalize().multiplyScalar(newDist);
   camera.position.copy(target).add(dir);
@@ -275,7 +281,8 @@ function stopAnimation() {
   cancelAnimationFrame(animId);
 }
 
-function dispose() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _dispose() {
   stopAnimation();
   resizeObserver?.disconnect();
   if (renderer && renderer.domElement.parentNode) {
@@ -300,14 +307,14 @@ function dispose() {
 // ─── Component ─────────────────────────────────────────────────
 
 export function AttractorCanvas({
-  system,
-  params,
-  stepsPerFrame,
-  colorSpeed,
-  pointSize,
-  speed,
   autoRotate,
+  colorSpeed,
+  params,
+  pointSize,
   resetKey,
+  speed,
+  stepsPerFrame,
+  system,
 }: AttractorCanvasProps) {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -353,7 +360,8 @@ export function AttractorCanvas({
     config.autoRotate = autoRotate;
     if (controls) controls.autoRotate = autoRotate;
     sizes?.fill(pointSize);
-    if (geometry?.attributes.aSize) geometry.attributes.aSize.needsUpdate = true;
+    if (geometry?.attributes.aSize)
+      geometry.attributes.aSize.needsUpdate = true;
   }, [system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate]);
 
   // Handle system change: rebuild buffers and reset
@@ -369,5 +377,5 @@ export function AttractorCanvas({
     doReset();
   }, [resetKey]);
 
-  return <div ref={mountRef} style={{ width: "100%", height: "100%" }} />;
+  return <div ref={mountRef} style={{ height: "100%", width: "100%" }} />;
 }
