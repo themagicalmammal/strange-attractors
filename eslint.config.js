@@ -9,23 +9,45 @@ export default [
     {
         ignores: [
             '.next/',
+            '.vscode/',
+            'dist-staging/',
             'dist/',
             'node_modules/',
+            'eslint.config.js',
+            'tailwind.config.js',
             'vite.config.ts',
-            'vite.*.config.ts',
-            'tailwind.config.js'
+            'vite.*.config.ts'
         ]
     },
     js.configs.recommended,
+    // ─── JavaScript / CommonJS ───────────────────────
     {
-        files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'],
+        files: ['**/*.{js,mjs,cjs}'],
         languageOptions: {
             globals: {
-                JSX: 'readonly',
-                React: 'readonly',
                 __dirname: 'readonly',
                 __filename: 'readonly',
                 process: 'readonly'
+            },
+            parserOptions: {
+                ecmaVersion: 'latest',
+                sourceType: 'module'
+            }
+        },
+        rules: {
+            ...js.configs.recommended.rules,
+            'no-undef': 'off',
+            'prefer-template': 'warn'
+        }
+    },
+
+    // ─── TypeScript / TypeScript-React ───────────────
+    {
+        files: ['**/*.{ts,tsx}'],
+        languageOptions: {
+            globals: {
+                JSX: 'readonly',
+                React: 'readonly'
             },
             parser: tsParser,
             parserOptions: {
