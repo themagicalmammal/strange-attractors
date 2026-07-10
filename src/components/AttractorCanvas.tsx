@@ -351,6 +351,7 @@ export function AttractorCanvas({
     config.pointSize = pointSize;
     config.speed = speed;
     config.autoRotate = autoRotate;
+    if (controls) controls.autoRotate = autoRotate;
     sizes?.fill(pointSize);
     if (geometry?.attributes.aSize) geometry.attributes.aSize.needsUpdate = true;
   }, [system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate]);
