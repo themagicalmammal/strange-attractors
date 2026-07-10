@@ -103,7 +103,7 @@ export default function App() {
   const [stepsPerFrame, setStepsPerFrame] = useState(urlParams.steps ?? 50);
   const [colorSpeed, setColorSpeed] = useState(urlParams.colorSpeed ?? 1);
   const [pointSize, setPointSize] = useState(urlParams.pointSize ?? 1.5);
-  const [speed, setSpeed] = useState(urlParams.speed ?? 1);
+  const [speed, setSpeed] = useState(urlParams.speed ?? 0.5);
   const [autoRotate, setAutoRotate] = useState(urlParams.autoRotate ?? true);
 
   const [resetKey, setResetKey] = useState(0);

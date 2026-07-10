@@ -178,12 +178,13 @@ export function AttractorPanel({
       onChange: onPointSizeChange,
     },
     {
-      name: "Speed",
+      name: "Animation speed",
       value: speed,
       min: 0.1,
       max: 5,
       step: 0.1,
       onChange: onSpeedChange,
+      description: "Multiplier for the number of points drawn each frame",
     },
   ];
 

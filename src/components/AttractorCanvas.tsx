@@ -25,7 +25,7 @@ const config = {
   stepsPerFrame: 50,
   colorSpeed: 1,
   pointSize: 1.5,
-  speed: 1,
+  speed: 0.5,
   autoRotate: true,
 };
 
