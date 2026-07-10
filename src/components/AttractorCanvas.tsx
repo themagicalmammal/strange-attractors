@@ -80,6 +80,8 @@ let renderer: THREE.WebGLRenderer | null = null;
 let scene: THREE.Scene | null = null;
 let camera: THREE.PerspectiveCamera | null = null;
 let controls: OrbitControls | null = null;
+
+const ZOOM_STEP = 0.06; // fraction of current distance per step
 let pointsObj: THREE.Points | null = null;
 let geometry: THREE.BufferGeometry | null = null;
 let material: THREE.ShaderMaterial | null = null;
@@ -241,6 +243,29 @@ function animate() {
 function startAnimation() {
   running = true;
   animate();
+}
+
+/**
+ * Zoom the camera by one small incremental step.
+ * -1 = zoom out (move away), 1 = zoom in (move closer).
+ * Each call moves the camera ~6% of its current distance from the orbit target.
+ */
+export function zoomCamera(direction: number) {
+  if (!camera || !controls) return;
+  const target = controls.target;
+  const dir = new THREE.Vector3().subVectors(camera.position, target);
+  const dist = dir.length();
+  if (dist < 0.5) return;
+
+  // Zoom in steps shrink, zoom out steps grow
+  const step = dist * ZOOM_STEP;
+  const newDist = direction > 0
+    ? Math.max(dist - step, 0.5) // zoom in: don't go closer than 0.5
+    : dist + step;                // zoom out
+
+  dir.normalize().multiplyScalar(newDist);
+  camera.position.copy(target).add(dir);
+  controls.update();
 }
 
 function stopAnimation() {

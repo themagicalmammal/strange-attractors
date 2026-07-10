@@ -3,6 +3,7 @@ import { getSystem, systems } from "./systems";
 import type { AttractorSystem } from "./systems";
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
+import { ZoomControls } from "./components/ZoomControls";
 import { ThemeToggle } from "./components/providers/ThemeToggle";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -209,6 +210,9 @@ export default function App() {
         onReset={handleReset}
         onShare={() => setShareOpen(true)}
       />
+
+      {/* Zoom controls — bottom-right */}
+      <ZoomControls />
 
       {/* Share Modal */}
       {shareOpen && (
