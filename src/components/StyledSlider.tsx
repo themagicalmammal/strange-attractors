@@ -12,7 +12,7 @@ interface StyledSliderProps {
   valueSuffix?: string;
 }
 
-const defaultColor = "oklch(0.55 0.20 264.376)";
+const defaultColor = "#818cf8";
 
 function StyledSlider({
   color = defaultColor,
@@ -33,44 +33,34 @@ function StyledSlider({
       : value.toFixed(2);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Extracted value badge to avoid duplication
-  const valueBadge = (
-    <span
-      className="text-sm font-mono font-semibold rounded-md px-3 py-1.5 transition-smooth slider-badge"
-      style={{
-        backgroundColor: `${color}12`,
-        border: `1px solid ${color}25`,
-        color,
-      }}
-    >
-      {displayValue}
-      {valueSuffix}
-    </span>
-  );
+  // Skip header row when label is not provided (ParamCell renders its own)
+  const hasHeader = label != null && label !== "";
 
   return (
-    <div className="w-full">
-      {/* Header row — label + value */}
-      <div className="flex items-center justify-between mb-2">
-        {label ? (
-          <span className="text-sm font-medium text-muted-foreground">
-            {label}
+    <div className="w-full select-none">
+      {/* Header row */}
+      {hasHeader && (
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[13px] font-medium text-white/70">{label}</span>
+          <span
+            className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-white/50"
+            style={{ color: `${color}cc` }}
+          >
+            {displayValue}
+            {valueSuffix}
           </span>
-        ) : (
-          <span />
-        )}
-        {valueBadge}
-      </div>
+        </div>
+      )}
 
-      {/* Slider track */}
-      <div className="relative h-14 flex items-center">
+      {/* Slider track area */}
+      <div className="relative h-8 flex items-center">
         {/* Track background */}
-        <div className="absolute inset-x-0 h-3 rounded-full bg-muted/40 shadow-[inset_0_1px_2px_rgba(0,0,0,0.08)]" />
+        <div className="absolute inset-x-0 h-1.5 rounded-full bg-white/[0.06] shadow-inner" />
         {/* Gradient fill */}
         <div
-          className="absolute h-3 rounded-full transition-none"
+          className="absolute h-1.5 rounded-full"
           style={{
-            background: `linear-gradient(90deg, ${color}, ${color}bb)`,
+            background: `linear-gradient(90deg, ${color}99, ${color})`,
             left: 0,
             right: `${100 - pct}%`,
           }}
@@ -79,22 +69,22 @@ function StyledSlider({
         <div
           className="absolute h-6 w-6 rounded-full pointer-events-none transition-all"
           style={{
-            backgroundColor: `${color}20`,
-            filter: "blur(6px)",
+            backgroundColor: `${color}15`,
+            filter: "blur(8px)",
             left: `calc(${pct}% - 12px)`,
             opacity: isDragging ? 1 : 0,
-            transform: isDragging ? "scale(1.8)" : "scale(1)",
+            transform: isDragging ? "scale(1.6)" : "scale(1)",
             transition: "all 0.3s ease-out",
           }}
         />
         {/* Thumb */}
         <div
-          className="absolute h-6 w-6 rounded-full border-[2.5px] bg-white shadow-lg pointer-events-none cursor-grab active:cursor-grabbing transition-smooth"
+          className="absolute h-4 w-4 rounded-full border-[2px] bg-zinc-100 pointer-events-none cursor-grab active:cursor-grabbing transition-transform"
           style={{
             borderColor: color,
-            boxShadow: `0 0 0 3px ${color}18, 0 2px 8px ${color}30`,
-            left: `calc(${pct}% - 12px)`,
-            transform: isDragging ? "scale(1.25)" : "scale(1)",
+            boxShadow: `0 0 0 2px ${color}20, 0 2px 6px ${color}40, 0 1px 3px rgba(0,0,0,0.4)`,
+            left: `calc(${pct}% - 8px)`,
+            transform: isDragging ? "scale(1.3)" : "scale(1)",
           }}
         >
           <div

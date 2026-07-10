@@ -2,7 +2,6 @@ import type { AttractorSystem } from "../systems";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -22,6 +21,8 @@ import {
 } from "@/components/ui/tooltip";
 
 import StyledSlider from "./StyledSlider";
+
+// ─── Types ──────────────────────────────────────────────────
 
 interface AttractorPanelProps {
   autoRotate: boolean;
@@ -44,20 +45,61 @@ interface AttractorPanelProps {
   systems: AttractorSystem[];
 }
 
+// ─── Helpers ────────────────────────────────────────────────
+
 function formatParam(v: number): string {
   if (Math.abs(v) >= 100) return Math.round(v).toString();
   if (Math.abs(v) >= 1) return v.toFixed(2);
   return v.toFixed(4);
 }
 
-const sliderColors = [
-  "oklch(0.55 0.20 264.376)", // deep blue
-  "oklch(0.60 0.18 162.48)", // emerald green
-  "oklch(0.65 0.20 35.5)", // warm amber
-];
+// ─── Panel shell ────────────────────────────────────────────
+
+function Panel({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+  return (
+    <div
+      className={`overflow-hidden rounded-[20px] border border-border/20 bg-background/80 shadow-xl backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-900/80 dark:shadow-[0_32px_80px_rgba(0,0,0,0.4)] ${
+        className ?? ""
+      }`}
+      {...props}
+    />
+  );
+}
+
+// ─── Section wrapper ────────────────────────────────────────
+
+function Section({
+  children,
+  label,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-3">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+// ─── Param cell ─────────────────────────────────────────────
+
+interface ParamCellProps {
+  accent: string;
+  description?: string;
+  max: number;
+  min: number;
+  name: string;
+  onChange: (v: number) => void;
+  step?: number;
+  value: number;
+}
 
 function ParamCell({
-  colorIndex,
+  accent,
   description,
   max,
   min,
@@ -65,37 +107,41 @@ function ParamCell({
   onChange,
   step,
   value,
-}: {
-  name: string;
-  value: number;
-  min: number;
-  max: number;
-  onChange: (v: number) => void;
-  colorIndex: number;
-  description?: string;
-  step?: number;
-}) {
-  const color = sliderColors[colorIndex % sliderColors.length];
+}: ParamCellProps) {
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-foreground">{name}</span>
+    <div className="group/cell flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span
+            className="size-1.5 rounded-full ring-2 ring-border/5 transition-transform group-hover/cell:scale-125 dark:ring-white/5"
+            style={{
+              backgroundColor: accent,
+              boxShadow: `0 0 6px ${accent}60`,
+            }}
+          />
+          <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+            {name}
+          </span>
+        </div>
+        <span className="rounded bg-muted dark:bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-muted-foreground dark:text-white/50 transition-colors group-hover/cell:text-foreground dark:group-hover/cell:text-white/70">
+          {formatParam(value)}
+        </span>
         {description && (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger className="-mr-1 cursor-help text-muted-foreground/40 hover:text-muted-foreground transition-colors dark:text-white/20 dark:hover:text-white/50">
                 <svg
-                  className="size-3.5 text-muted-foreground/60 cursor-help shrink-0"
+                  className="size-3"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
                   viewBox="0 0 24 24"
                 >
                   <circle cx="12" cy="12" r="10" />
-                  <path d="M12 16v-2M12 8h.01" />
+                  <path d="M12 16v-1M12 13h.01" />
                 </svg>
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs" side="top" sideOffset={6}>
+              <TooltipContent className="max-w-xs" side="top" sideOffset={8}>
                 <p>{description}</p>
               </TooltipContent>
             </Tooltip>
@@ -103,7 +149,7 @@ function ParamCell({
         )}
       </div>
       <StyledSlider
-        color={color}
+        color={accent}
         format={formatParam}
         label=""
         max={max}
@@ -115,6 +161,8 @@ function ParamCell({
     </div>
   );
 }
+
+// ─── Descriptions lookup ────────────────────────────────────
 
 const paramDescriptions: Record<string, string> = {
   a: "Parameter a — system coefficient",
@@ -143,6 +191,19 @@ const paramDescriptions: Record<string, string> = {
   ω: "Parameter omega — system coefficient",
 };
 
+// ─── Accent colors for sliders ──────────────────────────────
+
+const ACCENTS = {
+  amber: "#fbbf24",
+  blue: "#818cf8",
+  cyan: "#22d3ee",
+  emerald: "#34d399",
+  rose: "#fb7185",
+  violet: "#a78bfa",
+} as const;
+
+// ─── Main panel ─────────────────────────────────────────────
+
 export function AttractorPanel({
   autoRotate,
   colorSpeed,
@@ -163,55 +224,37 @@ export function AttractorPanel({
   system,
   systems,
 }: AttractorPanelProps) {
-  // Separate attractor params from display settings
-  const displayParams = [
-    {
-      max: 10,
-      min: 0.1,
-      name: "Color speed",
-      onChange: onColorSpeedChange,
-      value: colorSpeed,
-    },
-    {
-      max: 8,
-      min: 0.5,
-      name: "Point size",
-      onChange: onPointSizeChange,
-      value: pointSize,
-    },
-    {
-      description: "Multiplier for the number of points drawn each frame",
-      max: 5,
-      min: 0.1,
-      name: "Animation speed",
-      onChange: onSpeedChange,
-      step: 0.1,
-      value: speed,
-    },
-  ];
-
   return (
-    <div className="fixed top-5 left-5 z-10 w-110 pointer-events-auto animate-panel-entrance">
-      <Card className="border-border/40 bg-background/90 backdrop-blur-xl shadow-xl rounded-2xl">
-        <CardHeader className="px-8 py-5 pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold tracking-tight">
-              Strange Attractors
-            </CardTitle>
+    <div className="fixed top-5 left-5 z-10 w-[28.6rem] pointer-events-auto animate-panel-entrance">
+      <Panel className="flex max-h-[calc(100vh-40px)] flex-col">
+        {/* ── Header ──────────────────────────────────── */}
+        <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] px-6 py-3.5">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-base">✦</span>
+              <span className="text-[13px] font-semibold tracking-wide text-foreground/90 dark:text-white/90">
+                Strange Attractors
+              </span>
+            </div>
+            <Separator
+              className="h-4 bg-border/20 dark:bg-white/10"
+              orientation="vertical"
+            />
             <Badge
-              className="text-sm font-medium rounded-full px-4 py-1.5"
+              className="rounded-lg border-border/20 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground dark:border-white/10 dark:bg-white/[0.04] dark:text-white/60"
               variant="outline"
             >
               {system.name}
             </Badge>
           </div>
-        </CardHeader>
+        </div>
 
-        <ScrollArea className="max-h-[calc(100vh-120px)]">
-          <CardContent className="px-8">
+        {/* ── Scrollable body ─────────────────────────── */}
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="space-y-5 p-6">
             {/* System selector */}
-            <div className="mb-10">
-              <Label className="text-base text-muted-foreground mb-3 block font-medium">
+            <div>
+              <Label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
                 System
               </Label>
               <Select
@@ -220,12 +263,12 @@ export function AttractorPanel({
                 }
                 value={selectedId}
               >
-                <SelectTrigger className="w-full h-11 bg-muted/20 border-border/40 rounded-xl text-base">
+                <SelectTrigger className="h-9 rounded-lg border-border/20 bg-muted/30 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {systems.map((s) => (
-                    <SelectItem className="text-base" key={s.id} value={s.id}>
+                    <SelectItem className="text-sm" key={s.id} value={s.id}>
                       {s.name}
                     </SelectItem>
                   ))}
@@ -233,15 +276,14 @@ export function AttractorPanel({
               </Select>
             </div>
 
-            {/* Attractor parameter grid — 3 columns */}
-            <div className="mb-10">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-6">
-                Parameters
-              </h3>
-              <div className="grid grid-cols-3 gap-x-8 gap-y-8">
+            {/* Parameters */}
+            <Section label="Parameters">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-5">
                 {system.params.defaults.map((defaultVal, i) => (
                   <ParamCell
-                    colorIndex={i % 3}
+                    accent={
+                      Object.values(ACCENTS)[i % Object.keys(ACCENTS).length]
+                    }
                     description={paramDescriptions[system.params.names[i]]}
                     key={system.params.names[i]}
                     max={system.params.max[i] ?? defaultVal * 5}
@@ -252,79 +294,95 @@ export function AttractorPanel({
                   />
                 ))}
               </div>
-            </div>
+            </Section>
 
-            {/* Display section */}
-            <Separator className="my-8" />
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-6">
-              Display
-            </h3>
+            <Separator className="bg-border/20 dark:bg-white/[0.05]" />
 
-            {/* Display grid — 3 columns */}
-            <div className="grid grid-cols-3 gap-x-8 gap-y-8 mb-8">
-              {displayParams.map((dp) => (
+            {/* Display — color speed + point size */}
+            <Section label="Display">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                 <ParamCell
-                  colorIndex={(displayParams.indexOf(dp) + 3) % 3}
-                  key={dp.name}
-                  max={dp.max}
-                  min={dp.min}
-                  name={dp.name}
-                  onChange={dp.onChange}
-                  value={dp.value}
+                  accent={ACCENTS.rose}
+                  description="Rate of color cycling across the trail"
+                  key="colorSpeed"
+                  max={10}
+                  min={0.1}
+                  name="Color speed"
+                  onChange={onColorSpeedChange}
+                  value={colorSpeed}
                 />
-              ))}
-              {/* Fill remaining slots for consistent grid alignment */}
-              {Array.from({
-                length: Math.max(0, 3 - displayParams.length),
-              }).map((_, i) => (
-                <div className="col-span-1" key={`fill-${i}`} />
-              ))}
-            </div>
+                <ParamCell
+                  accent={ACCENTS.cyan}
+                  description="Size of each rendered point"
+                  key="pointSize"
+                  max={8}
+                  min={0.5}
+                  name="Point size"
+                  onChange={onPointSizeChange}
+                  value={pointSize}
+                />
+              </div>
+            </Section>
 
-            {/* Steps per frame — full width */}
-            <div className="mb-8">
+            {/* Speed — full-width single line */}
+            <Section label="Animation speed">
               <ParamCell
-                colorIndex={0}
-                description="Number of integration steps drawn per animation frame"
+                accent={ACCENTS.amber}
+                description="Multiplier for the number of points drawn each frame"
+                max={5}
+                min={0.1}
+                name="Speed"
+                onChange={onSpeedChange}
+                step={0.1}
+                value={speed}
+              />
+            </Section>
+
+            {/* Steps per frame */}
+            <Section label="Density">
+              <ParamCell
+                accent={ACCENTS.violet}
+                description="Integration steps drawn per frame"
                 max={1000}
                 min={1}
-                name="Steps per frame"
+                name="Steps / frame"
                 onChange={onStepsChange}
                 value={stepsPerFrame}
               />
-            </div>
+            </Section>
 
-            {/* Auto-rotate toggle */}
-            <div className="flex items-center justify-between px-1 mb-8">
-              <div className="flex items-center gap-3">
-                <Switch
-                  checked={autoRotate}
-                  id="auto-rotate"
-                  onCheckedChange={onAutoRotateChange}
-                />
-                <div>
-                  <Label
-                    className="text-base font-medium text-foreground cursor-pointer"
-                    htmlFor="auto-rotate"
-                  >
-                    Auto-rotate
-                  </Label>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                    Slowly rotate the view
-                  </p>
+            {/* Auto-rotate */}
+            <div
+              className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+              onClick={() => onAutoRotateChange(!autoRotate)}
+            >
+              <div>
+                <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                  Auto-rotate
+                </div>
+                <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                  Slowly orbit the view
                 </div>
               </div>
+              <Switch
+                checked={autoRotate}
+                id="auto-rotate"
+                onCheckedChange={(v) => {
+                  onAutoRotateChange(v);
+                }}
+                onClick={(e) => e.stopPropagation()}
+              />
             </div>
 
-            {/* Action buttons */}
-            <div className="flex gap-3">
+            {/* Buttons */}
+            <div className="flex gap-2 pt-1">
               <Button
-                className="flex-1 h-12 rounded-xl text-base font-medium"
+                className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
                 onClick={onShare}
-                variant="outline"
+                variant="ghost"
               >
                 <svg
-                  className="size-4 mr-2"
+                  className="-ml-0.5 mr-1.5 size-3.5"
                   fill="none"
                   stroke="currentColor"
                   strokeLinecap="round"
@@ -339,12 +397,12 @@ export function AttractorPanel({
                 Share
               </Button>
               <Button
-                className="flex-1 h-12 rounded-xl text-base font-medium"
+                className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
                 onClick={onReset}
-                variant="outline"
+                variant="ghost"
               >
                 <svg
-                  className="size-4 mr-2"
+                  className="-ml-0.5 mr-1.5 size-3.5"
                   fill="none"
                   stroke="currentColor"
                   strokeLinecap="round"
@@ -352,17 +410,17 @@ export function AttractorPanel({
                   strokeWidth={2}
                   viewBox="0 0 24 24"
                 >
-                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 0 0 1 6.74 2.74L21 8" />
                   <path d="M21 3v5h-5" />
-                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                  <path d="M21 12a9 9 0 0 1-9 9 9.75 0 0 1-6.74-2.74L3 16" />
                   <path d="M3 21v-5h5" />
                 </svg>
                 Reset
               </Button>
             </div>
-          </CardContent>
+          </div>
         </ScrollArea>
-      </Card>
+      </Panel>
     </div>
   );
 }

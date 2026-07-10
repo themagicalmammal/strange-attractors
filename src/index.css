@@ -164,11 +164,8 @@
   --sidebar-foreground: oklch(0.985 0 0);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Tailwind utilities have higher cascade-layer precedence than unlayered rules,
+   so the old `* { padding: 0 }` here was overriding .p-8, .mb-6, etc. */
 
 html,
 body,
