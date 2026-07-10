@@ -163,26 +163,6 @@ export default function App() {
           </Tooltip>
         </TooltipProvider>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <button
-                className="inline-flex items-center justify-center h-12 px-6 text-base font-medium rounded-xl border border-border/50 bg-background/80 text-foreground hover:bg-muted/60 hover:border-border transition-smooth shadow-sm"
-                onClick={() => setShareOpen(true)}
-              >
-                <svg className="size-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                  <polyline points="16 6 12 2 8 6" />
-                  <line x1="12" y1="2" x2="12" y2="15" />
-                </svg>
-                Share
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" sideOffset={8}>
-              Share this configuration
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
 
       {/* Canvas */}
