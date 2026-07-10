@@ -5,7 +5,7 @@ type Theme = "dark" | "light";
 
 interface ThemeContextValue {
   theme: Theme;
-  toggle: () => void;
+  setTheme: (theme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -31,7 +31,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggle }}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -56,7 +56,7 @@ function SunIcon() {
       className="size-4"
     >
       <circle cx="12" cy="12" r={4} />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41-1.41M19.07 4.93l-1.41 1.41" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
     </svg>
   );
 }
@@ -79,14 +79,14 @@ function MoonIcon() {
 }
 
 export function ThemeToggle() {
-  const { theme, toggle } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [spinning, setSpinning] = useState(false);
 
   const handleToggle = useCallback(() => {
     setSpinning(true);
-    toggle();
+    setTheme(theme === "dark" ? "light" : "dark");
     setTimeout(() => setSpinning(false), 400);
-  }, [toggle]);
+  }, [theme, setTheme]);
 
   return (
     <Button

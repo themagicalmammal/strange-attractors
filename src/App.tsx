@@ -4,8 +4,9 @@ import type { AttractorSystem } from "./systems";
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
 import { ZoomControls } from "./components/ZoomControls";
-import { ThemeToggle } from "./components/providers/ThemeToggle";
+import { useTheme } from "./components/providers/ThemeToggle";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // ─── URL params (for share links) ────────────────────────
@@ -97,6 +98,7 @@ export function App() {
 
 export default function App() {
   const urlParams = parseUrlParams();
+  const themeCtx = useTheme();
 
   const [selectedId, setSelectedId] = useState(urlParams.systemId ?? "lorenz");
   const [params, setParams] = useState<number[]>(() => urlParams.params ?? [...getSystem("lorenz")!.params.defaults]);
@@ -152,16 +154,11 @@ export default function App() {
 
       {/* Header controls — top-right */}
       <div className="absolute top-6 right-6 z-20 flex items-center gap-4">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <ThemeToggle />
-            </TooltipTrigger>
-            <TooltipContent side="bottom" sideOffset={8}>
-              Toggle theme
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <AnimatedThemeToggler
+          theme={themeCtx.theme === "dark" ? "dark" : "light"}
+          onThemeChange={(t) => themeCtx.setTheme(t as "light" | "dark")}
+          className="h-10 w-10 rounded-xl border border-border/50 bg-background/80 text-foreground hover:bg-muted/60 transition-smooth shadow-sm"
+        />
 
       </div>
 
