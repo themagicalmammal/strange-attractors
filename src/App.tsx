@@ -10,19 +10,20 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 // ─── URL params (for share links) ────────────────────────
 
-function encodeShareUrl(system: AttractorSystem, params: number[], stepsPerFrame: number, colorSpeed: number, pointSize: number, autoRotate: boolean): string {
+function encodeShareUrl(system: AttractorSystem, params: number[], stepsPerFrame: number, colorSpeed: number, pointSize: number, speed: number, autoRotate: boolean): string {
   const sp = new URLSearchParams();
   sp.set("system", system.id);
   params.forEach((v, i) => sp.set(`p${i}`, String(v)));
   sp.set("s", String(stepsPerFrame));
   sp.set("c", String(colorSpeed));
   sp.set("r", String(pointSize));
+  sp.set("sp", String(speed));
   sp.set("ar", String(autoRotate));
   const base = window.location.origin + window.location.pathname;
   return `${base}?${sp.toString()}`;
 }
 
-function parseUrlParams(): { systemId?: string; params?: number[]; steps?: number; colorSpeed?: number; pointSize?: number; autoRotate?: boolean } {
+function parseUrlParams(): { systemId?: string; params?: number[]; steps?: number; colorSpeed?: number; pointSize?: number; speed?: number; autoRotate?: boolean } {
   const sp = new URLSearchParams(window.location.search);
   const result: any = {};
   if (sp.has("system")) result.systemId = sp.get("system")!;
@@ -36,11 +37,12 @@ function parseUrlParams(): { systemId?: string; params?: number[]; steps?: numbe
   if (sp.has("s")) result.steps = parseInt(sp.get("s")!);
   if (sp.has("c")) result.colorSpeed = parseFloat(sp.get("c")!);
   if (sp.has("r")) result.pointSize = parseFloat(sp.get("r")!);
+  if (sp.has("sp")) result.speed = parseFloat(sp.get("sp")!);
   if (sp.has("ar")) result.autoRotate = sp.get("ar") === "true";
   return result;
 }
 
-function generateShareCode(system: AttractorSystem, params: number[], stepsPerFrame: number, colorSpeed: number, pointSize: number, autoRotate: boolean): string {
+function generateShareCode(system: AttractorSystem, params: number[], stepsPerFrame: number, colorSpeed: number, pointSize: number, speed: number, autoRotate: boolean): string {
   const paramLines = params.map((v, i) => `    ${system.params.names[i]}: ${v}`);
   return `// Attractor — ${system.name}
 // Params: ${system.params.names.join(", ")}
@@ -54,6 +56,7 @@ export function App() {
   const [stepsPerFrame, setStepsPerFrame] = useState(${stepsPerFrame});
   const [colorSpeed, setColorSpeed] = useState(${colorSpeed});
   const [pointSize, setPointSize] = useState(${pointSize});
+  const [speed, setSpeed] = useState(${speed});
   const [autoRotate, setAutoRotate] = useState(${autoRotate});
   const [resetKey, setResetKey] = useState(0);
 
@@ -65,6 +68,7 @@ export function App() {
         stepsPerFrame={stepsPerFrame}
         colorSpeed={colorSpeed}
         pointSize={pointSize}
+        speed={speed}
         autoRotate={autoRotate}
         resetKey={resetKey}
       />
@@ -76,11 +80,13 @@ export function App() {
         stepsPerFrame={stepsPerFrame}
         colorSpeed={colorSpeed}
         pointSize={pointSize}
+        speed={speed}
         autoRotate={autoRotate}
         onParamChange={...}
         onStepsChange={setStepsPerFrame}
         onColorSpeedChange={setColorSpeed}
         onPointSizeChange={setPointSize}
+        onSpeedChange={setSpeed}
         onAutoRotateChange={setAutoRotate}
         onReset={() => setResetKey((k) => k + 1)}
       />
@@ -97,6 +103,7 @@ export default function App() {
   const [stepsPerFrame, setStepsPerFrame] = useState(urlParams.steps ?? 50);
   const [colorSpeed, setColorSpeed] = useState(urlParams.colorSpeed ?? 1);
   const [pointSize, setPointSize] = useState(urlParams.pointSize ?? 1.5);
+  const [speed, setSpeed] = useState(urlParams.speed ?? 1);
   const [autoRotate, setAutoRotate] = useState(urlParams.autoRotate ?? true);
 
   const [resetKey, setResetKey] = useState(0);
@@ -126,8 +133,8 @@ export default function App() {
     if (s) setParams([...s.params.defaults]);
   }, [selectedId]);
 
-  const shareCode = generateShareCode(system, params, stepsPerFrame, colorSpeed, pointSize, autoRotate);
-  const shareUrl = encodeShareUrl(system, params, stepsPerFrame, colorSpeed, pointSize, autoRotate);
+  const shareCode = generateShareCode(system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate);
+  const shareUrl = encodeShareUrl(system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate);
 
   const handleCopy = useCallback(async (type: "code" | "link") => {
     try {
@@ -186,6 +193,7 @@ export default function App() {
           stepsPerFrame={stepsPerFrame}
           colorSpeed={colorSpeed}
           pointSize={pointSize}
+          speed={speed}
           autoRotate={autoRotate}
           resetKey={resetKey}
         />
@@ -200,12 +208,14 @@ export default function App() {
         stepsPerFrame={stepsPerFrame}
         colorSpeed={colorSpeed}
         pointSize={pointSize}
+        speed={speed}
         autoRotate={autoRotate}
         onSystemChange={handleSystemChange}
         onParamChange={handleParamChange}
         onStepsChange={setStepsPerFrame}
         onColorSpeedChange={setColorSpeed}
         onPointSizeChange={setPointSize}
+        onSpeedChange={setSpeed}
         onAutoRotateChange={setAutoRotate}
         onReset={handleReset}
         onShare={() => setShareOpen(true)}

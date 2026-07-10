@@ -29,12 +29,14 @@ interface AttractorPanelProps {
   stepsPerFrame: number;
   colorSpeed: number;
   pointSize: number;
+  speed: number;
   autoRotate: boolean;
   onSystemChange: (id: string) => void;
   onParamChange: (index: number, value: number) => void;
   onStepsChange: (value: number) => void;
   onColorSpeedChange: (value: number) => void;
   onPointSizeChange: (value: number) => void;
+  onSpeedChange: (value: number) => void;
   onAutoRotateChange: (value: boolean) => void;
   onReset: () => void;
   onShare: () => void;
@@ -60,6 +62,7 @@ function ParamCell({
   onChange,
   colorIndex,
   description,
+  step,
 }: {
   name: string;
   value: number;
@@ -68,6 +71,7 @@ function ParamCell({
   onChange: (v: number) => void;
   colorIndex: number;
   description?: string;
+  step?: number;
 }) {
   const color = sliderColors[colorIndex % sliderColors.length];
   return (
@@ -99,7 +103,7 @@ function ParamCell({
       <StyledSlider
         min={min}
         max={max}
-        step={(max - min) / 200}
+        step={step ?? (max - min) / 200}
         value={value}
         onChange={onChange}
         label=""
@@ -145,12 +149,14 @@ export function AttractorPanel({
   stepsPerFrame,
   colorSpeed,
   pointSize,
+  speed,
   autoRotate,
   onSystemChange,
   onParamChange,
   onStepsChange,
   onColorSpeedChange,
   onPointSizeChange,
+  onSpeedChange,
   onAutoRotateChange,
   onReset,
   onShare,
@@ -170,6 +176,14 @@ export function AttractorPanel({
       min: 0.5,
       max: 8,
       onChange: onPointSizeChange,
+    },
+    {
+      name: "Speed",
+      value: speed,
+      min: 0.1,
+      max: 5,
+      step: 0.1,
+      onChange: onSpeedChange,
     },
   ];
 

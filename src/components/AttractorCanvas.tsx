@@ -12,6 +12,7 @@ interface AttractorCanvasProps {
   stepsPerFrame: number;
   colorSpeed: number;
   pointSize: number;
+  speed: number;
   autoRotate: boolean;
   resetKey: number;
 }
@@ -24,6 +25,7 @@ const config = {
   stepsPerFrame: 50,
   colorSpeed: 1,
   pointSize: 1.5,
+  speed: 1,
   autoRotate: true,
 };
 
@@ -207,7 +209,7 @@ function animate() {
 
   controls?.update();
 
-  const toAdd = Math.min(config.stepsPerFrame, MAX_POINTS - frameCount);
+  const toAdd = Math.min(Math.round(config.stepsPerFrame * config.speed), MAX_POINTS - frameCount);
   if (toAdd > 0 && config.system && config.params) {
     const { data, lastState: newState } = continueIntegrate(
       config.system,
@@ -303,6 +305,7 @@ export function AttractorCanvas({
   stepsPerFrame,
   colorSpeed,
   pointSize,
+  speed,
   autoRotate,
   resetKey,
 }: AttractorCanvasProps) {
@@ -346,10 +349,11 @@ export function AttractorCanvas({
     config.stepsPerFrame = stepsPerFrame;
     config.colorSpeed = colorSpeed;
     config.pointSize = pointSize;
+    config.speed = speed;
     config.autoRotate = autoRotate;
     sizes?.fill(pointSize);
     if (geometry?.attributes.aSize) geometry.attributes.aSize.needsUpdate = true;
-  }, [system, params, stepsPerFrame, colorSpeed, pointSize, autoRotate]);
+  }, [system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate]);
 
   // Handle system change: rebuild buffers and reset
   useEffect(() => {
