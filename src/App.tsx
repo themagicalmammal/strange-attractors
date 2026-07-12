@@ -141,6 +141,7 @@ export default function App() {
   const [resetKey, setResetKey] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState<"code" | "link" | null>(null);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const handleParamChange = useCallback((index: number, value: number) => {
     setParams((prev) => {
@@ -204,12 +205,43 @@ export default function App() {
       <div className="absolute inset-0 bg-background z-0 transition-colors duration-500" />
 
       {/* Header controls — top-right */}
-      <div className="sm:top-6 sm:right-6 top-3 right-3 z-20 flex items-center gap-4">
+      <div className="sm:top-6 sm:right-6 top-3 right-3 z-20 flex items-center gap-2">
         <AnimatedThemeToggler
           className="h-10 w-10 rounded-xl bg-background/90 text-foreground transition-smooth active:scale-95"
           onThemeChange={(t) => themeCtx.setTheme(t as "dark" | "light")}
           theme={themeCtx.theme === "dark" ? "dark" : "light"}
         />
+        {/* Mobile settings button */}
+        <button
+          className="h-10 w-10 rounded-xl bg-background/90 text-foreground backdrop-blur-sm transition-smooth active:scale-95 border border-border/20 dark:border-white/10"
+          onClick={() => setPanelOpen((v) => !v)}
+        >
+          {panelOpen ? (
+            <svg
+              className="mx-auto size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg
+              className="mx-auto size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0" />
+            </svg>
+          )}
+        </button>
       </div>
 
       {/* Canvas */}
@@ -226,11 +258,13 @@ export default function App() {
         />
       </div>
 
-      {/* Panel */}
+      {/* Panel — hidden by default on mobile, shown via popup */}
       <AttractorPanel
         autoRotate={autoRotate}
         colorSpeed={colorSpeed}
+        mobileOpen={panelOpen}
         onAutoRotateChange={setAutoRotate}
+        onCloseMobile={() => setPanelOpen(false)}
         onColorSpeedChange={setColorSpeed}
         onParamChange={handleParamChange}
         onPointSizeChange={setPointSize}

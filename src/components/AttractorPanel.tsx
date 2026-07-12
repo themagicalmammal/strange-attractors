@@ -27,7 +27,9 @@ import StyledSlider from "./StyledSlider";
 interface AttractorPanelProps {
   autoRotate: boolean;
   colorSpeed: number;
+  mobileOpen?: boolean;
   onAutoRotateChange: (value: boolean) => void;
+  onCloseMobile?: () => void;
   onColorSpeedChange: (value: number) => void;
   onParamChange: (index: number, value: number) => void;
   onPointSizeChange: (value: number) => void;
@@ -207,7 +209,9 @@ const ACCENTS = {
 export function AttractorPanel({
   autoRotate,
   colorSpeed,
+  mobileOpen,
   onAutoRotateChange,
+  onCloseMobile,
   onColorSpeedChange,
   onParamChange,
   onPointSizeChange,
@@ -225,202 +229,433 @@ export function AttractorPanel({
   systems,
 }: AttractorPanelProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-10 md:static md:top-5 md:left-5 md:right-auto md:w-[28rem] lg:w-[28.6rem] pointer-events-auto md:animate-panel-entrance">
-      <Panel className="flex h-full md:h-auto md:max-h-[calc(100vh-40px)] flex-col">
-        {/* ── Header ──────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] md:px-6 md:py-3.5 px-4 py-2.5">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-base">✦</span>
-              <span className="text-[13px] font-semibold tracking-wide text-foreground/90 dark:text-white/90">
-                Strange Attractors
-              </span>
-            </div>
-            <Separator
-              className="h-4 bg-border/20 dark:bg-white/10"
-              orientation="vertical"
-            />
-            <Badge
-              className="rounded-lg border-border/20 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground dark:border-white/10 dark:bg-white/[0.04] dark:text-white/60"
-              variant="outline"
-            >
-              {system.name}
-            </Badge>
-          </div>
-        </div>
+    <>
+      {/* ── Mobile backdrop ──────────────────────────── */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden animate-backdrop-fade"
+          onClick={onCloseMobile}
+        />
+      )}
 
-        {/* ── Scrollable body ─────────────────────────── */}
-        <ScrollArea className="min-h-0 flex-1">
-          <div className="md:p-6 p-4 space-y-4 md:space-y-5">
-            {/* System selector */}
-            <div>
-              <Label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
-                System
-              </Label>
-              <Select
-                onValueChange={(v: null | string) =>
-                  onSystemChange(v ?? selectedId)
-                }
-                value={selectedId}
+      {/* ── Mobile popup panel ───────────────────────── */}
+      <div
+        className={`fixed z-30 md:hidden transition-transform duration-300 ease-out pointer-events-auto bottom-0 left-0 right-0 ${mobileOpen ? "translate-y-0" : "translate-y-full"}`}
+      >
+        <Panel className="flex flex-col rounded-b-none rounded-t-2xl max-h-[90vh]">
+          {/* ── Header ──────────────────────────────── */}
+          <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] px-5 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-base">✦</span>
+                <span className="text-[13px] font-semibold tracking-wide text-foreground/90 dark:text-white/90">
+                  Settings
+                </span>
+              </div>
+              <Separator
+                className="h-4 bg-border/20 dark:bg-white/10"
+                orientation="vertical"
+              />
+              <Badge
+                className="rounded-lg border-border/20 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground dark:border-white/10 dark:bg-white/[0.04] dark:text-white/60"
+                variant="outline"
               >
-                <SelectTrigger className="h-9 rounded-lg border-border/20 bg-muted/30 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {systems.map((s) => (
-                    <SelectItem className="text-sm" key={s.id} value={s.id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {system.name}
+              </Badge>
             </div>
-
-            {/* Parameters */}
-            <Section label="Parameters">
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-5">
-                {system.params.defaults.map((defaultVal, i) => (
-                  <ParamCell
-                    accent={
-                      Object.values(ACCENTS)[i % Object.keys(ACCENTS).length]
-                    }
-                    description={paramDescriptions[system.params.names[i]]}
-                    key={system.params.names[i]}
-                    max={system.params.max[i] ?? defaultVal * 5}
-                    min={system.params.min[i] ?? defaultVal * 0.1}
-                    name={system.params.names[i]}
-                    onChange={(v) => onParamChange(i, v)}
-                    value={params[i] ?? defaultVal}
-                  />
-                ))}
-              </div>
-            </Section>
-
-            <Separator className="bg-border/20 dark:bg-white/[0.05]" />
-
-            {/* Display — color speed + point size */}
-            <Section label="Display">
-              <div className="sm:grid-cols-2 grid grid-cols-2 gap-x-4 gap-y-5">
-                <ParamCell
-                  accent={ACCENTS.rose}
-                  description="Rate of color cycling across the trail"
-                  key="colorSpeed"
-                  max={10}
-                  min={0.1}
-                  name="Color speed"
-                  onChange={onColorSpeedChange}
-                  value={colorSpeed}
-                />
-                <ParamCell
-                  accent={ACCENTS.cyan}
-                  description="Size of each rendered point"
-                  key="pointSize"
-                  max={8}
-                  min={0.5}
-                  name="Point size"
-                  onChange={onPointSizeChange}
-                  value={pointSize}
-                />
-              </div>
-            </Section>
-
-            {/* Speed — full-width single line */}
-            <Section label="Animation speed">
-              <ParamCell
-                accent={ACCENTS.amber}
-                description="Multiplier for the number of points drawn each frame"
-                max={5}
-                min={0.1}
-                name="Speed"
-                onChange={onSpeedChange}
-                step={0.1}
-                value={speed}
-              />
-            </Section>
-
-            {/* Steps per frame */}
-            <Section label="Density">
-              <ParamCell
-                accent={ACCENTS.violet}
-                description="Integration steps drawn per frame"
-                max={1000}
-                min={1}
-                name="Steps / frame"
-                onChange={onStepsChange}
-                value={stepsPerFrame}
-              />
-            </Section>
-
-            {/* Auto-rotate */}
-            <div
-              className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
-              onClick={() => onAutoRotateChange(!autoRotate)}
+            <button
+              className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth active:scale-95"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCloseMobile?.();
+              }}
             >
+              <svg
+                className="size-5"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* ── Scrollable body ─────────────────────── */}
+          <ScrollArea className="min-h-0 flex-1">
+            <div className="p-5 space-y-5">
+              {/* System selector */}
               <div>
-                <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
-                  Auto-rotate
-                </div>
-                <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                  Slowly orbit the view
-                </div>
+                <Label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
+                  System
+                </Label>
+                <Select
+                  onValueChange={(v: null | string) =>
+                    onSystemChange(v ?? selectedId)
+                  }
+                  value={selectedId}
+                >
+                  <SelectTrigger className="h-9 rounded-lg border-border/20 bg-muted/30 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {systems.map((s) => (
+                      <SelectItem className="text-sm" key={s.id} value={s.id}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <Switch
-                checked={autoRotate}
-                id="auto-rotate"
-                onCheckedChange={(v) => {
-                  onAutoRotateChange(v);
-                }}
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
 
-            {/* Buttons */}
-            <div className="sm:flex-row flex flex-col gap-2 pt-1">
-              <Button
-                className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
-                onClick={onShare}
-                variant="ghost"
+              {/* Parameters */}
+              <Section label="Parameters">
+                <div className="grid grid-cols-1 gap-y-5 md:grid-cols-2 lg:grid-cols-3 gap-x-4">
+                  {system.params.defaults.map((defaultVal, i) => (
+                    <ParamCell
+                      accent={
+                        Object.values(ACCENTS)[i % Object.keys(ACCENTS).length]
+                      }
+                      description={paramDescriptions[system.params.names[i]]}
+                      key={system.params.names[i]}
+                      max={system.params.max[i] ?? defaultVal * 5}
+                      min={system.params.min[i] ?? defaultVal * 0.1}
+                      name={system.params.names[i]}
+                      onChange={(v) => onParamChange(i, v)}
+                      value={params[i] ?? defaultVal}
+                    />
+                  ))}
+                </div>
+              </Section>
+
+              <Separator className="bg-border/20 dark:bg-white/[0.05]" />
+
+              {/* Display — color speed + point size */}
+              <Section label="Display">
+                <div className="grid grid-cols-1 gap-y-5 md:grid-cols-2 gap-x-4">
+                  <ParamCell
+                    accent={ACCENTS.rose}
+                    description="Rate of color cycling across the trail"
+                    key="colorSpeed"
+                    max={10}
+                    min={0.1}
+                    name="Color speed"
+                    onChange={onColorSpeedChange}
+                    value={colorSpeed}
+                  />
+                  <ParamCell
+                    accent={ACCENTS.cyan}
+                    description="Size of each rendered point"
+                    key="pointSize"
+                    max={8}
+                    min={0.5}
+                    name="Point size"
+                    onChange={onPointSizeChange}
+                    value={pointSize}
+                  />
+                </div>
+              </Section>
+
+              {/* Speed — full-width single line */}
+              <Section label="Animation speed">
+                <ParamCell
+                  accent={ACCENTS.amber}
+                  description="Multiplier for the number of points drawn each frame"
+                  max={5}
+                  min={0.1}
+                  name="Speed"
+                  onChange={onSpeedChange}
+                  step={0.1}
+                  value={speed}
+                />
+              </Section>
+
+              {/* Steps per frame */}
+              <Section label="Density">
+                <ParamCell
+                  accent={ACCENTS.violet}
+                  description="Integration steps drawn per frame"
+                  max={1000}
+                  min={1}
+                  name="Steps / frame"
+                  onChange={onStepsChange}
+                  value={stepsPerFrame}
+                />
+              </Section>
+
+              {/* Auto-rotate */}
+              <div
+                className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+                onClick={() => onAutoRotateChange(!autoRotate)}
               >
-                <svg
-                  className="-ml-0.5 mr-1.5 size-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
+                <div>
+                  <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                    Auto-rotate
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                    Slowly orbit the view
+                  </div>
+                </div>
+                <Switch
+                  checked={autoRotate}
+                  id="auto-rotate"
+                  onCheckedChange={(v) => {
+                    onAutoRotateChange(v);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="sm:flex-row flex flex-col gap-2 pt-1">
+                <Button
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  onClick={onShare}
+                  variant="ghost"
                 >
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                  <polyline points="16 6 12 2 8 6" />
-                  <line x1="12" x2="12" y1="2" y2="15" />
-                </svg>
-                Share
-              </Button>
-              <Button
-                className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
-                onClick={onReset}
-                variant="ghost"
+                  <svg
+                    className="-ml-0.5 mr-1.5 size-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                    <polyline points="16 6 12 2 8 6" />
+                    <line x1="12" x2="12" y1="2" y2="15" />
+                  </svg>
+                  Share
+                </Button>
+                <Button
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  onClick={onReset}
+                  variant="ghost"
+                >
+                  <svg
+                    className="-ml-0.5 mr-1.5 size-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 0 0 1 6.74 2.74L21 8" />
+                    <path d="M21 3v5h-5" />
+                    <path d="M21 12a9 9 0 0 1-9 9 9.75 0 0 1-6.74-2.74L3 16" />
+                    <path d="M3 21v-5h5" />
+                  </svg>
+                  Reset
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </Panel>
+      </div>
+
+      {/* ── Desktop panel (md+) ─────────────────────── */}
+      <div className="hidden md:block fixed top-5 left-5 z-10 w-[28rem] lg:w-[28.6rem] pointer-events-auto animate-panel-entrance">
+        <Panel className="flex h-auto max-h-[calc(100vh-40px)] flex-col">
+          {/* ── Header ──────────────────────────────── */}
+          <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] px-6 py-3.5">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-base">✦</span>
+                <span className="text-[13px] font-semibold tracking-wide text-foreground/90 dark:text-white/90">
+                  Strange Attractors
+                </span>
+              </div>
+              <Separator
+                className="h-4 bg-border/20 dark:bg-white/10"
+                orientation="vertical"
+              />
+              <Badge
+                className="rounded-lg border-border/20 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground dark:border-white/10 dark:bg-white/[0.04] dark:text-white/60"
+                variant="outline"
               >
-                <svg
-                  className="-ml-0.5 mr-1.5 size-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M3 12a9 9 0 0 1 9-9 9.75 0 0 1 6.74 2.74L21 8" />
-                  <path d="M21 3v5h-5" />
-                  <path d="M21 12a9 9 0 0 1-9 9 9.75 0 0 1-6.74-2.74L3 16" />
-                  <path d="M3 21v-5h5" />
-                </svg>
-                Reset
-              </Button>
+                {system.name}
+              </Badge>
             </div>
           </div>
-        </ScrollArea>
-      </Panel>
-    </div>
+
+          {/* ── Scrollable body ─────────────────────── */}
+          <ScrollArea className="min-h-0 flex-1">
+            <div className="p-6 space-y-5">
+              {/* System selector */}
+              <div>
+                <Label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
+                  System
+                </Label>
+                <Select
+                  onValueChange={(v: null | string) =>
+                    onSystemChange(v ?? selectedId)
+                  }
+                  value={selectedId}
+                >
+                  <SelectTrigger className="h-9 rounded-lg border-border/20 bg-muted/30 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {systems.map((s) => (
+                      <SelectItem className="text-sm" key={s.id} value={s.id}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Parameters */}
+              <Section label="Parameters">
+                <div className="grid grid-cols-3 gap-x-4 gap-y-5">
+                  {system.params.defaults.map((defaultVal, i) => (
+                    <ParamCell
+                      accent={
+                        Object.values(ACCENTS)[i % Object.keys(ACCENTS).length]
+                      }
+                      description={paramDescriptions[system.params.names[i]]}
+                      key={system.params.names[i]}
+                      max={system.params.max[i] ?? defaultVal * 5}
+                      min={system.params.min[i] ?? defaultVal * 0.1}
+                      name={system.params.names[i]}
+                      onChange={(v) => onParamChange(i, v)}
+                      value={params[i] ?? defaultVal}
+                    />
+                  ))}
+                </div>
+              </Section>
+
+              <Separator className="bg-border/20 dark:bg-white/[0.05]" />
+
+              {/* Display — color speed + point size */}
+              <Section label="Display">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                  <ParamCell
+                    accent={ACCENTS.rose}
+                    description="Rate of color cycling across the trail"
+                    key="colorSpeed"
+                    max={10}
+                    min={0.1}
+                    name="Color speed"
+                    onChange={onColorSpeedChange}
+                    value={colorSpeed}
+                  />
+                  <ParamCell
+                    accent={ACCENTS.cyan}
+                    description="Size of each rendered point"
+                    key="pointSize"
+                    max={8}
+                    min={0.5}
+                    name="Point size"
+                    onChange={onPointSizeChange}
+                    value={pointSize}
+                  />
+                </div>
+              </Section>
+
+              {/* Speed — full-width single line */}
+              <Section label="Animation speed">
+                <ParamCell
+                  accent={ACCENTS.amber}
+                  description="Multiplier for the number of points drawn each frame"
+                  max={5}
+                  min={0.1}
+                  name="Speed"
+                  onChange={onSpeedChange}
+                  step={0.1}
+                  value={speed}
+                />
+              </Section>
+
+              {/* Steps per frame */}
+              <Section label="Density">
+                <ParamCell
+                  accent={ACCENTS.violet}
+                  description="Integration steps drawn per frame"
+                  max={1000}
+                  min={1}
+                  name="Steps / frame"
+                  onChange={onStepsChange}
+                  value={stepsPerFrame}
+                />
+              </Section>
+
+              {/* Auto-rotate */}
+              <div
+                className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+                onClick={() => onAutoRotateChange(!autoRotate)}
+              >
+                <div>
+                  <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                    Auto-rotate
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                    Slowly orbit the view
+                  </div>
+                </div>
+                <Switch
+                  checked={autoRotate}
+                  id="auto-rotate"
+                  onCheckedChange={(v) => {
+                    onAutoRotateChange(v);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-2 pt-1">
+                <Button
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  onClick={onShare}
+                  variant="ghost"
+                >
+                  <svg
+                    className="-ml-0.5 mr-1.5 size-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                    <polyline points="16 6 12 2 8 6" />
+                    <line x1="12" x2="12" y1="2" y2="15" />
+                  </svg>
+                  Share
+                </Button>
+                <Button
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  onClick={onReset}
+                  variant="ghost"
+                >
+                  <svg
+                    className="-ml-0.5 mr-1.5 size-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 0 0 1 6.74 2.74L21 8" />
+                    <path d="M21 3v5h-5" />
+                    <path d="M21 12a9 9 0 0 1-9 9 9.75 0 0 1-6.74-2.74L3 16" />
+                    <path d="M3 21v-5h5" />
+                  </svg>
+                  Reset
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </Panel>
+      </div>
+    </>
   );
 }
