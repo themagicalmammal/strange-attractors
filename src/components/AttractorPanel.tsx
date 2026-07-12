@@ -225,10 +225,10 @@ export function AttractorPanel({
   systems,
 }: AttractorPanelProps) {
   return (
-    <div className="fixed top-5 left-5 z-10 w-[28.6rem] pointer-events-auto animate-panel-entrance">
-      <Panel className="flex max-h-[calc(100vh-40px)] flex-col">
+    <div className="fixed bottom-0 left-0 right-0 z-10 md:static md:top-5 md:left-5 md:right-auto md:w-[28rem] lg:w-[28.6rem] pointer-events-auto md:animate-panel-entrance">
+      <Panel className="flex h-full md:h-auto md:max-h-[calc(100vh-40px)] flex-col">
         {/* ── Header ──────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] px-6 py-3.5">
+        <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] md:px-6 md:py-3.5 px-4 py-2.5">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <span className="text-base">✦</span>
@@ -251,7 +251,7 @@ export function AttractorPanel({
 
         {/* ── Scrollable body ─────────────────────────── */}
         <ScrollArea className="min-h-0 flex-1">
-          <div className="space-y-5 p-6">
+          <div className="md:p-6 p-4 space-y-4 md:space-y-5">
             {/* System selector */}
             <div>
               <Label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
@@ -278,7 +278,7 @@ export function AttractorPanel({
 
             {/* Parameters */}
             <Section label="Parameters">
-              <div className="grid grid-cols-3 gap-x-4 gap-y-5">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-5">
                 {system.params.defaults.map((defaultVal, i) => (
                   <ParamCell
                     accent={
@@ -300,7 +300,7 @@ export function AttractorPanel({
 
             {/* Display — color speed + point size */}
             <Section label="Display">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+              <div className="sm:grid-cols-2 grid grid-cols-2 gap-x-4 gap-y-5">
                 <ParamCell
                   accent={ACCENTS.rose}
                   description="Rate of color cycling across the trail"
@@ -375,7 +375,7 @@ export function AttractorPanel({
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-2 pt-1">
+            <div className="sm:flex-row flex flex-col gap-2 pt-1">
               <Button
                 className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
                 onClick={onShare}

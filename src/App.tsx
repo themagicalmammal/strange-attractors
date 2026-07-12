@@ -204,7 +204,7 @@ export default function App() {
       <div className="absolute inset-0 bg-background z-0 transition-colors duration-500" />
 
       {/* Header controls — top-right */}
-      <div className="absolute top-6 right-6 z-20 flex items-center gap-4">
+      <div className="sm:top-6 sm:right-6 top-3 right-3 z-20 flex items-center gap-4">
         <AnimatedThemeToggler
           className="h-10 w-10 rounded-xl bg-background/90 text-foreground transition-smooth active:scale-95"
           onThemeChange={(t) => themeCtx.setTheme(t as "dark" | "light")}
@@ -249,7 +249,9 @@ export default function App() {
       />
 
       {/* Zoom controls — bottom-right */}
-      <ZoomControls />
+      <div className="sm:bottom-6 sm:right-6 bottom-28 right-4">
+        <ZoomControls />
+      </div>
 
       {/* Share Modal */}
       {shareOpen && (
@@ -258,7 +260,7 @@ export default function App() {
           onClick={() => setShareOpen(false)}
         >
           <div
-            className="relative w-full max-w-2xl max-h-[80vh] overflow-hidden rounded-2xl border border-border/50 bg-background shadow-2xl flex flex-col animate-modal-slide-up"
+            className="relative w-full sm:max-w-2xl max-w-full max-h-[80vh] overflow-hidden rounded-2xl border border-border/50 bg-background shadow-2xl flex flex-col animate-modal-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-8 py-6 border-b border-border/50">
