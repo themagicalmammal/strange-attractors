@@ -30,6 +30,7 @@ function encodeShareUrl(
   sp.set("r", String(pointSize));
   sp.set("sp", String(speed));
   sp.set("ar", String(autoRotate));
+  if (backgroundColor) sp.set("bg", backgroundColor);
   const base = window.location.origin + window.location.pathname;
   return `${base}?${sp.toString()}`;
 }
@@ -42,6 +43,7 @@ function parseUrlParams(): {
   pointSize?: number;
   speed?: number;
   autoRotate?: boolean;
+  backgroundColor?: string;
 } {
   const sp = new URLSearchParams(window.location.search);
   const result: Record<string, unknown> = {};
@@ -58,6 +60,7 @@ function parseUrlParams(): {
   if (sp.has("r")) result.pointSize = parseFloat(sp.get("r")!);
   if (sp.has("sp")) result.speed = parseFloat(sp.get("sp")!);
   if (sp.has("ar")) result.autoRotate = sp.get("ar") === "true";
+  if (sp.has("bg")) result.backgroundColor = sp.get("bg")!;
   return result;
 }
 
@@ -137,6 +140,9 @@ export default function App() {
   const [pointSize, setPointSize] = useState(urlParams.pointSize ?? 1.5);
   const [speed, setSpeed] = useState(urlParams.speed ?? 0.5);
   const [autoRotate, setAutoRotate] = useState(urlParams.autoRotate ?? true);
+  const [backgroundColor, setBackgroundColor] = useState(
+    urlParams.backgroundColor ?? "#000000",
+  );
 
   const [resetKey, setResetKey] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
@@ -200,9 +206,12 @@ export default function App() {
   );
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
+    <div className="relative w-screen h-screen overflow-hidden" style={{ backgroundColor }}>
       {/* Theme background behind canvas */}
-      <div className="absolute inset-0 bg-background z-0 transition-colors duration-500" />
+      <div
+        className="absolute inset-0 z-0 transition-colors duration-500"
+        style={{ backgroundColor: backgroundColor === "inherit" ? undefined : backgroundColor }}
+      />
 
       {/* Header controls — top-right */}
       <div className="sm:top-6 sm:right-6 top-3 right-3 z-20 flex items-center gap-2">
@@ -261,10 +270,12 @@ export default function App() {
       {/* Panel — hidden by default on mobile, shown via popup */}
       <AttractorPanel
         autoRotate={autoRotate}
+        backgroundColor={backgroundColor}
         colorSpeed={colorSpeed}
         mobileOpen={panelOpen}
         onAutoRotateChange={setAutoRotate}
         onCloseMobile={() => setPanelOpen(false)}
+        onBackgroundColorChange={setBackgroundColor}
         onColorSpeedChange={setColorSpeed}
         onParamChange={handleParamChange}
         onPointSizeChange={setPointSize}

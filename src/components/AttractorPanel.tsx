@@ -26,10 +26,12 @@ import StyledSlider from "./StyledSlider";
 
 interface AttractorPanelProps {
   autoRotate: boolean;
+  backgroundColor?: string;
   colorSpeed: number;
   mobileOpen?: boolean;
   onAutoRotateChange: (value: boolean) => void;
   onCloseMobile?: () => void;
+  onBackgroundColorChange?: (value: string) => void;
   onColorSpeedChange: (value: number) => void;
   onParamChange: (index: number, value: number) => void;
   onPointSizeChange: (value: number) => void;
@@ -208,10 +210,12 @@ const ACCENTS = {
 
 export function AttractorPanel({
   autoRotate,
+  backgroundColor,
   colorSpeed,
   mobileOpen,
   onAutoRotateChange,
   onCloseMobile,
+  onBackgroundColorChange,
   onColorSpeedChange,
   onParamChange,
   onPointSizeChange,
@@ -408,6 +412,29 @@ export function AttractorPanel({
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
+
+              {/* Background color */}
+              {onBackgroundColorChange && (
+                <Section label="Background">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      className="size-8 cursor-pointer rounded-lg border-0 p-0"
+                      value={backgroundColor || "#000000"}
+                      onInput={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        onBackgroundColorChange(target.value);
+                      }}
+                    />
+                    <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
+                      {backgroundColor || "#000000"}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground/50">
+                      Click to pick
+                    </span>
+                  </div>
+                </Section>
+              )}
 
               {/* Buttons */}
               <div className="sm:flex-row flex flex-col gap-2 pt-1">
@@ -607,6 +634,29 @@ export function AttractorPanel({
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
+
+              {/* Background color */}
+              {onBackgroundColorChange && (
+                <Section label="Background">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      className="size-8 cursor-pointer rounded-lg border-0 p-0"
+                      value={backgroundColor || "#000000"}
+                      onInput={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        onBackgroundColorChange(target.value);
+                      }}
+                    />
+                    <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
+                      {backgroundColor || "#000000"}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground/50">
+                      Click to pick
+                    </span>
+                  </div>
+                </Section>
+              )}
 
               {/* Buttons */}
               <div className="flex gap-2 pt-1">
