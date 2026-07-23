@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
+import { CodeBlock } from "./components/CodeBlock";
 import { useTheme } from "./components/providers/ThemeToggle";
 import { ZoomControls } from "./components/ZoomControls";
 import { WallpaperDownload } from "./components/WallpaperDownload";
@@ -369,9 +370,9 @@ export default function App() {
                     {copied === "code" ? "✓ Copied!" : "Copy Code"}
                   </button>
                 </div>
-                <pre className="p-5 rounded-xl bg-muted/30 text-sm font-mono text-foreground overflow-auto max-h-64 whitespace-pre-wrap leading-relaxed border border-border/30">
-                  {shareCode}
-                </pre>
+                <div className="p-5 rounded-xl bg-muted/30 text-sm font-mono overflow-auto max-h-64 whitespace-pre-wrap leading-relaxed border border-border/30">
+                  <CodeBlock code={shareCode} />
+                </div>
               </div>
 
               {/* Share link */}
