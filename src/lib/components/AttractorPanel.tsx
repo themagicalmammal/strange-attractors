@@ -394,7 +394,8 @@ export function AttractorPanel({
 
               {/* Options */}
               <Section label="Options">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                <div className="space-y-5">
+                  {/* Auto-rotate */}
                   <div
                     className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05]"
                     onClick={() => onAutoRotateChange(!autoRotate)}
@@ -417,6 +418,7 @@ export function AttractorPanel({
                     />
                   </div>
 
+                  {/* Background color */}
                   {onBackgroundColorChange && (
                     <div className="flex items-center gap-3">
                       <input
@@ -656,7 +658,8 @@ export function AttractorPanel({
 
               {/* Options */}
               <Section label="Options">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                <div className="space-y-5">
+                  {/* Auto-rotate */}
                   <div
                     className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05]"
                     onClick={() => onAutoRotateChange(!autoRotate)}
@@ -679,6 +682,7 @@ export function AttractorPanel({
                     />
                   </div>
 
+                  {/* Background color */}
                   {onBackgroundColorChange && (
                     <div className="flex items-center gap-3">
                       <input
