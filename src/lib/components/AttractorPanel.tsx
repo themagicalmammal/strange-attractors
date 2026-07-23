@@ -268,7 +268,7 @@ export function AttractorPanel({
                 }
                 value={selectedId}
               >
-                <SelectTrigger className="h-9 rounded-lg border-border/20 bg-muted/30 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12]">
+                <SelectTrigger>
                   <SelectValue className="text-sm" placeholder={system.name} />
                 </SelectTrigger>
                 <SelectContent>
@@ -516,7 +516,7 @@ export function AttractorPanel({
               }
               value={selectedId}
             >
-              <SelectTrigger className="h-9 rounded-lg border-border/20 bg-muted/30 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12]">
+              <SelectTrigger>
                 <SelectValue className="text-sm" placeholder={system.name} />
               </SelectTrigger>
               <SelectContent>
