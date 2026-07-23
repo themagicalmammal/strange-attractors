@@ -394,18 +394,18 @@ export function AttractorPanel({
 
               {/* Options */}
               <Section label="Options">
-                <div className="space-y-5">
+                <div className="grid grid-cols-3 gap-x-4">
                   {/* Auto-rotate */}
                   <div
-                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05]"
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05] p-3"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
-                    <div>
+                    <div className="min-w-0">
                       <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Auto-rotate
                       </div>
                       <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                        Slowly orbit the view
+                        Slowly orbit
                       </div>
                     </div>
                     <Switch
@@ -420,46 +420,38 @@ export function AttractorPanel({
 
                   {/* Background color */}
                   {onBackgroundColorChange && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 rounded-xl bg-muted/50 p-3 dark:bg-white/[0.03]">
                       <input
                         type="color"
-                        className="size-8 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
+                        className="size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
                         value={backgroundColor || "#000000"}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
                           onBackgroundColorChange(target.value);
                         }}
                       />
-                      <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
+                      <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40 truncate">
                         {backgroundColor || "#000000"}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground/50">
-                        Click to pick
                       </span>
                     </div>
                   )}
 
                   {/* Auto-loop */}
-                  <div className="flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3 dark:bg-white/[0.03]">
-                    <div className="flex items-center gap-3">
-                      <svg className="size-4 text-foreground/50 dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-                      </svg>
-                      <div>
-                        <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
-                          Auto-loop
-                        </div>
-                        <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                          Restart after {formatTime(resetAfter)}
-                        </div>
+                  <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-3 dark:bg-white/[0.03]">
+                    <div className="min-w-0">
+                      <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                        Auto-loop
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                        Restart
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 ml-1">
                       <input
                         type="number"
                         min={1}
                         max={120}
-                        className="w-16 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
+                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
                         value={resetAfter / 60000}
                         onInput={(e) => {
                           const val = parseInt((e.target as HTMLInputElement).value);
@@ -468,7 +460,7 @@ export function AttractorPanel({
                           }
                         }}
                       />
-                      <span className="text-[11px] text-muted-foreground">min</span>
+                      <span className="text-[10px] text-muted-foreground">min</span>
                     </div>
                   </div>
                 </div>
@@ -658,18 +650,18 @@ export function AttractorPanel({
 
               {/* Options */}
               <Section label="Options">
-                <div className="space-y-5">
+                <div className="grid grid-cols-3 gap-x-4">
                   {/* Auto-rotate */}
                   <div
-                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05]"
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05] p-3"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
-                    <div>
+                    <div className="min-w-0">
                       <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Auto-rotate
                       </div>
                       <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                        Slowly orbit the view
+                        Slowly orbit
                       </div>
                     </div>
                     <Switch
@@ -684,46 +676,38 @@ export function AttractorPanel({
 
                   {/* Background color */}
                   {onBackgroundColorChange && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 rounded-xl bg-muted/50 p-3 dark:bg-white/[0.03]">
                       <input
                         type="color"
-                        className="size-8 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
+                        className="size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
                         value={backgroundColor || "#000000"}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
                           onBackgroundColorChange(target.value);
                         }}
                       />
-                      <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
+                      <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40 truncate">
                         {backgroundColor || "#000000"}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground/50">
-                        Click to pick
                       </span>
                     </div>
                   )}
 
                   {/* Auto-loop */}
-                  <div className="flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3 dark:bg-white/[0.03]">
-                    <div className="flex items-center gap-3">
-                      <svg className="size-4 text-foreground/50 dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-                      </svg>
-                      <div>
-                        <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
-                          Auto-loop
-                        </div>
-                        <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                          Restart after {formatTime(resetAfter)}
-                        </div>
+                  <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-3 dark:bg-white/[0.03]">
+                    <div className="min-w-0">
+                      <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                        Auto-loop
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                        Restart
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 ml-1">
                       <input
                         type="number"
                         min={1}
                         max={120}
-                        className="w-16 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
+                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
                         value={resetAfter / 60000}
                         onInput={(e) => {
                           const val = parseInt((e.target as HTMLInputElement).value);
@@ -732,7 +716,7 @@ export function AttractorPanel({
                           }
                         }}
                       />
-                      <span className="text-[11px] text-muted-foreground">min</span>
+                      <span className="text-[10px] text-muted-foreground">min</span>
                     </div>
                   </div>
                 </div>
