@@ -10,6 +10,7 @@ import { continueIntegrate, integrate } from "../integrate";
 
 interface AttractorCanvasProps {
   autoRotate: boolean;
+  backgroundColor?: string;
   colorSpeed: number;
   params: number[];
   pointSize: number;
@@ -100,7 +101,14 @@ let animId = 0;
 
 const MAX_POINTS = 2_000_000;
 
-function initScene(mount: HTMLDivElement) {
+function hexToThreeColor(hex: string): number {
+  const normalized = hex.replace("#", "");
+  return parseInt(normalized.length === 3
+    ? normalized[0] + normalized[0] + normalized[1] + normalized[1] + normalized[2] + normalized[2]
+    : normalized, 16);
+}
+
+function initScene(mount: HTMLDivElement, backgroundColor: string) {
   const width = mount.clientWidth;
   const height = mount.clientHeight;
 
@@ -108,7 +116,10 @@ function initScene(mount: HTMLDivElement) {
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(width, height);
-  renderer.setClearColor(0x000000, 1);
+  renderer.setClearColor(
+    backgroundColor === "inherit" ? 0x000000 : hexToThreeColor(backgroundColor),
+    1,
+  );
   mount.appendChild(renderer.domElement);
 
   // Scene
@@ -308,6 +319,7 @@ function _dispose() {
 
 export function AttractorCanvas({
   autoRotate,
+  backgroundColor,
   colorSpeed,
   params,
   pointSize,
@@ -325,7 +337,7 @@ export function AttractorCanvas({
 
     // If scene doesn't exist yet, initialize it
     if (!renderer) {
-      initScene(mount);
+      initScene(mount, backgroundColor ?? "#000000");
     }
 
     config.params = params;
@@ -363,6 +375,16 @@ export function AttractorCanvas({
     if (geometry?.attributes.aSize)
       geometry.attributes.aSize.needsUpdate = true;
   }, [system, params, stepsPerFrame, colorSpeed, pointSize, speed, autoRotate]);
+
+  // Sync renderer clear color when background changes
+  useEffect(() => {
+    if (!renderer) return;
+    const color = backgroundColor ?? "#000000";
+    renderer.setClearColor(
+      color === "inherit" ? 0x000000 : hexToThreeColor(color),
+      1,
+    );
+  }, [backgroundColor]);
 
   // Handle system change: rebuild buffers and reset
   useEffect(() => {
