@@ -12,6 +12,11 @@ interface AttractorCanvasProps {
   autoRotate: boolean;
   backgroundColor?: string;
   colorSpeed: number;
+  onSceneReady?: (data: {
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    scene: THREE.Scene;
+  }) => void;
   params: number[];
   pointSize: number;
   resetKey: number;
@@ -108,7 +113,11 @@ function hexToThreeColor(hex: string): number {
     : normalized, 16);
 }
 
-function initScene(mount: HTMLDivElement, backgroundColor: string) {
+function initScene(mount: HTMLDivElement, backgroundColor: string, onSceneReady?: (data: {
+  camera: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
+  scene: THREE.Scene;
+}) => void) {
   const width = mount.clientWidth;
   const height = mount.clientHeight;
 
@@ -164,6 +173,8 @@ function initScene(mount: HTMLDivElement, backgroundColor: string) {
     renderer!.setSize(w, h);
   });
   resizeObserver.observe(mount);
+
+  onSceneReady?.({ camera: camera!, renderer: renderer!, scene: scene! });
 }
 
 function doReset() {
@@ -321,6 +332,7 @@ export function AttractorCanvas({
   autoRotate,
   backgroundColor,
   colorSpeed,
+  onSceneReady,
   params,
   pointSize,
   resetKey,
@@ -337,7 +349,7 @@ export function AttractorCanvas({
 
     // If scene doesn't exist yet, initialize it
     if (!renderer) {
-      initScene(mount, backgroundColor ?? "#000000");
+      initScene(mount, backgroundColor ?? "#000000", onSceneReady);
     }
 
     config.params = params;

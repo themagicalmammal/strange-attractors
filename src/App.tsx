@@ -9,6 +9,7 @@ import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
 import { useTheme } from "./components/providers/ThemeToggle";
 import { ZoomControls } from "./components/ZoomControls";
+import { WallpaperDownload } from "./components/WallpaperDownload";
 import { getSystem, systems } from "./systems";
 
 // ─── URL params (for share links) ────────────────────────
@@ -147,6 +148,12 @@ export default function App() {
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState<"code" | "link" | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [wallpaperOpen, setWallpaperOpen] = useState(false);
+  const [sceneData, setSceneData] = useState<{
+    camera: any;
+    renderer: any;
+    scene: any;
+  } | null>(null);
 
   const handleParamChange = useCallback((index: number, value: number) => {
     setParams((prev) => {
@@ -264,6 +271,7 @@ export default function App() {
           autoRotate={autoRotate}
           backgroundColor={backgroundColor}
           colorSpeed={colorSpeed}
+          onSceneReady={setSceneData}
           params={params}
           pointSize={pointSize}
           resetKey={resetKey}
@@ -281,6 +289,7 @@ export default function App() {
         mobileOpen={panelOpen}
         onAutoRotateChange={setAutoRotate}
         onBackgroundColorChange={setBackgroundColor}
+        onWallpaperDownload={() => setWallpaperOpen(true)}
         onCloseMobile={() => setPanelOpen(false)}
         onColorSpeedChange={setColorSpeed}
         onParamChange={handleParamChange}
@@ -392,6 +401,16 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Wallpaper Download Modal */}
+      <WallpaperDownload
+        camera={sceneData?.camera}
+        open={wallpaperOpen}
+        renderer={sceneData?.renderer ?? null}
+        scene={sceneData?.scene ?? null}
+        systemId={system.id}
+        onClose={() => setWallpaperOpen(false)}
+      />
     </div>
   );
 }

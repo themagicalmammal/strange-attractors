@@ -40,6 +40,7 @@ interface AttractorPanelProps {
   onSpeedChange: (value: number) => void;
   onStepsChange: (value: number) => void;
   onSystemChange: (id: string) => void;
+  onWallpaperDownload?: () => void;
   params: number[];
   pointSize: number;
   selectedId: string;
@@ -224,6 +225,7 @@ export function AttractorPanel({
   onSpeedChange,
   onStepsChange,
   onSystemChange,
+  onWallpaperDownload,
   params,
   pointSize,
   selectedId,
@@ -460,6 +462,26 @@ export function AttractorPanel({
                 </Button>
                 <Button
                   className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  onClick={onWallpaperDownload}
+                  variant="ghost"
+                >
+                  <svg
+                    className="-ml-0.5 mr-1.5 size-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" x2="12" y1="15" y2="3" />
+                  </svg>
+                  Wallpaper
+                </Button>
+                <Button
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
                   onClick={onReset}
                   variant="ghost"
                 >
@@ -679,6 +701,26 @@ export function AttractorPanel({
                     <line x1="12" x2="12" y1="2" y2="15" />
                   </svg>
                   Share
+                </Button>
+                <Button
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  onClick={onWallpaperDownload}
+                  variant="ghost"
+                >
+                  <svg
+                    className="-ml-0.5 mr-1.5 size-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" x2="12" y1="15" y2="3" />
+                  </svg>
+                  Wallpaper
                 </Button>
                 <Button
                   className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
