@@ -30,7 +30,6 @@ function encodeShareUrl(
   sp.set("r", String(pointSize));
   sp.set("sp", String(speed));
   sp.set("ar", String(autoRotate));
-  if (backgroundColor) sp.set("bg", backgroundColor);
   const base = window.location.origin + window.location.pathname;
   return `${base}?${sp.toString()}`;
 }
@@ -206,11 +205,17 @@ export default function App() {
   );
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden" style={{ backgroundColor }}>
+    <div
+      className="relative w-screen h-screen overflow-hidden"
+      style={{ backgroundColor }}
+    >
       {/* Theme background behind canvas */}
       <div
         className="absolute inset-0 z-0 transition-colors duration-500"
-        style={{ backgroundColor: backgroundColor === "inherit" ? undefined : backgroundColor }}
+        style={{
+          backgroundColor:
+            backgroundColor === "inherit" ? undefined : backgroundColor,
+        }}
       />
 
       {/* Header controls — top-right */}
@@ -274,8 +279,8 @@ export default function App() {
         colorSpeed={colorSpeed}
         mobileOpen={panelOpen}
         onAutoRotateChange={setAutoRotate}
-        onCloseMobile={() => setPanelOpen(false)}
         onBackgroundColorChange={setBackgroundColor}
+        onCloseMobile={() => setPanelOpen(false)}
         onColorSpeedChange={setColorSpeed}
         onParamChange={handleParamChange}
         onPointSizeChange={setPointSize}
