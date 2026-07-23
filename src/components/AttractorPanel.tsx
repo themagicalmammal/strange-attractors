@@ -1,6 +1,5 @@
 import type { AttractorSystem } from "../systems";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -255,19 +254,30 @@ export function AttractorPanel({
               <div className="flex items-center gap-2">
                 <span className="text-base">✦</span>
                 <span className="text-[13px] font-semibold tracking-wide text-foreground/90 dark:text-white/90">
-                  Settings
+                  Strange Attractors
                 </span>
               </div>
               <Separator
                 className="h-4 bg-border/20 dark:bg-white/10"
                 orientation="vertical"
               />
-              <Badge
-                className="rounded-lg border-border/20 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground dark:border-white/10 dark:bg-white/[0.04] dark:text-white/60"
-                variant="outline"
+              <Select
+                onValueChange={(v: null | string) =>
+                  onSystemChange(v ?? selectedId)
+                }
+                value={selectedId}
               >
-                {system.name}
-              </Badge>
+                <SelectTrigger className="h-7 rounded-lg border-border/20 bg-muted/30 text-[11px] text-foreground/70 hover:bg-muted/50 hover:border-border/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/60 dark:hover:bg-white/[0.06]">
+                  <SelectValue className="text-[11px]" placeholder={system.name} />
+                </SelectTrigger>
+                <SelectContent>
+                  {systems.map((s) => (
+                    <SelectItem className="text-sm" key={s.id} value={s.id}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <button
               className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth active:scale-95"
@@ -523,41 +533,29 @@ export function AttractorPanel({
                 className="h-4 bg-border/20 dark:bg-white/10"
                 orientation="vertical"
               />
-              <Badge
-                className="rounded-lg border-border/20 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground dark:border-white/10 dark:bg-white/[0.04] dark:text-white/60"
-                variant="outline"
+              <Select
+                onValueChange={(v: null | string) =>
+                  onSystemChange(v ?? selectedId)
+                }
+                value={selectedId}
               >
-                {system.name}
-              </Badge>
+                <SelectTrigger className="h-7 rounded-lg border-border/20 bg-muted/30 text-[11px] text-foreground/70 hover:bg-muted/50 hover:border-border/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/60 dark:hover:bg-white/[0.06]">
+                  <SelectValue className="text-[11px]" placeholder={system.name} />
+                </SelectTrigger>
+                <SelectContent>
+                  {systems.map((s) => (
+                    <SelectItem className="text-sm" key={s.id} value={s.id}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           {/* ── Scrollable body ─────────────────────── */}
           <ScrollArea className="min-h-0 flex-1">
             <div className="p-6 space-y-5">
-              {/* System selector */}
-              <div>
-                <Label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
-                  System
-                </Label>
-                <Select
-                  onValueChange={(v: null | string) =>
-                    onSystemChange(v ?? selectedId)
-                  }
-                  value={selectedId}
-                >
-                  <SelectTrigger className="h-9 rounded-lg border-border/20 bg-muted/30 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {systems.map((s) => (
-                      <SelectItem className="text-sm" key={s.id} value={s.id}>
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
 
               {/* Parameters */}
               <Section label="Parameters">
