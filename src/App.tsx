@@ -176,7 +176,10 @@ export default function App() {
 
   useEffect(() => {
     const s = getSystem(selectedId);
-    if (s) setParams([...s.params.defaults]);
+    if (s) {
+      setParams([...s.params.defaults]);
+      setResetKey((k) => k + 1);
+    }
   }, [selectedId]);
 
   const shareCode = generateShareCode(

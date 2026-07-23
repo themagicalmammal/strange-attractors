@@ -400,51 +400,52 @@ export function AttractorPanel({
                 </div>
               </Section>
 
-              {/* Auto-rotate */}
-              <div
-                className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
-                onClick={() => onAutoRotateChange(!autoRotate)}
-              >
-                <div>
-                  <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
-                    Auto-rotate
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                    Slowly orbit the view
-                  </div>
-                </div>
-                <Switch
-                  checked={autoRotate}
-                  id="auto-rotate"
-                  onCheckedChange={(v) => {
-                    onAutoRotateChange(v);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-
-              {/* Background color */}
-              {onBackgroundColorChange && (
-                <Section label="Background">
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      className="size-8 cursor-pointer rounded-lg border-0 p-0"
-                      value={backgroundColor || "#000000"}
-                      onInput={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        onBackgroundColorChange(target.value);
+              {/* Auto-rotate + Background side by side */}
+              <Section label="Options">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                  <div
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+                    onClick={() => onAutoRotateChange(!autoRotate)}
+                  >
+                    <div>
+                      <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                        Auto-rotate
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                        Slowly orbit the view
+                      </div>
+                    </div>
+                    <Switch
+                      checked={autoRotate}
+                      id="auto-rotate"
+                      onCheckedChange={(v) => {
+                        onAutoRotateChange(v);
                       }}
+                      onClick={(e) => e.stopPropagation()}
                     />
-                    <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
-                      {backgroundColor || "#000000"}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground/50">
-                      Click to pick
-                    </span>
                   </div>
-                </Section>
-              )}
+
+                  {onBackgroundColorChange && (
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        className="size-8 cursor-pointer rounded-lg border-0 p-0"
+                        value={backgroundColor || "#000000"}
+                        onInput={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          onBackgroundColorChange(target.value);
+                        }}
+                      />
+                      <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
+                        {backgroundColor || "#000000"}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground/50">
+                        Click to pick
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Section>
 
               {/* Buttons */}
               <div className="sm:flex-row flex flex-col gap-2 pt-1">
@@ -628,51 +629,52 @@ export function AttractorPanel({
                 </div>
               </Section>
 
-              {/* Auto-rotate */}
-              <div
-                className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
-                onClick={() => onAutoRotateChange(!autoRotate)}
-              >
-                <div>
-                  <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
-                    Auto-rotate
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                    Slowly orbit the view
-                  </div>
-                </div>
-                <Switch
-                  checked={autoRotate}
-                  id="auto-rotate"
-                  onCheckedChange={(v) => {
-                    onAutoRotateChange(v);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-
-              {/* Background color */}
-              {onBackgroundColorChange && (
-                <Section label="Background">
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      className="size-8 cursor-pointer rounded-lg border-0 p-0"
-                      value={backgroundColor || "#000000"}
-                      onInput={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        onBackgroundColorChange(target.value);
+              {/* Auto-rotate + Background side by side */}
+              <Section label="Options">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                  <div
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+                    onClick={() => onAutoRotateChange(!autoRotate)}
+                  >
+                    <div>
+                      <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                        Auto-rotate
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                        Slowly orbit the view
+                      </div>
+                    </div>
+                    <Switch
+                      checked={autoRotate}
+                      id="auto-rotate"
+                      onCheckedChange={(v) => {
+                        onAutoRotateChange(v);
                       }}
+                      onClick={(e) => e.stopPropagation()}
                     />
-                    <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
-                      {backgroundColor || "#000000"}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground/50">
-                      Click to pick
-                    </span>
                   </div>
-                </Section>
-              )}
+
+                  {onBackgroundColorChange && (
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        className="size-8 cursor-pointer rounded-lg border-0 p-0"
+                        value={backgroundColor || "#000000"}
+                        onInput={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          onBackgroundColorChange(target.value);
+                        }}
+                      />
+                      <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40">
+                        {backgroundColor || "#000000"}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground/50">
+                        Click to pick
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Section>
 
               {/* Buttons */}
               <div className="flex gap-2 pt-1">
