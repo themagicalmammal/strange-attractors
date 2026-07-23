@@ -23,6 +23,7 @@ function encodeShareUrl(
   pointSize: number,
   speed: number,
   autoRotate: boolean,
+  resetAfter: number,
   baseUrl?: string,
 ): string {
   const sp = new URLSearchParams();
@@ -33,6 +34,7 @@ function encodeShareUrl(
   sp.set("r", String(pointSize));
   sp.set("sp", String(speed));
   sp.set("ar", String(autoRotate));
+  if (resetAfter !== 0) sp.set("ra", String(resetAfter));
   const base = baseUrl ?? (typeof window !== "undefined" ? window.location.origin + window.location.pathname : "");
   return `${base}?${sp.toString()}`;
 }
@@ -46,6 +48,7 @@ function parseUrlParams(search?: string): {
   speed?: number;
   autoRotate?: boolean;
   backgroundColor?: string;
+  resetAfter?: number;
 } {
   const sp = new URLSearchParams(search ?? (typeof window !== "undefined" ? window.location.search : ""));
   const result: Record<string, unknown> = {};
@@ -63,6 +66,7 @@ function parseUrlParams(search?: string): {
   if (sp.has("sp")) result.speed = parseFloat(sp.get("sp")!);
   if (sp.has("ar")) result.autoRotate = sp.get("ar") === "true";
   if (sp.has("bg")) result.backgroundColor = sp.get("bg")!;
+  if (sp.has("ra")) result.resetAfter = parseInt(sp.get("ra")!);
   return result;
 }
 
@@ -153,6 +157,9 @@ export default function App({
   const [backgroundColor, setBackgroundColor] = useState(
     urlParams.backgroundColor ?? "#000000",
   );
+  const [resetAfter, setResetAfter] = useState(
+    urlParams.resetAfter ?? 480000, // 8 minutes
+  );
 
   const [resetKey, setResetKey] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
@@ -181,6 +188,13 @@ export default function App({
     setResetKey((k) => k + 1);
   }, []);
 
+  // Auto-reset after resetAfter ms
+  useEffect(() => {
+    if (resetAfter <= 0) return;
+    const timer = setTimeout(() => setResetKey((k) => k + 1), resetAfter);
+    return () => clearTimeout(timer);
+  }, [resetAfter]);
+
   const system = getSystem(selectedId)!;
 
   useEffect(() => {
@@ -208,6 +222,7 @@ export default function App({
     pointSize,
     speed,
     autoRotate,
+    resetAfter,
     baseUrl,
   );
 
@@ -309,6 +324,7 @@ export default function App({
         onParamChange={handleParamChange}
         onPointSizeChange={setPointSize}
         onReset={handleReset}
+        onResetAfterChange={setResetAfter}
         onShare={() => setShareOpen(true)}
         onSpeedChange={setSpeed}
         onStepsChange={setStepsPerFrame}
@@ -316,6 +332,7 @@ export default function App({
         params={params}
         pointSize={pointSize}
         selectedId={selectedId}
+        resetAfter={resetAfter}
         speed={speed}
         stepsPerFrame={stepsPerFrame}
         system={system}
