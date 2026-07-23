@@ -379,7 +379,7 @@ export function AttractorPanel({
               <Section label="Options">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                   <div
-                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 hover:bg-muted/70 dark:bg-white/[0.05] dark:hover:bg-white/[0.08]"
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-transparent"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
                     <div>
@@ -404,7 +404,7 @@ export function AttractorPanel({
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        className="size-8 cursor-pointer rounded-lg border-0 p-0"
+                        className="size-8 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
                         value={backgroundColor || "#000000"}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
@@ -608,7 +608,7 @@ export function AttractorPanel({
               <Section label="Options">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                   <div
-                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 hover:bg-muted/70 dark:bg-white/[0.05] dark:hover:bg-white/[0.08]"
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-transparent"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
                     <div>
@@ -633,7 +633,7 @@ export function AttractorPanel({
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        className="size-8 cursor-pointer rounded-lg border-0 p-0"
+                        className="size-8 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
                         value={backgroundColor || "#000000"}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
