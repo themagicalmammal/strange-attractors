@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 
-import App from "./App";
-import { ThemeProvider } from "./components/providers/ThemeToggle";
+import App from "./lib/App";
+import { ThemeProvider } from "./lib/providers/ThemeToggle";
 
 import "./index.css";
 
