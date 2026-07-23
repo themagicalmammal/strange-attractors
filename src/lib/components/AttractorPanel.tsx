@@ -292,8 +292,10 @@ export function AttractorPanel({
                   ))}
                 </SelectContent>
               </Select>
-              <button
+              <Button
               className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth active:scale-95"
+              size="icon"
+              variant="ghost"
               onClick={(e) => {
                 e.stopPropagation();
                 onCloseMobile?.();
@@ -310,7 +312,7 @@ export function AttractorPanel({
               >
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
-            </button>
+            </Button>
             </div>
           </div>
 
@@ -394,7 +396,7 @@ export function AttractorPanel({
               <Section label="Options">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                   <div
-                    className="flex cursor-pointer items-center justify-between rounded-xl bg-transparent"
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05]"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
                     <div>
@@ -434,38 +436,38 @@ export function AttractorPanel({
                       </span>
                     </div>
                   )}
-                </div>
 
-                {/* Auto-loop */}
-                <div className="mt-4 flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3 dark:bg-white/[0.03]">
-                  <div className="flex items-center gap-3">
-                    <svg className="size-4 text-foreground/50 dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-                    </svg>
-                    <div>
-                      <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
-                        Auto-loop
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                        Restart after {formatTime(resetAfter)}
+                  {/* Auto-loop */}
+                  <div className="col-span-2 flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3 dark:bg-white/[0.03]">
+                    <div className="flex items-center gap-3">
+                      <svg className="size-4 text-foreground/50 dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                      </svg>
+                      <div>
+                        <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                          Auto-loop
+                        </div>
+                        <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                          Restart after {formatTime(resetAfter)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min={1}
-                      max={120}
-                      className="w-16 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
-                      value={resetAfter / 60000}
-                      onInput={(e) => {
-                        const val = parseInt((e.target as HTMLInputElement).value);
-                        if (!isNaN(val) && val >= 1 && val <= 120) {
-                          onResetAfterChange?.(val * 60000);
-                        }
-                      }}
-                    />
-                    <span className="text-[11px] text-muted-foreground">min</span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={1}
+                        max={120}
+                        className="w-16 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
+                        value={resetAfter / 60000}
+                        onInput={(e) => {
+                          const val = parseInt((e.target as HTMLInputElement).value);
+                          if (!isNaN(val) && val >= 1 && val <= 120) {
+                            onResetAfterChange?.(val * 60000);
+                          }
+                        }}
+                      />
+                      <span className="text-[11px] text-muted-foreground">min</span>
+                    </div>
                   </div>
                 </div>
               </Section>
@@ -656,7 +658,7 @@ export function AttractorPanel({
               <Section label="Options">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                   <div
-                    className="flex cursor-pointer items-center justify-between rounded-xl bg-transparent"
+                    className="flex cursor-pointer items-center justify-between rounded-xl bg-muted/50 dark:bg-white/[0.05]"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
                     <div>
@@ -696,38 +698,38 @@ export function AttractorPanel({
                       </span>
                     </div>
                   )}
-                </div>
 
-                {/* Auto-loop */}
-                <div className="mt-4 flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3 dark:bg-white/[0.03]">
-                  <div className="flex items-center gap-3">
-                    <svg className="size-4 text-foreground/50 dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-                    </svg>
-                    <div>
-                      <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
-                        Auto-loop
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
-                        Restart after {formatTime(resetAfter)}
+                  {/* Auto-loop */}
+                  <div className="col-span-2 flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3 dark:bg-white/[0.03]">
+                    <div className="flex items-center gap-3">
+                      <svg className="size-4 text-foreground/50 dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                      </svg>
+                      <div>
+                        <div className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
+                          Auto-loop
+                        </div>
+                        <div className="mt-0.5 text-[11px] text-muted-foreground dark:text-white/30">
+                          Restart after {formatTime(resetAfter)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min={1}
-                      max={120}
-                      className="w-16 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
-                      value={resetAfter / 60000}
-                      onInput={(e) => {
-                        const val = parseInt((e.target as HTMLInputElement).value);
-                        if (!isNaN(val) && val >= 1 && val <= 120) {
-                          onResetAfterChange?.(val * 60000);
-                        }
-                      }}
-                    />
-                    <span className="text-[11px] text-muted-foreground">min</span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={1}
+                        max={120}
+                        className="w-16 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
+                        value={resetAfter / 60000}
+                        onInput={(e) => {
+                          const val = parseInt((e.target as HTMLInputElement).value);
+                          if (!isNaN(val) && val >= 1 && val <= 120) {
+                            onResetAfterChange?.(val * 60000);
+                          }
+                        }}
+                      />
+                      <span className="text-[11px] text-muted-foreground">min</span>
+                    </div>
                   </div>
                 </div>
               </Section>

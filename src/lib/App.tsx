@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { AnimatedThemeToggler } from "@/lib/components/ui/animated-theme-toggler";
 import { Badge } from "@/lib/components/ui/badge";
+import { Button } from "@/lib/components/ui/button";
 
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
@@ -262,8 +263,10 @@ export default function App({
           theme={themeCtx.theme === "dark" ? "dark" : "light"}
         />
         {/* Mobile settings button */}
-        <button
-          className="h-10 w-10 rounded-xl bg-background/90 text-foreground backdrop-blur-sm transition-smooth active:scale-95 border border-border/20 dark:border-white/10"
+        <Button
+          className="h-10 w-10 rounded-xl bg-background/90 backdrop-blur-sm transition-smooth active:scale-95"
+          size="icon-lg"
+          variant="outline"
           onClick={() => setPanelOpen((v) => !v)}
         >
           {panelOpen ? (
@@ -291,7 +294,7 @@ export default function App({
               <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0" />
             </svg>
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Canvas */}
@@ -366,8 +369,10 @@ export default function App({
                   {system.name}
                 </Badge>
               </div>
-              <button
-                className="text-muted-foreground hover:text-foreground transition-smooth rounded-xl p-2 hover:bg-muted/50"
+              <Button
+                className="rounded-xl p-2 text-muted-foreground hover:text-foreground transition-smooth"
+                size="icon"
+                variant="ghost"
                 onClick={() => setShareOpen(false)}
               >
                 <svg
@@ -379,7 +384,7 @@ export default function App({
                 >
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
 
             <div className="flex-1 overflow-auto px-10 py-8 space-y-8">
@@ -389,16 +394,17 @@ export default function App({
                   <span className="text-base font-medium text-muted-foreground">
                     Component Code
                   </span>
-                  <button
-                    className={`text-sm font-medium rounded-xl px-5 py-2 transition-smooth ${
+                  <Button
+                    className={`rounded-xl px-5 py-2 text-sm font-medium transition-smooth ${
                       copied === "code"
                         ? "bg-green-500/10 text-green-600 dark:text-green-400"
                         : "bg-muted text-foreground hover:bg-muted/80"
                     }`}
+                    variant="ghost"
                     onClick={() => handleCopy("code")}
                   >
                     {copied === "code" ? "✓ Copied!" : "Copy Code"}
-                  </button>
+                  </Button>
                 </div>
                 <div className="p-5 rounded-xl bg-muted/30 text-sm font-mono overflow-auto max-h-64 whitespace-pre-wrap leading-relaxed border border-border/30">
                   <CodeBlock code={shareCode} />
@@ -411,16 +417,17 @@ export default function App({
                   <span className="text-base font-medium text-muted-foreground">
                     Shareable Link
                   </span>
-                  <button
-                    className={`text-sm font-medium rounded-xl px-5 py-2 transition-smooth ${
+                  <Button
+                    className={`rounded-xl px-5 py-2 text-sm font-medium transition-smooth ${
                       copied === "link"
                         ? "bg-green-500/10 text-green-600 dark:text-green-400"
                         : "bg-muted text-foreground hover:bg-muted/80"
                     }`}
+                    variant="ghost"
                     onClick={() => handleCopy("link")}
                   >
                     {copied === "link" ? "✓ Copied!" : "Copy Link"}
-                  </button>
+                  </Button>
                 </div>
                 <div className="relative">
                   <pre className="p-5 rounded-xl bg-muted/30 text-sm font-mono text-foreground overflow-x-auto border border-border/30 select-all whitespace-nowrap leading-relaxed">

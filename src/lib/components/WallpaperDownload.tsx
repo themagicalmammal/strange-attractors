@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import * as THREE from "three";
 
+import { Button } from "@/lib/components/ui/button";
+
 const RESOLUTIONS = [
   { label: "1920x1080", width: 1920, height: 1080 },
   { label: "2560x1440", width: 2560, height: 1440 },
@@ -99,14 +101,16 @@ export function WallpaperDownload({
       >
         <div className="flex items-center justify-between border-b border-border/50 px-6 py-4">
           <h2 className="text-base font-semibold">Download Wallpaper</h2>
-          <button
-            className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth"
+          <Button
+            className="rounded-xl p-2 text-muted-foreground hover:text-foreground transition-smooth"
+            size="icon"
+            variant="ghost"
             onClick={onClose}
           >
             <svg className="size-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
-          </button>
+          </Button>
         </div>
 
         <div className="px-6 py-5 space-y-4">
@@ -116,28 +120,31 @@ export function WallpaperDownload({
             </label>
             <div className="grid grid-cols-3 gap-2">
               {RESOLUTIONS.map((res, i) => (
-                <button
+                <Button
                   key={res.label}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-smooth ${
+                  className={`rounded-xl px-3 py-2.5 text-sm font-medium transition-smooth ${
                     selected === i
                       ? "border-indigo-500 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
                       : "border-border/30 bg-muted/30 text-foreground/70 hover:bg-muted/50"
                   }`}
+                  variant="outline"
                   onClick={() => setSelected(i)}
                 >
                   {res.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
-          <button
+          <Button
             className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-smooth hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            size="lg"
+            variant="default"
             disabled={downloading}
             onClick={handleDownload}
           >
             {downloading ? "Rendering..." : "Download"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
