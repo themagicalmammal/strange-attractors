@@ -375,31 +375,29 @@ export function AttractorPanel({
                 </div>
               </Section>
 
-              {/* Speed — full-width single line */}
-              <Section label="Animation speed">
-                <ParamCell
-                  accent={ACCENTS.amber}
-                  description="Multiplier for the number of points drawn each frame"
-                  max={5}
-                  min={0.1}
-                  name="Speed"
-                  onChange={onSpeedChange}
-                  step={0.1}
-                  value={speed}
-                />
-              </Section>
-
-              {/* Steps per frame */}
-              <Section label="Density">
-                <ParamCell
-                  accent={ACCENTS.violet}
-                  description="Integration steps drawn per frame"
-                  max={1000}
-                  min={1}
-                  name="Steps / frame"
-                  onChange={onStepsChange}
-                  value={stepsPerFrame}
-                />
+              {/* Speed + Density side by side */}
+              <Section label="Speed & Density">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                  <ParamCell
+                    accent={ACCENTS.amber}
+                    description="Multiplier for the number of points drawn each frame"
+                    max={5}
+                    min={0.1}
+                    name="Speed"
+                    onChange={onSpeedChange}
+                    step={0.1}
+                    value={speed}
+                  />
+                  <ParamCell
+                    accent={ACCENTS.violet}
+                    description="Integration steps drawn per frame"
+                    max={1000}
+                    min={1}
+                    name="Steps / frame"
+                    onChange={onStepsChange}
+                    value={stepsPerFrame}
+                  />
+                </div>
               </Section>
 
               {/* Auto-rotate */}
@@ -605,31 +603,29 @@ export function AttractorPanel({
                 </div>
               </Section>
 
-              {/* Speed — full-width single line */}
-              <Section label="Animation speed">
-                <ParamCell
-                  accent={ACCENTS.amber}
-                  description="Multiplier for the number of points drawn each frame"
-                  max={5}
-                  min={0.1}
-                  name="Speed"
-                  onChange={onSpeedChange}
-                  step={0.1}
-                  value={speed}
-                />
-              </Section>
-
-              {/* Steps per frame */}
-              <Section label="Density">
-                <ParamCell
-                  accent={ACCENTS.violet}
-                  description="Integration steps drawn per frame"
-                  max={1000}
-                  min={1}
-                  name="Steps / frame"
-                  onChange={onStepsChange}
-                  value={stepsPerFrame}
-                />
+              {/* Speed + Density side by side */}
+              <Section label="Speed & Density">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                  <ParamCell
+                    accent={ACCENTS.amber}
+                    description="Multiplier for the number of points drawn each frame"
+                    max={5}
+                    min={0.1}
+                    name="Speed"
+                    onChange={onSpeedChange}
+                    step={0.1}
+                    value={speed}
+                  />
+                  <ParamCell
+                    accent={ACCENTS.violet}
+                    description="Integration steps drawn per frame"
+                    max={1000}
+                    min={1}
+                    name="Steps / frame"
+                    onChange={onStepsChange}
+                    value={stepsPerFrame}
+                  />
+                </div>
               </Section>
 
               {/* Auto-rotate */}
