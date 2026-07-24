@@ -108,16 +108,28 @@ const MAX_POINTS = 2_000_000;
 
 function hexToThreeColor(hex: string): number {
   const normalized = hex.replace("#", "");
-  return parseInt(normalized.length === 3
-    ? normalized[0] + normalized[0] + normalized[1] + normalized[1] + normalized[2] + normalized[2]
-    : normalized, 16);
+  return parseInt(
+    normalized.length === 3
+      ? normalized[0] +
+          normalized[0] +
+          normalized[1] +
+          normalized[1] +
+          normalized[2] +
+          normalized[2]
+      : normalized,
+    16,
+  );
 }
 
-function initScene(mount: HTMLDivElement, backgroundColor: string, onSceneReady?: (data: {
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
-  scene: THREE.Scene;
-}) => void) {
+function initScene(
+  mount: HTMLDivElement,
+  backgroundColor: string,
+  onSceneReady?: (data: {
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    scene: THREE.Scene;
+  }) => void,
+) {
   const width = mount.clientWidth;
   const height = mount.clientHeight;
 

@@ -9,26 +9,97 @@ function highlightCode(code: string): string {
   };
 
   // Escape HTML
-  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const esc = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   // Split into tokens: comments, strings, keywords, numbers, identifiers, whitespace, other
   const keywords = new Set([
-    "import", "from", "export", "default", "function", "const", "let", "var",
-    "return", "if", "else", "for", "while", "class", "extends", "new", "this",
-    "typeof", "instanceof", "async", "await", "true", "false", "null", "undefined",
-    "void", "type", "interface", "as", "in", "of", "readonly", "required",
-    "import", "type", "from", "default", "export", "declare", "module",
-    "string", "number", "boolean", "object", "any", "never", "unknown",
-    "jsx", "tsx", "React", "JSX",
+    "import",
+    "from",
+    "export",
+    "default",
+    "function",
+    "const",
+    "let",
+    "var",
+    "return",
+    "if",
+    "else",
+    "for",
+    "while",
+    "class",
+    "extends",
+    "new",
+    "this",
+    "typeof",
+    "instanceof",
+    "async",
+    "await",
+    "true",
+    "false",
+    "null",
+    "undefined",
+    "void",
+    "type",
+    "interface",
+    "as",
+    "in",
+    "of",
+    "readonly",
+    "required",
+    "import",
+    "type",
+    "from",
+    "default",
+    "export",
+    "declare",
+    "module",
+    "string",
+    "number",
+    "boolean",
+    "object",
+    "any",
+    "never",
+    "unknown",
+    "jsx",
+    "tsx",
+    "React",
+    "JSX",
   ]);
 
   const builtins = new Set([
-    "useState", "useCallback", "useEffect", "useRef", "useMemo", "useContext",
-    "useReducer", "createContext", "memo", "forwardRef", "Suspense", "lazy",
-    "React", "document", "window", "console", "Math", "JSON", "Promise",
-    "Array", "Object", "String", "Number", "Map", "Set",
-    "navigator", "setTimeout", "setInterval", "clearTimeout",
-    "create", "render", "createElement",
+    "useState",
+    "useCallback",
+    "useEffect",
+    "useRef",
+    "useMemo",
+    "useContext",
+    "useReducer",
+    "createContext",
+    "memo",
+    "forwardRef",
+    "Suspense",
+    "lazy",
+    "React",
+    "document",
+    "window",
+    "console",
+    "Math",
+    "JSON",
+    "Promise",
+    "Array",
+    "Object",
+    "String",
+    "Number",
+    "Map",
+    "Set",
+    "navigator",
+    "setTimeout",
+    "setInterval",
+    "clearTimeout",
+    "create",
+    "render",
+    "createElement",
   ]);
 
   // Step 1: Extract strings (single, double, template)
@@ -36,7 +107,7 @@ function highlightCode(code: string): string {
   let sid = 0;
   code = code.replace(/(".*?"|'.*?'|`[^`]*`)/g, (m) => {
     const id = `__STR${sid++}__`;
-    stringReplaces.push({ val: esc(m), id });
+    stringReplaces.push({ id, val: esc(m) });
     return id;
   });
 
@@ -45,7 +116,7 @@ function highlightCode(code: string): string {
   let cid = 0;
   code = code.replace(/(\/\/.*$|\/\*[\s\S]*?\*\/)/gm, (m) => {
     const id = `__CMT${cid++}__`;
-    commentReplaces.push({ val: esc(m), id });
+    commentReplaces.push({ id, val: esc(m) });
     return id;
   });
 
@@ -99,7 +170,10 @@ function highlightCode(code: string): string {
         pushToken(word, "text-pink-400 font-semibold");
       } else if (builtins.has(word)) {
         pushToken(word, "text-cyan-400");
-      } else if (word[0] === word[0].toUpperCase() && word[0] !== word[0].toLowerCase()) {
+      } else if (
+        word[0] === word[0].toUpperCase() &&
+        word[0] !== word[0].toLowerCase()
+      ) {
         pushToken(word, "text-emerald-400"); // JSX component / class
       } else if (rest.startsWith("(")) {
         pushToken(word, "text-sky-300"); // function call
@@ -110,7 +184,11 @@ function highlightCode(code: string): string {
     }
 
     // JSX tags: <Word
-    if (ch === "<" && i + 1 < remaining.length && /[A-Z]/.test(remaining[i + 1])) {
+    if (
+      ch === "<" &&
+      i + 1 < remaining.length &&
+      /[A-Z]/.test(remaining[i + 1])
+    ) {
       let tag = "<";
       i++;
       while (i < remaining.length && /[\w.]/.test(remaining[i])) {
@@ -120,11 +198,14 @@ function highlightCode(code: string): string {
       if (i < remaining.length && remaining[i] !== ">") {
         // Self-closing or has attrs
         while (i < remaining.length && remaining[i] !== ">") {
-          if (remaining[i] === "/") { tag += remaining[i++]; }
-          else i++;
+          if (remaining[i] === "/") {
+            tag += remaining[i++];
+          } else i++;
         }
       }
-      if (i < remaining.length) { tag += remaining[i++]; }
+      if (i < remaining.length) {
+        tag += remaining[i++];
+      }
       pushToken(tag, "text-emerald-300");
       continue;
     }
@@ -136,7 +217,9 @@ function highlightCode(code: string): string {
       while (i < remaining.length && /[\w.]/.test(remaining[i])) {
         tag += remaining[i++];
       }
-      if (i < remaining.length && remaining[i] === ">") { tag += remaining[i++]; }
+      if (i < remaining.length && remaining[i] === ">") {
+        tag += remaining[i++];
+      }
       pushToken(tag, "text-emerald-300");
       continue;
     }
@@ -180,9 +263,9 @@ export function CodeBlock({ code }: CodeBlockProps) {
 
   return (
     <pre
-      ref={ref}
       className="overflow-auto whitespace-pre-wrap leading-relaxed"
       dangerouslySetInnerHTML={{ __html: highlighted }}
+      ref={ref}
     />
   );
 }

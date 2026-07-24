@@ -1,4 +1,5 @@
 import type { AttractorSystem } from "./systems";
+import type { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -9,9 +10,9 @@ import { Button } from "@/lib/components/ui/button";
 import { AttractorCanvas } from "./components/AttractorCanvas";
 import { AttractorPanel } from "./components/AttractorPanel";
 import { CodeBlock } from "./components/CodeBlock";
-import { useTheme } from "./providers/ThemeToggle";
-import { ZoomControls } from "./components/ZoomControls";
 import { WallpaperDownload } from "./components/WallpaperDownload";
+import { ZoomControls } from "./components/ZoomControls";
+import { useTheme } from "./providers/ThemeToggle";
 import { getSystem, systems } from "./systems";
 
 // ─── URL params (for share links) ────────────────────────
@@ -36,7 +37,11 @@ function encodeShareUrl(
   sp.set("sp", String(speed));
   sp.set("ar", String(autoRotate));
   if (resetAfter !== 0) sp.set("ra", String(resetAfter));
-  const base = baseUrl ?? (typeof window !== "undefined" ? window.location.origin + window.location.pathname : "");
+  const base =
+    baseUrl ??
+    (typeof window !== "undefined"
+      ? window.location.origin + window.location.pathname
+      : "");
   return `${base}?${sp.toString()}`;
 }
 
@@ -51,7 +56,9 @@ function parseUrlParams(search?: string): {
   backgroundColor?: string;
   resetAfter?: number;
 } {
-  const sp = new URLSearchParams(search ?? (typeof window !== "undefined" ? window.location.search : ""));
+  const sp = new URLSearchParams(
+    search ?? (typeof window !== "undefined" ? window.location.search : ""),
+  );
   const result: Record<string, unknown> = {};
   if (sp.has("system")) result.systemId = sp.get("system")!;
   const params: number[] = [];
@@ -135,9 +142,9 @@ export function App() {
 }
 
 export default function App({
-  initialSystemId,
-  initialSearch,
   baseUrl,
+  initialSearch,
+  initialSystemId,
 }: {
   initialSystemId?: string;
   initialSearch?: string;
@@ -146,7 +153,9 @@ export default function App({
   const urlParams = parseUrlParams(initialSearch ?? undefined);
   const themeCtx = useTheme();
 
-  const [selectedId, setSelectedId] = useState(initialSystemId ?? urlParams.systemId ?? "lorenz");
+  const [selectedId, setSelectedId] = useState(
+    initialSystemId ?? urlParams.systemId ?? "lorenz",
+  );
   const [params, setParams] = useState<number[]>(
     () => urlParams.params ?? [...getSystem("lorenz")!.params.defaults],
   );
@@ -167,11 +176,13 @@ export default function App({
   const [copied, setCopied] = useState<"code" | "link" | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [wallpaperOpen, setWallpaperOpen] = useState(false);
-  const [sceneData, setSceneData] = useState<{
-    camera: any;
-    renderer: any;
-    scene: any;
-  } | null>(null);
+  type SceneData = {
+    camera: PerspectiveCamera;
+    renderer: WebGLRenderer;
+    scene: Scene;
+  };
+
+  const [sceneData, setSceneData] = useState<null | SceneData>(null);
 
   const handleParamChange = useCallback((index: number, value: number) => {
     setParams((prev) => {
@@ -265,9 +276,9 @@ export default function App({
         {/* Mobile settings button */}
         <Button
           className="h-10 w-10 rounded-xl bg-background/90 backdrop-blur-sm transition-smooth active:scale-95"
+          onClick={() => setPanelOpen((v) => !v)}
           size="icon-lg"
           variant="outline"
-          onClick={() => setPanelOpen((v) => !v)}
         >
           {panelOpen ? (
             <svg
@@ -321,7 +332,6 @@ export default function App({
         mobileOpen={panelOpen}
         onAutoRotateChange={setAutoRotate}
         onBackgroundColorChange={setBackgroundColor}
-        onWallpaperDownload={() => setWallpaperOpen(true)}
         onCloseMobile={() => setPanelOpen(false)}
         onColorSpeedChange={setColorSpeed}
         onParamChange={handleParamChange}
@@ -332,10 +342,11 @@ export default function App({
         onSpeedChange={setSpeed}
         onStepsChange={setStepsPerFrame}
         onSystemChange={handleSystemChange}
+        onWallpaperDownload={() => setWallpaperOpen(true)}
         params={params}
         pointSize={pointSize}
-        selectedId={selectedId}
         resetAfter={resetAfter}
+        selectedId={selectedId}
         speed={speed}
         stepsPerFrame={stepsPerFrame}
         system={system}
@@ -371,9 +382,9 @@ export default function App({
               </div>
               <Button
                 className="rounded-xl p-2 text-muted-foreground hover:text-foreground transition-smooth"
+                onClick={() => setShareOpen(false)}
                 size="icon"
                 variant="ghost"
-                onClick={() => setShareOpen(false)}
               >
                 <svg
                   className="size-5"
@@ -400,8 +411,8 @@ export default function App({
                         ? "bg-green-500/10 text-green-600 dark:text-green-400"
                         : "bg-muted text-foreground hover:bg-muted/80"
                     }`}
-                    variant="ghost"
                     onClick={() => handleCopy("code")}
+                    variant="ghost"
                   >
                     {copied === "code" ? "✓ Copied!" : "Copy Code"}
                   </Button>
@@ -423,8 +434,8 @@ export default function App({
                         ? "bg-green-500/10 text-green-600 dark:text-green-400"
                         : "bg-muted text-foreground hover:bg-muted/80"
                     }`}
-                    variant="ghost"
                     onClick={() => handleCopy("link")}
+                    variant="ghost"
                   >
                     {copied === "link" ? "✓ Copied!" : "Copy Link"}
                   </Button>
@@ -443,11 +454,11 @@ export default function App({
       {/* Wallpaper Download Modal */}
       <WallpaperDownload
         camera={sceneData?.camera}
+        onClose={() => setWallpaperOpen(false)}
         open={wallpaperOpen}
         renderer={sceneData?.renderer ?? null}
         scene={sceneData?.scene ?? null}
         systemId={system.id}
-        onClose={() => setWallpaperOpen(false)}
       />
     </div>
   );

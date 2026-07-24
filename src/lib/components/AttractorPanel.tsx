@@ -28,8 +28,8 @@ interface AttractorPanelProps {
   colorSpeed: number;
   mobileOpen?: boolean;
   onAutoRotateChange: (value: boolean) => void;
-  onCloseMobile?: () => void;
   onBackgroundColorChange?: (value: string) => void;
+  onCloseMobile?: () => void;
   onColorSpeedChange: (value: number) => void;
   onParamChange: (index: number, value: number) => void;
   onPointSizeChange: (value: number) => void;
@@ -42,10 +42,10 @@ interface AttractorPanelProps {
   onWallpaperDownload?: () => void;
   params: number[];
   pointSize: number;
+  resetAfter: number;
   selectedId: string;
   speed: number;
   stepsPerFrame: number;
-  resetAfter: number;
   system: AttractorSystem;
   systems: AttractorSystem[];
 }
@@ -56,15 +56,6 @@ function formatParam(v: number): string {
   if (Math.abs(v) >= 100) return Math.round(v).toString();
   if (Math.abs(v) >= 1) return v.toFixed(2);
   return v.toFixed(4);
-}
-
-function formatTime(ms: number): string {
-  const mins = Math.round(ms / 60000);
-  if (mins >= 60) {
-    const hours = mins / 60;
-    return `${hours.toFixed(1)}h`;
-  }
-  return `${mins}m`;
 }
 
 // ─── Panel shell ────────────────────────────────────────────
@@ -224,8 +215,8 @@ export function AttractorPanel({
   colorSpeed,
   mobileOpen,
   onAutoRotateChange,
-  onCloseMobile,
   onBackgroundColorChange,
+  onCloseMobile,
   onColorSpeedChange,
   onParamChange,
   onPointSizeChange,
@@ -238,10 +229,10 @@ export function AttractorPanel({
   onWallpaperDownload,
   params,
   pointSize,
+  resetAfter,
   selectedId,
   speed,
   stepsPerFrame,
-  resetAfter,
   system,
   systems,
 }: AttractorPanelProps) {
@@ -293,26 +284,26 @@ export function AttractorPanel({
                 </SelectContent>
               </Select>
               <Button
-              className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth active:scale-95"
-              size="icon"
-              variant="ghost"
-              onClick={(e) => {
-                e.stopPropagation();
-                onCloseMobile?.();
-              }}
-            >
-              <svg
-                className="size-5"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
+                className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth active:scale-95"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCloseMobile?.();
+                }}
+                size="icon"
+                variant="ghost"
               >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </Button>
+                <svg
+                  className="size-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </Button>
             </div>
           </div>
 
@@ -422,17 +413,14 @@ export function AttractorPanel({
                       <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Background
                       </span>
-                      <span className="text-[11px] text-muted-foreground dark:text-white/30">
-                        Pick a color
-                      </span>
                       <input
-                        type="color"
                         className="mt-1 size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
-                        value={backgroundColor || "#000000"}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
                           onBackgroundColorChange(target.value);
                         }}
+                        type="color"
+                        value={backgroundColor || "#000000"}
                       />
                       <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40 truncate">
                         {backgroundColor || "#000000"}
@@ -450,19 +438,23 @@ export function AttractorPanel({
                     </span>
                     <div className="flex items-center gap-1 mt-1">
                       <input
-                        type="number"
-                        min={1}
-                        max={120}
                         className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
-                        value={resetAfter / 60000}
+                        max={120}
+                        min={1}
                         onInput={(e) => {
-                          const val = parseInt((e.target as HTMLInputElement).value);
+                          const val = parseInt(
+                            (e.target as HTMLInputElement).value,
+                          );
                           if (!isNaN(val) && val >= 1 && val <= 120) {
                             onResetAfterChange?.(val * 60000);
                           }
                         }}
+                        type="number"
+                        value={resetAfter / 60000}
                       />
-                      <span className="text-[10px] text-muted-foreground">min</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        min
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -576,7 +568,6 @@ export function AttractorPanel({
           {/* ── Scrollable body ─────────────────────── */}
           <ScrollArea className="min-h-0 flex-1">
             <div className="p-6 space-y-5">
-
               {/* Parameters */}
               <Section label="Parameters">
                 <div className="grid grid-cols-3 gap-x-4 gap-y-5">
@@ -680,17 +671,14 @@ export function AttractorPanel({
                       <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Background
                       </span>
-                      <span className="text-[11px] text-muted-foreground dark:text-white/30">
-                        Pick a color
-                      </span>
                       <input
-                        type="color"
                         className="mt-1 size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
-                        value={backgroundColor || "#000000"}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
                           onBackgroundColorChange(target.value);
                         }}
+                        type="color"
+                        value={backgroundColor || "#000000"}
                       />
                       <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40 truncate">
                         {backgroundColor || "#000000"}
@@ -708,19 +696,23 @@ export function AttractorPanel({
                     </span>
                     <div className="flex items-center gap-1 mt-1">
                       <input
-                        type="number"
-                        min={1}
-                        max={120}
                         className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
-                        value={resetAfter / 60000}
+                        max={120}
+                        min={1}
                         onInput={(e) => {
-                          const val = parseInt((e.target as HTMLInputElement).value);
+                          const val = parseInt(
+                            (e.target as HTMLInputElement).value,
+                          );
                           if (!isNaN(val) && val >= 1 && val <= 120) {
                             onResetAfterChange?.(val * 60000);
                           }
                         }}
+                        type="number"
+                        value={resetAfter / 60000}
                       />
-                      <span className="text-[10px] text-muted-foreground">min</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        min
+                      </span>
                     </div>
                   </div>
                 </div>
