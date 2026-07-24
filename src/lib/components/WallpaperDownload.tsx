@@ -119,8 +119,8 @@ export function WallpaperDownload({
           </Button>
         </div>
 
-        <div className="px-6 py-5 space-y-4">
-          <div className="space-y-2">
+        <div className="px-6 py-5 flex flex-col gap-y-4">
+          <div className="flex flex-col gap-y-2">
             <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Resolution
             </label>

@@ -63,7 +63,7 @@ function formatParam(v: number): string {
 function Panel({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div
-      className={`overflow-hidden rounded-[20px] border border-border/20 bg-background/80 shadow-xl backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-900/80 dark:shadow-[0_32px_80px_rgba(0,0,0,0.4)] ${
+      className={`overflow-hidden rounded-2xl border border-border/20 bg-background/80 shadow-xl backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-900/80 dark:shadow-[0_32px_80px_rgba(0,0,0,0.4)] ${
         className ?? ""
       }`}
       {...props}
@@ -81,7 +81,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-y-3">
       <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 dark:text-white/30">
         {label}
       </p>
@@ -128,7 +128,7 @@ function ParamCell({
             {name}
           </span>
         </div>
-        <span className="rounded bg-muted dark:bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-muted-foreground dark:text-white/50 transition-colors group-hover/cell:text-foreground dark:group-hover/cell:text-white/70">
+        <span className="rounded bg-muted dark:bg-white/4 px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-muted-foreground dark:text-white/50 transition-colors group-hover/cell:text-foreground dark:group-hover/cell:text-white/70">
           {formatParam(value)}
         </span>
         {description && (
@@ -252,7 +252,7 @@ export function AttractorPanel({
       >
         <Panel className="flex flex-col rounded-b-none rounded-t-2xl max-h-[90vh]">
           {/* ── Header ──────────────────────────────── */}
-          <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] px-5 py-3">
+          <div className="flex items-center justify-between border-b border-border/20 dark:border-white/6 px-5 py-3">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-base">✦</span>
@@ -309,7 +309,7 @@ export function AttractorPanel({
 
           {/* ── Scrollable body ─────────────────────── */}
           <ScrollArea className="min-h-0 flex-1">
-            <div className="p-5 space-y-5">
+            <div className="p-5 gap-y-5">
               {/* Parameters */}
               <Section label="Parameters">
                 <div className="grid grid-cols-1 gap-y-5 md:grid-cols-2 lg:grid-cols-3 gap-x-4">
@@ -330,7 +330,7 @@ export function AttractorPanel({
                 </div>
               </Section>
 
-              <Separator className="bg-border/20 dark:bg-white/[0.05]" />
+              <Separator className="bg-border/20 dark:bg-white/5" />
 
               {/* Display — color speed + point size */}
               <Section label="Display">
@@ -388,7 +388,7 @@ export function AttractorPanel({
                 <div className="grid grid-cols-3 gap-x-4">
                   {/* Auto-rotate */}
                   <div
-                    className="flex cursor-pointer flex-col items-center gap-1.5 rounded-xl bg-muted/50 dark:bg-white/[0.05] p-3 text-center"
+                    className="flex cursor-pointer flex-col items-center gap-1.5 rounded-xl bg-muted/50 dark:bg-white/5 p-3 text-center"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
                     <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
@@ -409,7 +409,7 @@ export function AttractorPanel({
 
                   {/* Background color */}
                   {onBackgroundColorChange && (
-                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/[0.03] text-center">
+                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/3 text-center">
                       <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Background
                       </span>
@@ -429,7 +429,7 @@ export function AttractorPanel({
                   )}
 
                   {/* Auto-loop */}
-                  <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/[0.03] text-center">
+                  <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/3 text-center">
                     <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                       Auto-loop
                     </span>
@@ -438,7 +438,7 @@ export function AttractorPanel({
                     </span>
                     <div className="flex items-center gap-1 mt-1">
                       <input
-                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
+                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/8 dark:text-white/80"
                         max={120}
                         min={1}
                         onInput={(e) => {
@@ -463,7 +463,7 @@ export function AttractorPanel({
               {/* Buttons */}
               <div className="sm:flex-row flex flex-col gap-2 pt-1">
                 <Button
-                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/8 dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white/90"
                   onClick={onShare}
                   variant="ghost"
                 >
@@ -483,7 +483,7 @@ export function AttractorPanel({
                   Share
                 </Button>
                 <Button
-                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/8 dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white/90"
                   onClick={onWallpaperDownload}
                   variant="ghost"
                 >
@@ -503,7 +503,7 @@ export function AttractorPanel({
                   Wallpaper
                 </Button>
                 <Button
-                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/8 dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white/90"
                   onClick={onReset}
                   variant="ghost"
                 >
@@ -530,10 +530,10 @@ export function AttractorPanel({
       </div>
 
       {/* ── Desktop panel (md+) ─────────────────────── */}
-      <div className="hidden md:block fixed top-5 left-5 z-10 w-[28rem] lg:w-[28.6rem] pointer-events-auto animate-panel-entrance">
+      <div className="hidden md:block fixed top-5 left-5 z-10 w-md lg:w-[28.6rem] pointer-events-auto animate-panel-entrance">
         <Panel className="flex h-auto max-h-[calc(100vh-40px)] flex-col">
           {/* ── Header ──────────────────────────────── */}
-          <div className="flex items-center justify-between border-b border-border/20 dark:border-white/[0.06] px-6 py-3.5">
+          <div className="flex items-center justify-between border-b border-border/20 dark:border-white/6 px-6 py-3.5">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-base">✦</span>
@@ -567,7 +567,7 @@ export function AttractorPanel({
 
           {/* ── Scrollable body ─────────────────────── */}
           <ScrollArea className="min-h-0 flex-1">
-            <div className="p-6 space-y-5">
+            <div className="p-6 gap-y-5">
               {/* Parameters */}
               <Section label="Parameters">
                 <div className="grid grid-cols-3 gap-x-4 gap-y-5">
@@ -588,7 +588,7 @@ export function AttractorPanel({
                 </div>
               </Section>
 
-              <Separator className="bg-border/20 dark:bg-white/[0.05]" />
+              <Separator className="bg-border/20 dark:bg-white/5" />
 
               {/* Display — color speed + point size */}
               <Section label="Display">
@@ -646,7 +646,7 @@ export function AttractorPanel({
                 <div className="grid grid-cols-3 gap-x-4">
                   {/* Auto-rotate */}
                   <div
-                    className="flex cursor-pointer flex-col items-center gap-1.5 rounded-xl bg-muted/50 dark:bg-white/[0.05] p-3 text-center"
+                    className="flex cursor-pointer flex-col items-center gap-1.5 rounded-xl bg-muted/50 dark:bg-white/5 p-3 text-center"
                     onClick={() => onAutoRotateChange(!autoRotate)}
                   >
                     <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
@@ -667,7 +667,7 @@ export function AttractorPanel({
 
                   {/* Background color */}
                   {onBackgroundColorChange && (
-                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/[0.03] text-center">
+                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/3 text-center">
                       <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Background
                       </span>
@@ -687,7 +687,7 @@ export function AttractorPanel({
                   )}
 
                   {/* Auto-loop */}
-                  <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/[0.03] text-center">
+                  <div className="flex flex-col items-center gap-1.5 rounded-xl bg-muted/50 p-3 dark:bg-white/3 text-center">
                     <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                       Auto-loop
                     </span>
@@ -696,7 +696,7 @@ export function AttractorPanel({
                     </span>
                     <div className="flex items-center gap-1 mt-1">
                       <input
-                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/[0.08] dark:text-white/80"
+                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/8 dark:text-white/80"
                         max={120}
                         min={1}
                         onInput={(e) => {
@@ -721,7 +721,7 @@ export function AttractorPanel({
               {/* Buttons */}
               <div className="flex gap-2 pt-1">
                 <Button
-                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/8 dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white/90"
                   onClick={onShare}
                   variant="ghost"
                 >
@@ -741,7 +741,7 @@ export function AttractorPanel({
                   Share
                 </Button>
                 <Button
-                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/8 dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white/90"
                   onClick={onWallpaperDownload}
                   variant="ghost"
                 >
@@ -761,7 +761,7 @@ export function AttractorPanel({
                   Wallpaper
                 </Button>
                 <Button
-                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-white/70 dark:hover:bg-white/[0.1] dark:hover:text-white/90"
+                  className="flex-1 rounded-xl border-border/20 bg-muted/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground dark:border-white/8 dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white/90"
                   onClick={onReset}
                   variant="ghost"
                 >

@@ -36,7 +36,7 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "group flex h-9 items-center justify-between gap-2 rounded-xl border border-border/20 bg-muted/30 px-3 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80 dark:hover:bg-white/[0.06] dark:hover:border-white/[0.12] dark:focus-visible:ring-indigo-500/40 data-placeholder:text-muted-foreground dark:data-placeholder:text-white/40 data-[size=sm]:h-7 data-[size=default]:h-9 data-[size=default]:rounded-xl *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group flex h-9 items-center justify-between gap-2 rounded-xl border border-border/20 bg-muted/30 px-3 text-sm text-foreground/80 transition-all hover:bg-muted/50 hover:border-border/30 focus-visible:ring-2 focus-visible:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/8 dark:bg-white/3 dark:text-white/80 dark:hover:bg-white/6 dark:hover:border-white/12 dark:focus-visible:ring-indigo-500/40 data-placeholder:text-muted-foreground dark:data-placeholder:text-white/40 data-[size=sm]:h-7 data-[size=default]:h-9 data-[size=default]:rounded-xl *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       data-size={size}
@@ -44,7 +44,7 @@ function SelectTrigger({
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon className="pointer-events-none opacity-50 transition-opacity group-data-[hover]:opacity-80">
+      <SelectPrimitive.Icon className="pointer-events-none opacity-50 transition-opacity group-data-hover:opacity-80">
         <svg
           className="size-3.5"
           fill="none"

@@ -398,7 +398,7 @@ export default function App({
               </Button>
             </div>
 
-            <div className="flex-1 overflow-auto px-10 py-8 space-y-8">
+            <div className="flex-1 flex flex-col overflow-auto px-10 py-8 gap-y-8">
               {/* Code block */}
               <div>
                 <div className="flex items-center justify-between mb-3">

@@ -43,7 +43,7 @@ function StyledSlider({
         <div className="flex items-center justify-between mb-1">
           <span className="text-[13px] font-medium text-white/70">{label}</span>
           <span
-            className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-white/50"
+            className="rounded bg-white/6 px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-white/50"
             style={{ color: `${color}cc` }}
           >
             {displayValue}
@@ -55,7 +55,7 @@ function StyledSlider({
       {/* Slider track area */}
       <div className="relative h-8 flex items-center">
         {/* Track background */}
-        <div className="absolute inset-x-0 h-1.5 rounded-full bg-white/[0.06] shadow-inner" />
+        <div className="absolute inset-x-0 h-1.5 rounded-full bg-white/6 shadow-inner" />
         {/* Gradient fill */}
         <div
           className="absolute h-1.5 rounded-full"
@@ -79,7 +79,7 @@ function StyledSlider({
         />
         {/* Thumb */}
         <div
-          className="absolute h-4 w-4 rounded-full border-[2px] bg-zinc-100 pointer-events-none cursor-grab active:cursor-grabbing transition-transform"
+          className="absolute h-4 w-4 rounded-full border-2 bg-zinc-100 pointer-events-none cursor-grab active:cursor-grabbing transition-transform"
           style={{
             borderColor: color,
             boxShadow: `0 0 0 2px ${color}20, 0 2px 6px ${color}40, 0 1px 3px rgba(0,0,0,0.4)`,
