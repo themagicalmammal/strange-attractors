@@ -480,7 +480,7 @@ export const systems: AttractorSystem[] = [
     equation: wrap(finance),
     id: "finance",
     initCoord: [0, -10, 0.1],
-    limits: { xlim: [-8, 8], ylim: [-20, 0], zlim: [-5, 5] },
+    limits: { xlim: [-6, 6], ylim: [-18, -2], zlim: [-4, 4] },
     name: "Finance",
     params: {
       defaults: [0.00001, 0.1, 1],
