@@ -78,6 +78,11 @@ function parseUrlParams(search?: string): {
   return result;
 }
 
+const asciiNames = (count: number): string[] =>
+  Array.from({ length: count }, (_unused, i) =>
+    i < 26 ? String.fromCharCode(97 + i) : `p${i}`,
+  );
+
 function generateShareCode(
   system: AttractorSystem,
   params: number[],
@@ -87,24 +92,35 @@ function generateShareCode(
   speed: number,
   autoRotate: boolean,
 ): string {
-  const paramLines = params.map(
-    (v, i) => `    ${system.params.names[i]}: ${v}`,
-  );
+  const names = asciiNames(params.length);
+  const paramValues = params.map((v) => v.toFixed(3)).join(", ");
+  const setters = names
+    .map(
+      () =>
+        `      onParamChange={(i, v) => { const p = [...params]; p[i] = v; setParams(p); }}`,
+    )
+    .join("\n");
+
   return `// Attractor — ${system.name}
 // Params: ${system.params.names.join(", ")}
-${paramLines.join("\n")}
 
-import { useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { AttractorCanvas, AttractorPanel, getSystem, systems } from "attractor-react";
 
 export function App() {
-  const [params, setParams] = useState([${params.map((v) => v.toFixed(3)).join(", ")}]);
+  const [params, setParams] = useState([${paramValues}]);
   const [stepsPerFrame, setStepsPerFrame] = useState(${stepsPerFrame});
   const [colorSpeed, setColorSpeed] = useState(${colorSpeed});
   const [pointSize, setPointSize] = useState(${pointSize});
   const [speed, setSpeed] = useState(${speed});
   const [autoRotate, setAutoRotate] = useState(${autoRotate});
   const [resetKey, setResetKey] = useState(0);
+
+  useEffect(() => {
+    if (resetKey === 0) return;
+    const timer = setTimeout(() => setResetKey(0), 120_000);
+    return () => clearTimeout(timer);
+  }, [resetKey]);
 
   return (
     <>
@@ -128,7 +144,7 @@ export function App() {
         pointSize={pointSize}
         speed={speed}
         autoRotate={autoRotate}
-        onParamChange={...}
+${setters}
         onStepsChange={setStepsPerFrame}
         onColorSpeedChange={setColorSpeed}
         onPointSizeChange={setPointSize}
@@ -417,9 +433,7 @@ export default function App({
                     {copied === "code" ? "✓ Copied!" : "Copy Code"}
                   </Button>
                 </div>
-                <div className="p-5 rounded-xl bg-muted/30 text-sm font-mono overflow-auto max-h-64 whitespace-pre-wrap leading-relaxed border border-border/30">
-                  <CodeBlock code={shareCode} />
-                </div>
+                <CodeBlock code={shareCode} />
               </div>
 
               {/* Share link */}
@@ -441,7 +455,7 @@ export default function App({
                   </Button>
                 </div>
                 <div className="relative">
-                  <pre className="p-5 rounded-xl bg-muted/30 text-sm font-mono text-foreground overflow-x-auto border border-border/30 select-all whitespace-nowrap leading-relaxed">
+                  <pre className="rounded-xl border border-border/40 bg-[#282a36] px-5 py-5 text-sm text-zinc-100 font-mono overflow-x-auto select-all whitespace-nowrap leading-relaxed">
                     {shareUrl}
                   </pre>
                 </div>

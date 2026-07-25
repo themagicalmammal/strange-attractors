@@ -13,6 +13,7 @@ export default [
             'dist-staging/',
             'dist/',
             'node_modules/',
+            'pages/',
             'eslint.config.js',
             'tailwind.config.js',
             'vite.config.ts',
