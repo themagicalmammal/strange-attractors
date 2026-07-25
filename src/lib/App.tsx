@@ -168,7 +168,7 @@ export default function App({
     urlParams.backgroundColor ?? "#000000",
   );
   const [resetAfter, setResetAfter] = useState(
-    urlParams.resetAfter ?? 480000, // 8 minutes
+    urlParams.resetAfter ?? 120000, // 2 minutes
   );
 
   const [resetKey, setResetKey] = useState(0);
@@ -267,15 +267,15 @@ export default function App({
       />
 
       {/* Header controls — top-right */}
-      <div className="sm:top-6 sm:right-6 top-3 right-3 z-20 flex items-center gap-2">
+      <div className="fixed top-6 right-6 z-20 flex items-center gap-2">
         <AnimatedThemeToggler
           className="h-10 w-10 rounded-xl bg-background/90 text-foreground transition-smooth active:scale-95"
           onThemeChange={(t) => themeCtx.setTheme(t as "dark" | "light")}
           theme={themeCtx.theme === "dark" ? "dark" : "light"}
         />
-        {/* Mobile settings button */}
+        {/* Mobile settings button — hidden on desktop */}
         <Button
-          className="h-10 w-10 rounded-xl bg-background/90 backdrop-blur-sm transition-smooth active:scale-95"
+          className="md:hidden h-10 w-10 rounded-xl bg-background/90 backdrop-blur-sm transition-smooth active:scale-95"
           onClick={() => setPanelOpen((v) => !v)}
           size="icon-lg"
           variant="outline"

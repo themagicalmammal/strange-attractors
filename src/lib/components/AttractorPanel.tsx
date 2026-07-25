@@ -1,14 +1,9 @@
 import type { AttractorSystem } from "../systems";
 
+import { useEffect, useRef, useState } from "react";
+
 import { Button } from "@/lib/components/ui/button";
 import { ScrollArea } from "@/lib/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/lib/components/ui/select";
 import { Separator } from "@/lib/components/ui/separator";
 import { Switch } from "@/lib/components/ui/switch";
 import {
@@ -19,6 +14,219 @@ import {
 } from "@/lib/components/ui/tooltip";
 
 import StyledSlider from "./StyledSlider";
+
+// ─── Background colors ───────────────────────────────────────
+
+const BG_COLORS = [
+  // Dark tones
+  "#000000",
+  "#0a0a0a",
+  "#111111",
+  "#1a1a1a",
+  "#1e1e2e",
+  "#18181b",
+  "#222222",
+  "#2a2a2a",
+  "#333333",
+  "#4a4a4a",
+  // Mid / light tones
+  "#6b6b6b",
+  "#a0a0a0",
+  "#d4d4d4",
+  "#f5f5f5",
+  "#ffffff",
+  // Cool accents
+  "#0c1322",
+  "#0f172a",
+  "#0a2e1a",
+  "#1a2e2e",
+  "#0a1a2e",
+  "#2e0a2e",
+  // Warm accents
+  "#2e0a1a",
+  "#2e1a0a",
+  "#1a2e0a",
+  "#2e2a0a",
+  // Extra tones
+  "#2e201a",
+  "#1a2e1a",
+  "#201a2e",
+] as const;
+
+function ColorPicker({
+  onChange,
+  value,
+}: {
+  value: string;
+  onChange: (hex: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const timer = setTimeout(
+      () => document.addEventListener("mousedown", onClick),
+      0,
+    );
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        className="size-5 rounded-full ring-1 ring-border/30 transition hover:ring-2 hover:ring-indigo-500/50"
+        onClick={() => setOpen((v) => !v)}
+        style={{ backgroundColor: value }}
+        title={value}
+      />
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
+          <div className="relative z-10 w-72 rounded-2xl border border-border/50 bg-background/95 p-5 shadow-2xl backdrop-blur-md">
+            <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/60">
+              Background
+            </p>
+            <div className="grid grid-cols-4 gap-3">
+              {BG_COLORS.map((c) => (
+                <button
+                  className={`size-10 rounded-xl transition hover:scale-110 ${
+                    value === c ? "ring-indigo-500 ring-2" : "ring-border/20"
+                  }`}
+                  key={c}
+                  onClick={() => {
+                    onChange(c);
+                    setOpen(false);
+                  }}
+                  style={{ backgroundColor: c }}
+                  title={c}
+                />
+              ))}
+            </div>
+            {/* Custom hex input */}
+            <div className="mt-4">
+              <input
+                className="w-full rounded-lg border border-border/30 bg-transparent px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20"
+                defaultValue={value}
+                onBlur={(e) => {
+                  const hex = e.target.value.trim();
+                  if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+                    onChange(hex);
+                  } else {
+                    e.target.value = value;
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const target = e.target as HTMLInputElement;
+                    const hex = target.value.trim();
+                    if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+                      onChange(hex);
+                      setOpen(false);
+                    } else {
+                      target.value = value;
+                    }
+                  } else if (e.key === "Escape") {
+                    setOpen(false);
+                  }
+                }}
+                placeholder="#000000"
+                type="text"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── System selector ─────────────────────────────────────────
+
+function SystemSelector({
+  onChange,
+  selectedId,
+  systems,
+}: {
+  systems: AttractorSystem[];
+  selectedId: string;
+  onChange: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const selected = systems.find((s) => s.id === selectedId);
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const timer = setTimeout(
+      () => document.addEventListener("mousedown", onClick),
+      0,
+    );
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  useEffect(() => {
+    if (open && listRef.current) {
+      const el = listRef.current.querySelector(`[data-id="${selectedId}"]`);
+      if (el) (el as HTMLElement).scrollIntoView({ block: "nearest" });
+    }
+  }, [open]);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        className="rounded-xl border border-border/20 bg-muted/30 px-3 py-1.5 text-sm font-medium text-foreground/80 transition hover:border-border/40 hover:bg-muted/50 dark:border-white/10 dark:bg-white/5 dark:text-white/70"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="mr-1.5 inline-block size-2 rounded-full bg-indigo-400" />
+        {selected?.name ?? "Select"}
+      </button>
+      {open && (
+        <div className="absolute right-0 z-50 mt-2 min-w-[160px] max-w-[240px] animate-in fade-in-0 slide-in-from-top-2">
+          <div
+            className="max-h-64 overflow-y-auto rounded-xl border border-border/30 bg-background/95 p-1.5 shadow-xl backdrop-blur-md"
+            ref={listRef}
+          >
+            {systems.map((s) => (
+              <button
+                className={`w-full rounded-lg px-3 py-2 text-left text-sm transition ${
+                  s.id === selectedId
+                    ? "bg-indigo-500/10 font-semibold text-indigo-600 dark:text-indigo-400"
+                    : "text-foreground/70 hover:bg-muted/50"
+                }`}
+                data-id={s.id}
+                key={s.id}
+                onClick={() => {
+                  onChange(s.id);
+                  setOpen(false);
+                }}
+              >
+                <span className="mr-2 inline-block size-2 rounded-full bg-indigo-400" />
+                {s.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -266,23 +474,11 @@ export function AttractorPanel({
               />
             </div>
             <div className="flex items-center gap-2">
-              <Select
-                onValueChange={(v: null | string) =>
-                  onSystemChange(v ?? selectedId)
-                }
-                value={selectedId}
-              >
-                <SelectTrigger>
-                  <SelectValue className="text-sm" placeholder={system.name} />
-                </SelectTrigger>
-                <SelectContent>
-                  {systems.map((s) => (
-                    <SelectItem className="text-sm" key={s.id} value={s.id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SystemSelector
+                onChange={onSystemChange}
+                selectedId={selectedId}
+                systems={systems}
+              />
               <Button
                 className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth active:scale-95"
                 onClick={(e) => {
@@ -413,13 +609,8 @@ export function AttractorPanel({
                       <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Background
                       </span>
-                      <input
-                        className="mt-1 size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
-                        onInput={(e) => {
-                          const target = e.target as HTMLInputElement;
-                          onBackgroundColorChange(target.value);
-                        }}
-                        type="color"
+                      <ColorPicker
+                        onChange={onBackgroundColorChange}
                         value={backgroundColor || "#000000"}
                       />
                       <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40 truncate">
@@ -436,25 +627,34 @@ export function AttractorPanel({
                     <span className="text-[11px] text-muted-foreground dark:text-white/30">
                       Restart
                     </span>
-                    <div className="flex items-center gap-1 mt-1">
-                      <input
-                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/8 dark:text-white/80"
-                        max={120}
-                        min={1}
-                        onInput={(e) => {
-                          const val = parseInt(
-                            (e.target as HTMLInputElement).value,
+                    <div className="flex items-center gap-2 mt-1">
+                      <button
+                        className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-sm font-medium text-foreground/70 transition hover:bg-muted dark:border-white/8 dark:bg-white/4 dark:text-white/60"
+                        onClick={() => {
+                          const val = Math.max(
+                            1,
+                            Math.round(resetAfter / 60000) - 1,
                           );
-                          if (!isNaN(val) && val >= 1 && val <= 120) {
-                            onResetAfterChange?.(val * 60000);
-                          }
+                          onResetAfterChange?.(val * 60000);
                         }}
-                        type="number"
-                        value={resetAfter / 60000}
-                      />
-                      <span className="text-[10px] text-muted-foreground">
-                        min
+                      >
+                        −
+                      </button>
+                      <span className="w-10 text-center text-sm font-mono tabular-nums text-foreground/80 dark:text-white/80">
+                        {Math.round(resetAfter / 60000)}
                       </span>
+                      <button
+                        className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-sm font-medium text-foreground/70 transition hover:bg-muted dark:border-white/8 dark:bg-white/4 dark:text-white/60"
+                        onClick={() => {
+                          const val = Math.min(
+                            120,
+                            Math.round(resetAfter / 60000) + 1,
+                          );
+                          onResetAfterChange?.(val * 60000);
+                        }}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -546,23 +746,11 @@ export function AttractorPanel({
                 orientation="vertical"
               />
             </div>
-            <Select
-              onValueChange={(v: null | string) =>
-                onSystemChange(v ?? selectedId)
-              }
-              value={selectedId}
-            >
-              <SelectTrigger>
-                <SelectValue className="text-sm" placeholder={system.name} />
-              </SelectTrigger>
-              <SelectContent>
-                {systems.map((s) => (
-                  <SelectItem className="text-sm" key={s.id} value={s.id}>
-                    {s.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SystemSelector
+              onChange={onSystemChange}
+              selectedId={selectedId}
+              systems={systems}
+            />
           </div>
 
           {/* ── Scrollable body ─────────────────────── */}
@@ -671,13 +859,8 @@ export function AttractorPanel({
                       <span className="text-[13px] font-medium text-foreground/80 dark:text-white/80">
                         Background
                       </span>
-                      <input
-                        className="mt-1 size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0 [appearance:none_moz_appearance:none] [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded-lg"
-                        onInput={(e) => {
-                          const target = e.target as HTMLInputElement;
-                          onBackgroundColorChange(target.value);
-                        }}
-                        type="color"
+                      <ColorPicker
+                        onChange={onBackgroundColorChange}
                         value={backgroundColor || "#000000"}
                       />
                       <span className="text-[11px] font-mono text-muted-foreground dark:text-white/40 truncate">
@@ -694,25 +877,34 @@ export function AttractorPanel({
                     <span className="text-[11px] text-muted-foreground dark:text-white/30">
                       Restart
                     </span>
-                    <div className="flex items-center gap-1 mt-1">
-                      <input
-                        className="w-14 rounded-lg border border-border/20 bg-transparent py-1 text-right text-sm text-foreground/80 focus-visible:border-indigo-500/50 focus-visible:ring-2 focus-visible:ring-indigo-500/20 dark:border-white/8 dark:text-white/80"
-                        max={120}
-                        min={1}
-                        onInput={(e) => {
-                          const val = parseInt(
-                            (e.target as HTMLInputElement).value,
+                    <div className="flex items-center gap-2 mt-1">
+                      <button
+                        className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-sm font-medium text-foreground/70 transition hover:bg-muted dark:border-white/8 dark:bg-white/4 dark:text-white/60"
+                        onClick={() => {
+                          const val = Math.max(
+                            1,
+                            Math.round(resetAfter / 60000) - 1,
                           );
-                          if (!isNaN(val) && val >= 1 && val <= 120) {
-                            onResetAfterChange?.(val * 60000);
-                          }
+                          onResetAfterChange?.(val * 60000);
                         }}
-                        type="number"
-                        value={resetAfter / 60000}
-                      />
-                      <span className="text-[10px] text-muted-foreground">
-                        min
+                      >
+                        −
+                      </button>
+                      <span className="w-10 text-center text-sm font-mono tabular-nums text-foreground/80 dark:text-white/80">
+                        {Math.round(resetAfter / 60000)}
                       </span>
+                      <button
+                        className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-sm font-medium text-foreground/70 transition hover:bg-muted dark:border-white/8 dark:bg-white/4 dark:text-white/60"
+                        onClick={() => {
+                          const val = Math.min(
+                            120,
+                            Math.round(resetAfter / 60000) + 1,
+                          );
+                          onResetAfterChange?.(val * 60000);
+                        }}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 </div>

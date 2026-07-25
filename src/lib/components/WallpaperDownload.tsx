@@ -4,10 +4,21 @@ import * as THREE from "three";
 import { Button } from "@/lib/components/ui/button";
 
 const RESOLUTIONS = [
+  { height: 720, label: "1280x720", width: 1280 },
+  { height: 800, label: "1280x800", width: 1280 },
+  { height: 900, label: "1440x900", width: 1440 },
+  { height: 900, label: "1600x900", width: 1600 },
+  { height: 1200, label: "1600x1200", width: 1600 },
   { height: 1080, label: "1920x1080", width: 1920 },
+  { height: 1200, label: "1920x1200", width: 1920 },
+  { height: 1200, label: "2560x1200", width: 2560 },
   { height: 1440, label: "2560x1440", width: 2560 },
   { height: 2160, label: "3840x2160", width: 3840 },
+  { height: 2400, label: "3840x2400", width: 3840 },
+  { height: 4320, label: "7680x4320", width: 7680 },
 ] as const;
+
+const MAX_RESOLUTION = 7680;
 
 interface WallpaperDownloadProps {
   camera: THREE.PerspectiveCamera | undefined;
@@ -28,12 +39,17 @@ export function WallpaperDownload({
 }: WallpaperDownloadProps) {
   const [selected, setSelected] = useState(0);
   const [downloading, setDownloading] = useState(false);
+  const [customW, setCustomW] = useState(1920);
+  const [customH, setCustomH] = useState(1080);
+  const [useCustom, setUseCustom] = useState(false);
 
   const handleDownload = useCallback(async () => {
     if (!renderer || !scene || !camera || downloading) return;
     setDownloading(true);
 
-    const res = RESOLUTIONS[selected];
+    const res = useCustom
+      ? { height: customH, label: `${customW}x${customH}`, width: customW }
+      : RESOLUTIONS[selected];
 
     // Save original state
     const origWidth = renderer.domElement.clientWidth;
@@ -86,7 +102,18 @@ export function WallpaperDownload({
       setDownloading(false);
       onClose();
     }, "image/png");
-  }, [renderer, scene, camera, selected, systemId, downloading, onClose]);
+  }, [
+    renderer,
+    scene,
+    camera,
+    selected,
+    customW,
+    customH,
+    useCustom,
+    systemId,
+    downloading,
+    onClose,
+  ]);
 
   if (!open) return null;
 
@@ -128,18 +155,120 @@ export function WallpaperDownload({
               {RESOLUTIONS.map((res, i) => (
                 <Button
                   className={`rounded-xl px-3 py-2.5 text-sm font-medium transition-smooth ${
-                    selected === i
+                    selected === i && !useCustom
                       ? "border-indigo-500 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
                       : "border-border/30 bg-muted/30 text-foreground/70 hover:bg-muted/50"
                   }`}
                   key={res.label}
-                  onClick={() => setSelected(i)}
+                  onClick={() => {
+                    setSelected(i);
+                    setUseCustom(false);
+                  }}
                   variant="outline"
                 >
                   {res.label}
                 </Button>
               ))}
             </div>
+            <button
+              className={`mt-2 w-full rounded-xl px-3 py-2 text-sm font-medium transition-smooth ${
+                useCustom
+                  ? "border-indigo-500 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                  : "border-border/30 bg-muted/30 text-foreground/70 hover:bg-muted/50"
+              }`}
+              onClick={() => setUseCustom((v) => !v)}
+              type="button"
+            >
+              {useCustom ? "− Custom" : "+ Custom"}
+            </button>
+            {useCustom && (
+              <div className="flex items-center gap-3 mt-1">
+                {/* Width stepper */}
+                <div className="flex flex-col items-center gap-1 flex-1">
+                  <span className="text-[10px] text-muted-foreground">W</span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-foreground/70 text-sm transition hover:bg-muted/60"
+                      onClick={() => setCustomW(Math.max(1, customW - 10))}
+                      type="button"
+                    >
+                      −
+                    </button>
+                    <input
+                      className="w-16 rounded-lg border border-border/20 bg-muted/20 py-1 text-center text-sm font-mono tabular-nums text-foreground/80 outline-none transition focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
+                      max={MAX_RESOLUTION}
+                      min={1}
+                      onBlur={(e) => {
+                        const v = Math.min(
+                          MAX_RESOLUTION,
+                          Math.max(1, parseInt(e.target.value) || 1),
+                        );
+                        setCustomW(v);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") (e.target as HTMLElement).blur();
+                        if (e.key === "Escape")
+                          (e.target as HTMLElement).blur();
+                      }}
+                      type="number"
+                      value={customW}
+                    />
+                    <button
+                      className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-foreground/70 text-sm transition hover:bg-muted/60"
+                      onClick={() =>
+                        setCustomW(Math.min(MAX_RESOLUTION, customW + 10))
+                      }
+                      type="button"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className="pt-5 text-muted-foreground">×</span>
+                {/* Height stepper */}
+                <div className="flex flex-col items-center gap-1 flex-1">
+                  <span className="text-[10px] text-muted-foreground">H</span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-foreground/70 text-sm transition hover:bg-muted/60"
+                      onClick={() => setCustomH(Math.max(1, customH - 10))}
+                      type="button"
+                    >
+                      −
+                    </button>
+                    <input
+                      className="w-16 rounded-lg border border-border/20 bg-muted/20 py-1 text-center text-sm font-mono tabular-nums text-foreground/80 outline-none transition focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
+                      max={MAX_RESOLUTION}
+                      min={1}
+                      onBlur={(e) => {
+                        const v = Math.min(
+                          MAX_RESOLUTION,
+                          Math.max(1, parseInt(e.target.value) || 1),
+                        );
+                        setCustomH(v);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") (e.target as HTMLElement).blur();
+                        if (e.key === "Escape")
+                          (e.target as HTMLElement).blur();
+                      }}
+                      style={{ appearance: "none", MozAppearance: "none" }}
+                      type="number"
+                      value={customH}
+                    />
+                    <button
+                      className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-foreground/70 text-sm transition hover:bg-muted/60"
+                      onClick={() =>
+                        setCustomH(Math.min(MAX_RESOLUTION, customH + 10))
+                      }
+                      type="button"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <Button
