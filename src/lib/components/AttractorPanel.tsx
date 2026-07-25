@@ -520,6 +520,7 @@ export function AttractorPanel({
                       min={system.params.min[i] ?? defaultVal * 0.1}
                       name={system.params.names[i]}
                       onChange={(v) => onParamChange(i, v)}
+                      step={system.params.steps?.[i]}
                       value={params[i] ?? defaultVal}
                     />
                   ))}
@@ -770,6 +771,7 @@ export function AttractorPanel({
                       min={system.params.min[i] ?? defaultVal * 0.1}
                       name={system.params.names[i]}
                       onChange={(v) => onParamChange(i, v)}
+                      step={system.params.steps?.[i]}
                       value={params[i] ?? defaultVal}
                     />
                   ))}
