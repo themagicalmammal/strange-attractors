@@ -310,6 +310,7 @@ interface ParamCellProps {
   min: number;
   name: string;
   onChange: (v: number) => void;
+  onReset?: () => void;
   step?: number;
   value: number;
 }
@@ -321,6 +322,7 @@ function ParamCell({
   min,
   name,
   onChange,
+  onReset,
   step,
   value,
 }: ParamCellProps) {
@@ -339,9 +341,22 @@ function ParamCell({
             {name}
           </span>
         </div>
-        <span className="rounded bg-muted dark:bg-white/4 px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-muted-foreground dark:text-white/50 transition-colors group-hover/cell:text-foreground dark:group-hover/cell:text-white/70">
-          {formatParam(value)}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className="rounded bg-muted dark:bg-white/4 px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-muted-foreground dark:text-white/50 transition-colors group-hover/cell:text-foreground dark:group-hover/cell:text-white/70">
+            {formatParam(value)}
+          </span>
+          {onReset && (
+            <button
+              className="flex size-4 items-center justify-center rounded text-[9px] text-muted-foreground/40 transition hover:text-foreground hover:bg-muted/50 dark:text-white/15 dark:hover:text-white/70"
+              onClick={(e) => {
+                e.stopPropagation();
+                onReset();
+              }}
+            >
+              ↺
+            </button>
+          )}
+        </div>
         {description && (
           <TooltipProvider>
             <Tooltip>
@@ -519,6 +534,7 @@ export function AttractorPanel({
                       min={system.params.min[i] ?? defaultVal * 0.1}
                       name={system.params.names[i]}
                       onChange={(v) => onParamChange(i, v)}
+                      onReset={() => onParamChange(i, defaultVal)}
                       step={system.params.steps?.[i]}
                       value={params[i] ?? defaultVal}
                     />
@@ -539,6 +555,7 @@ export function AttractorPanel({
                     min={0.1}
                     name="Color speed"
                     onChange={onColorSpeedChange}
+                    onReset={() => onColorSpeedChange(1)}
                     value={colorSpeed}
                   />
                   <ParamCell
@@ -549,6 +566,7 @@ export function AttractorPanel({
                     min={0.5}
                     name="Point size"
                     onChange={onPointSizeChange}
+                    onReset={() => onPointSizeChange(1.5)}
                     value={pointSize}
                   />
                 </div>
@@ -564,6 +582,7 @@ export function AttractorPanel({
                     min={0.1}
                     name="Speed"
                     onChange={onSpeedChange}
+                    onReset={() => onSpeedChange(0.5)}
                     step={0.1}
                     value={speed}
                   />
@@ -574,6 +593,7 @@ export function AttractorPanel({
                     min={1}
                     name="Steps / frame"
                     onChange={onStepsChange}
+                    onReset={() => onStepsChange(50)}
                     value={stepsPerFrame}
                   />
                 </div>
@@ -766,6 +786,7 @@ export function AttractorPanel({
                       min={system.params.min[i] ?? defaultVal * 0.1}
                       name={system.params.names[i]}
                       onChange={(v) => onParamChange(i, v)}
+                      onReset={() => onParamChange(i, defaultVal)}
                       step={system.params.steps?.[i]}
                       value={params[i] ?? defaultVal}
                     />
@@ -786,6 +807,7 @@ export function AttractorPanel({
                     min={0.1}
                     name="Color speed"
                     onChange={onColorSpeedChange}
+                    onReset={() => onColorSpeedChange(1)}
                     value={colorSpeed}
                   />
                   <ParamCell
@@ -796,6 +818,7 @@ export function AttractorPanel({
                     min={0.5}
                     name="Point size"
                     onChange={onPointSizeChange}
+                    onReset={() => onPointSizeChange(1.5)}
                     value={pointSize}
                   />
                 </div>
@@ -811,6 +834,7 @@ export function AttractorPanel({
                     min={0.1}
                     name="Speed"
                     onChange={onSpeedChange}
+                    onReset={() => onSpeedChange(0.5)}
                     step={0.1}
                     value={speed}
                   />
@@ -821,6 +845,7 @@ export function AttractorPanel({
                     min={1}
                     name="Steps / frame"
                     onChange={onStepsChange}
+                    onReset={() => onStepsChange(50)}
                     value={stepsPerFrame}
                   />
                 </div>

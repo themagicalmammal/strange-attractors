@@ -1,16 +1,13 @@
 import { useRef } from "react";
 
-import { zoomCamera } from "./AttractorCanvas";
+import { frameCamera, zoomCamera } from "./AttractorCanvas";
 
 export function ZoomControls() {
   const holdTimer = useRef<null | ReturnType<typeof setTimeout>>(null);
   const zoomInterval = useRef<null | ReturnType<typeof setInterval>>(null);
 
   const startZoom = (direction: number) => {
-    // One small step immediately on press
     zoomCamera(direction);
-
-    // Hold to continue stepping
     holdTimer.current = setTimeout(() => {
       zoomInterval.current = setInterval(() => {
         zoomCamera(direction);
@@ -27,36 +24,6 @@ export function ZoomControls() {
 
   return (
     <div className="fixed bottom-6 right-6 z-10 flex flex-col gap-2">
-      {/* Zoom in */}
-      <button
-        aria-label="Zoom in"
-        className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-border/40 bg-background/90 text-foreground shadow-sm backdrop-blur-sm transition-smooth hover:border-border/70 hover:shadow-md active:scale-95 dark:border-border/20 dark:bg-background/80"
-        onMouseDown={() => startZoom(1)}
-        onMouseLeave={stopZoom}
-        onMouseUp={stopZoom}
-        onTouchEnd={stopZoom}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          startZoom(1);
-        }}
-      >
-        <svg
-          className="size-4"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth={2.5}
-          viewBox="0 0 24 24"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="M21 21l-4.35-4.35" />
-          <path d="M11 8v6M8 11h6" />
-        </svg>
-        <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-md bg-foreground/90 px-2 py-1 text-xs text-background opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
-          Zoom in
-        </span>
-      </button>
-
       {/* Zoom out */}
       <button
         aria-label="Zoom out"
@@ -84,6 +51,61 @@ export function ZoomControls() {
         </svg>
         <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-md bg-foreground/90 px-2 py-1 text-xs text-background opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
           Zoom out
+        </span>
+      </button>
+
+      {/* Reset view */}
+      <button
+        aria-label="Reset view"
+        className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-border/40 bg-background/90 text-foreground shadow-sm backdrop-blur-sm transition-smooth hover:border-border/70 hover:shadow-md active:scale-95 dark:border-border/20 dark:bg-background/80"
+        onClick={() => frameCamera()}
+      >
+        <svg
+          className="size-4"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 0 0 1 6.74 2.74L21 8" />
+          <path d="M21 3v5h-5" />
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 0 0 1-6.74-2.74L3 16" />
+          <path d="M3 21v-5h5" />
+        </svg>
+        <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-md bg-foreground/90 px-2 py-1 text-xs text-background opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
+          Reset view
+        </span>
+      </button>
+
+      {/* Zoom in */}
+      <button
+        aria-label="Zoom in"
+        className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-border/40 bg-background/90 text-foreground shadow-sm backdrop-blur-sm transition-smooth hover:border-border/70 hover:shadow-md active:scale-95 dark:border-border/20 dark:bg-background/80"
+        onMouseDown={() => startZoom(1)}
+        onMouseLeave={stopZoom}
+        onMouseUp={stopZoom}
+        onTouchEnd={stopZoom}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          startZoom(1);
+        }}
+      >
+        <svg
+          className="size-4"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth={2.5}
+          viewBox="0 0 24 24"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.35-4.35" />
+          <path d="M11 8v6M8 11h6" />
+        </svg>
+        <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-md bg-foreground/90 px-2 py-1 text-xs text-background opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
+          Zoom in
         </span>
       </button>
     </div>

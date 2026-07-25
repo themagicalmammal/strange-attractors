@@ -40,13 +40,14 @@ const config = {
 // ─── Shaders ───────────────────────────────────────────────────
 
 const VERT = /* glsl */ `
+  uniform float uScale;
   attribute vec3 aColor;
   attribute float aSize;
   varying vec3 vColor;
   void main() {
     vColor = aColor;
     vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = aSize * (200.0 / -mvPos.z);
+    gl_PointSize = aSize * (uScale * 1.5 / -mvPos.z);
     gl_Position = projectionMatrix * mvPos;
   }
 `;
@@ -103,6 +104,7 @@ let lastState: Vector3 = [0, 0, 0];
 let resizeObserver: null | ResizeObserver = null;
 let running = false;
 let animId = 0;
+let uScaleUniform: { value: number } | null = null;
 
 const MAX_POINTS = 2_000_000;
 
@@ -165,11 +167,15 @@ function initScene(
   geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
   geometry.setDrawRange(0, 0);
 
+  const uScaleVal = { value: 1.0 };
+  uScaleUniform = uScaleVal;
+
   material = new THREE.ShaderMaterial({
     blending: THREE.AdditiveBlending,
     depthWrite: false,
     fragmentShader: FRAG,
     transparent: true,
+    uniforms: { uScale: uScaleVal },
     vertexShader: VERT,
   });
 
@@ -223,7 +229,7 @@ function doReset() {
   ] as Vector3;
 }
 
-function frameCamera() {
+export function frameCamera() {
   if (!camera || !controls) return;
   const sys = config.system;
   if (!sys || !sys.limits) return;
@@ -235,6 +241,12 @@ function frameCamera() {
   const sy = (sys.limits.ylim?.[1] ?? 20) - (sys.limits.ylim?.[0] ?? -20);
   const sz = (sys.limits.zlim?.[1] ?? 20) - (sys.limits.zlim?.[0] ?? -20);
   const maxDim = Math.max(sx, sy, sz, 1);
+
+  // Update point scale so they render consistently relative to attractor size
+  if (uScaleUniform) {
+    uScaleUniform.value = maxDim;
+  }
+
   camera.position.set(cx + maxDim, cy + maxDim * 0.6, cz + maxDim);
   controls.target.set(cx, cy, cz);
 }
@@ -296,14 +308,24 @@ export function zoomCamera(direction: number) {
   const target = controls.target;
   const dir = new THREE.Vector3().subVectors(camera.position, target);
   const dist = dir.length();
-  if (dist < 0.5) return;
+
+  // Compute scale-aware minimum zoom distance
+  const sys = config.system;
+  let minDist = 0.5;
+  if (sys?.limits) {
+    const sx = (sys.limits.xlim?.[1] ?? 20) - (sys.limits.xlim?.[0] ?? -20);
+    const sy = (sys.limits.ylim?.[1] ?? 20) - (sys.limits.ylim?.[0] ?? -20);
+    const sz = (sys.limits.zlim?.[1] ?? 20) - (sys.limits.zlim?.[0] ?? -20);
+    minDist = Math.max(sx, sy, sz) * 0.02;
+  }
+  if (dist < minDist) return;
 
   // Zoom in steps shrink, zoom out steps grow
   const step = dist * ZOOM_STEP;
   const newDist =
     direction > 0
-      ? Math.max(dist - step, 0.5) // zoom in: don't go closer than 0.5
-      : dist + step; // zoom out
+      ? Math.max(dist - step, minDist)
+      : dist + step;
 
   dir.normalize().multiplyScalar(newDist);
   camera.position.copy(target).add(dir);
