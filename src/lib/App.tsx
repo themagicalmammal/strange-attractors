@@ -267,7 +267,7 @@ export default function App({
       />
 
       {/* Header controls — top-right */}
-      <div className="fixed top-6 right-6 z-20 flex items-center gap-2">
+      <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-20 flex items-center gap-2">
         <AnimatedThemeToggler
           className="h-10 w-10 rounded-xl bg-background/90 text-foreground transition-smooth active:scale-95"
           onThemeChange={(t) => themeCtx.setTheme(t as "dark" | "light")}
