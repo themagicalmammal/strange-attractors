@@ -1,6 +1,6 @@
 {
-  "name": "attractor-react",
-  "version": "1.0.0",
+  "name": "strange-attractorz",
+  "version": "1.0.1",
   "description": "Interactive 3D strange attractor visualization with real-time parameter control",
   "type": "module",
   "main": "./dist/attractor-react.cjs",
