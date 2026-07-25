@@ -1,0 +1,47 @@
+{
+  "name": "strange-background",
+  "version": "0.1.0",
+  "description": "Strange attractor as a fullscreen background component for React",
+  "type": "module",
+  "main": "./dist/strange-background.cjs",
+  "module": "./dist/strange-background.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/strange-background.js"
+      },
+      "require": {
+        "types": "./dist/types/cjs/index.d.ts",
+        "default": "./dist/strange-background.cjs"
+      }
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types --noEmit false && tsc --declaration --emitDeclarationOnly --outDir dist/types/cjs --noEmit false",
+    "build:package": "rm -rf dist && npm run build && npm run build:types && cp src/styles.css dist/styles.css"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "strange-attractorz": ">=1.0.0",
+    "three": "^0.175.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.175.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "strange-attractorz": "file:../../",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.3"
+  }
+}

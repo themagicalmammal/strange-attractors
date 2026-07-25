@@ -18,6 +18,7 @@ interface AttractorCanvasProps {
     scene: THREE.Scene;
   }) => void;
   params: number[];
+  pointCount?: number;
   pointSize: number;
   resetKey: number;
   speed: number;
@@ -31,6 +32,7 @@ const config = {
   autoRotate: true,
   colorSpeed: 1,
   params: null as unknown as number[],
+  pointCount: 2_000_000,
   pointSize: 1.5,
   speed: 0.5,
   stepsPerFrame: 50,
@@ -106,7 +108,6 @@ let running = false;
 let animId = 0;
 let uScaleUniform: null | { value: number } = null;
 
-const MAX_POINTS = 2_000_000;
 
 function hexToThreeColor(hex: string): number {
   const normalized = hex.replace("#", "");
@@ -157,9 +158,10 @@ function initScene(
   scene.add(new THREE.AmbientLight(0xffffff, 1));
 
   // Buffers
-  positions = new Float32Array(MAX_POINTS * 3);
-  colors = new Float32Array(MAX_POINTS * 3);
-  sizes = new Float32Array(MAX_POINTS);
+  const n = config.pointCount;
+  positions = new Float32Array(n * 3);
+  colors = new Float32Array(n * 3);
+  sizes = new Float32Array(n);
 
   geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -207,7 +209,7 @@ function doReset() {
   geometry.setDrawRange(0, 0);
 
   const data = integrate(sys, 50_000, 0.005, config.params);
-  const count = Math.min(data.length / 3, MAX_POINTS);
+  const count = Math.min(data.length / 3, config.pointCount);
   for (let i = 0; i < count; i++) {
     positions[i * 3] = data[i * 3];
     positions[i * 3 + 1] = data[i * 3 + 1];
@@ -259,7 +261,7 @@ function animate() {
 
   const toAdd = Math.min(
     Math.round(config.stepsPerFrame * config.speed),
-    MAX_POINTS - frameCount,
+    config.pointCount - frameCount,
   );
   if (toAdd > 0 && config.system && config.params) {
     const { data, lastState: newState } = continueIntegrate(
@@ -277,7 +279,7 @@ function animate() {
       positions![dst] = data[src];
       positions![dst + 1] = data[src + 1];
       positions![dst + 2] = data[src + 2];
-      const t = ((frameCount + i) / MAX_POINTS) % 1;
+      const t = ((frameCount + i) / config.pointCount) % 1;
       const [r, g, b] = hslToRgb((t * config.colorSpeed) % 1, 0.85, 0.55);
       colors![dst] = r;
       colors![dst + 1] = g;
@@ -365,6 +367,7 @@ export function AttractorCanvas({
   colorSpeed,
   onSceneReady,
   params,
+  pointCount,
   pointSize,
   resetKey,
   speed,
@@ -384,6 +387,7 @@ export function AttractorCanvas({
     }
 
     config.params = params;
+    config.pointCount = pointCount ?? 2_000_000;
     config.stepsPerFrame = stepsPerFrame;
     config.colorSpeed = colorSpeed;
     config.pointSize = pointSize;

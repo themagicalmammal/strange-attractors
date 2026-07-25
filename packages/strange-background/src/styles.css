@@ -1,0 +1,10 @@
+/* strange-background styles */
+/* Minimal CSS for the AttractorBackground component overlay.
+   The component itself uses inline styles for positioning.
+   This file is exported for consumers who want to add custom styles. */
+
+/* Root container — rendered by AttractorBackground with inline styles */
+/* .strange-bg-root { position: fixed; inset: 0; z-index: -1; overflow: hidden; } */
+
+/* Content overlay — rendered by AttractorBackground with inline styles */
+/* .strange-bg-overlay { position: relative; z-index: 1; } */
