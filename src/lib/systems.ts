@@ -487,7 +487,6 @@ export const systems: AttractorSystem[] = [
       max: [1, 10, 10],
       min: [-1, -10, -10],
       names: ["a", "b", "c"],
-      steps: [0.00001],
     },
   },
   {
