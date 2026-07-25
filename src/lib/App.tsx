@@ -78,11 +78,6 @@ function parseUrlParams(search?: string): {
   return result;
 }
 
-const asciiNames = (count: number): string[] =>
-  Array.from({ length: count }, (_unused, i) =>
-    i < 26 ? String.fromCharCode(97 + i) : `p${i}`,
-  );
-
 function generateShareCode(
   system: AttractorSystem,
   params: number[],
@@ -92,14 +87,8 @@ function generateShareCode(
   speed: number,
   autoRotate: boolean,
 ): string {
-  const names = asciiNames(params.length);
   const paramValues = params.map((v) => v.toFixed(3)).join(", ");
-  const setters = names
-    .map(
-      () =>
-        `      onParamChange={(i, v) => { const p = [...params]; p[i] = v; setParams(p); }}`,
-    )
-    .join("\n");
+  const onParamChange = `onParamChange={(i, v) => { const p = [...params]; p[i] = v; setParams(p); }}`;
 
   return `// Attractor — ${system.name}
 // Params: ${system.params.names.join(", ")}
@@ -144,13 +133,13 @@ export function App() {
         pointSize={pointSize}
         speed={speed}
         autoRotate={autoRotate}
-${setters}
         onStepsChange={setStepsPerFrame}
         onColorSpeedChange={setColorSpeed}
         onPointSizeChange={setPointSize}
         onSpeedChange={setSpeed}
         onAutoRotateChange={setAutoRotate}
         onReset={() => setResetKey((k) => k + 1)}
+        ${onParamChange}
       />
     </>
   );
@@ -455,7 +444,7 @@ export default function App({
                   </Button>
                 </div>
                 <div className="relative">
-                  <pre className="rounded-xl border border-border/40 bg-[#282a36] px-5 py-5 text-sm text-zinc-100 font-mono overflow-x-auto select-all whitespace-nowrap leading-relaxed">
+                  <pre className="rounded-xl border border-zinc-800 bg-zinc-950 px-5 py-5 text-sm text-zinc-100 font-mono overflow-x-auto select-all whitespace-nowrap leading-relaxed">
                     {shareUrl}
                   </pre>
                 </div>
