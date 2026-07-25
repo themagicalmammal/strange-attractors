@@ -1,5 +1,6 @@
 import type { AttractorSystem } from "../systems";
 
+import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/lib/components/ui/button";
@@ -202,7 +203,7 @@ function SystemSelector({
         {selected?.name ?? "Select"}
       </button>
       {open && (
-        <div className="absolute right-0 z-50 mt-2 min-w-[160px] max-w-[240px] animate-in fade-in-0 slide-in-from-top-2">
+        <div className="absolute right-0 z-50 mt-2 min-w-40 max-w-60 animate-in fade-in-0 slide-in-from-top-2">
           <div
             className="max-h-64 overflow-y-auto rounded-xl border border-border/30 bg-background/95 p-1.5 shadow-xl backdrop-blur-md"
             ref={listRef}
@@ -376,16 +377,7 @@ function ParamCell({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger className="cursor-help text-muted-foreground/40 hover:text-muted-foreground transition-colors dark:text-white/20 dark:hover:text-white/50">
-                  <svg
-                    className="size-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-1M12 13h.01" />
-                  </svg>
+                  <Info className="size-3" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs" side="top" sideOffset={8}>
                   <p>{description}</p>

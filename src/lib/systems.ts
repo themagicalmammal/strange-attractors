@@ -28,13 +28,13 @@ export type EqFn = (
 ) => [number, number, number];
 
 export interface AttractorSystem {
+  color: string;
   equation: (state: Vector3, params: number[]) => Vector3;
   id: string;
   initCoord: Vector3;
   limits?: AttractorLimits;
   name: string;
   params: AttractorParams;
-  color: string;
 }
 
 // ─── Equation functions ────────────────────────────────────────
@@ -246,6 +246,7 @@ const threeCellCNN: EqFn = (x, y, z, p) => [
 
 export const systems: AttractorSystem[] = [
   {
+    color: "#ef4444",
     equation: wrap(lorenz),
     id: "lorenz",
     initCoord: [0, 1, 0],
@@ -257,9 +258,9 @@ export const systems: AttractorSystem[] = [
       min: [-10, 0, 0],
       names: ["σ (sigma)", "ρ (rho)", "β (beta)"],
     },
-    color: "#ef4444",
   },
   {
+    color: "#f59e0b",
     equation: wrap(roessler),
     id: "roessler",
     initCoord: [0.1, 0, -0.1],
@@ -271,9 +272,9 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5, -10],
       names: ["a", "b", "c"],
     },
-    color: "#f59e0b",
   },
   {
+    color: "#eab308",
     equation: wrap(chen),
     id: "chen",
     initCoord: [-10, 0, 37],
@@ -285,36 +286,36 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10],
       names: ["a", "b", "c"],
     },
-    color: "#eab308",
   },
   {
+    color: "#84cc16",
     equation: wrap(thomas),
     id: "thomas",
     initCoord: [0.01, 0, 0],
     limits: { xlim: [-2, 5], ylim: [-2, 4], zlim: [-2, 4] },
     name: "Thomas (1999)",
     params: { defaults: [0.208], max: [1, 1], min: [-1, -1], names: ["b"] },
-    color: "#84cc16",
   },
   {
+    color: "#22c55e",
     equation: wrap(halvorsen),
     id: "halvorsen",
     initCoord: [-1.48, 1.51, 2.04],
     limits: { xlim: [-20, 15], ylim: [-12, 8], zlim: [-12, 8] },
     name: "Halvorsen",
     params: { defaults: [1.89], max: [10, 10], min: [-10, -10], names: ["a"] },
-    color: "#22c55e",
   },
   {
+    color: "#14b8a6",
     equation: wrap(noseHoover),
     id: "nose_hoover",
     initCoord: [0.1, 0, -0.1],
     limits: { xlim: [-3, 1], ylim: [-3, 3], zlim: [-3, 3] },
     name: "Nose-Hoover",
     params: { defaults: [1], max: [10, 10], min: [-5, -5], names: ["a"] },
-    color: "#14b8a6",
   },
   {
+    color: "#06b6d4",
     equation: wrap(sakarya),
     id: "sakarya",
     initCoord: [1, -1, 1],
@@ -326,9 +327,9 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5],
       names: ["a", "b"],
     },
-    color: "#06b6d4",
   },
   {
+    color: "#3b82f6",
     equation: wrap(burkeShaw),
     id: "burke_shaw",
     initCoord: [1, 0, 0],
@@ -340,9 +341,9 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10],
       names: ["s", "v"],
     },
-    color: "#3b82f6",
   },
   {
+    color: "#6366f1",
     equation: wrap(rucklidge),
     id: "rucklidge",
     initCoord: [1, 0, 4.5],
@@ -354,9 +355,9 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10],
       names: ["k", "α (alpha)"],
     },
-    color: "#6366f1",
   },
   {
+    color: "#8b5cf6",
     equation: wrap(mooreSpiegel),
     id: "moore_spiegel",
     initCoord: [0, 0.8, 0],
@@ -368,9 +369,9 @@ export const systems: AttractorSystem[] = [
       min: [-20, -100],
       names: ["t", "r"],
     },
-    color: "#8b5cf6",
   },
   {
+    color: "#a855f7",
     equation: wrap(dequanLi),
     id: "dequan_li",
     initCoord: [0.01, 0, 0],
@@ -382,9 +383,9 @@ export const systems: AttractorSystem[] = [
       min: [-100, -10, -1, -10, -50, -50],
       names: ["a", "c", "d", "e", "k", "f"],
     },
-    color: "#a855f7",
   },
   {
+    color: "#d946ef",
     equation: wrap(langford),
     id: "langford",
     initCoord: [0.1, 0, 0],
@@ -396,9 +397,9 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -5, -10, -2, -5, -2],
       names: ["α", "β", "λ", "ω", "ρ", "ε", "ε₁"],
     },
-    color: "#d946ef",
   },
   {
+    color: "#ec4899",
     equation: wrap(dadras),
     id: "dadras",
     initCoord: [5, 0, -4],
@@ -410,9 +411,9 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10, -10, -50],
       names: ["a", "b", "c", "d", "h"],
     },
-    color: "#ec4899",
   },
   {
+    color: "#f43f5e",
     equation: wrap(hadley),
     id: "hadley",
     initCoord: [0, 0, 1],
@@ -424,9 +425,9 @@ export const systems: AttractorSystem[] = [
       min: [-5, -10, -10, -5],
       names: ["a", "b", "f", "g"],
     },
-    color: "#f43f5e",
   },
   {
+    color: "#fb923c",
     equation: wrap(chenLee),
     id: "chen_lee",
     initCoord: [1, 1, 1],
@@ -438,9 +439,9 @@ export const systems: AttractorSystem[] = [
       min: [-30, -30, -10],
       names: ["a", "b", "c"],
     },
-    color: "#fb923c",
   },
   {
+    color: "#eab308",
     equation: wrap(shimizuMorioka),
     id: "shimizu_morioka",
     initCoord: [-1, 2, 1],
@@ -452,9 +453,9 @@ export const systems: AttractorSystem[] = [
       min: [-2, -2],
       names: ["a", "B"],
     },
-    color: "#eab308",
   },
   {
+    color: "#f472b6",
     equation: wrap(chenLu),
     id: "chen_lu",
     initCoord: [1, 1, 30],
@@ -466,9 +467,9 @@ export const systems: AttractorSystem[] = [
       min: [-30, -10, -50],
       names: ["a", "b", "c"],
     },
-    color: "#f472b6",
   },
   {
+    color: "#818cf8",
     equation: wrap(yuWang),
     id: "yu_wang",
     initCoord: [0.1, 0, 15],
@@ -480,9 +481,9 @@ export const systems: AttractorSystem[] = [
       min: [-20, -50, -10, -10],
       names: ["a", "b", "c", "d"],
     },
-    color: "#818cf8",
   },
   {
+    color: "#34d399",
     equation: wrap(wangSun),
     id: "wang_sun",
     initCoord: [0.5, 0.1, 0.1],
@@ -494,9 +495,9 @@ export const systems: AttractorSystem[] = [
       min: [-3, -3, -3, -3, -5, -5],
       names: ["a", "b", "c", "d", "e", "f"],
     },
-    color: "#34d399",
   },
   {
+    color: "#2dd4bf",
     equation: wrap(finance),
     id: "finance",
     initCoord: [0, -10, 0.1],
@@ -508,9 +509,9 @@ export const systems: AttractorSystem[] = [
       min: [-1, -10, -10],
       names: ["a", "b", "c"],
     },
-    color: "#2dd4bf",
   },
   {
+    color: "#60a5fa",
     equation: wrap(lotkaVolterra),
     id: "lotka_volterra",
     initCoord: [1, 1, 1],
@@ -522,9 +523,9 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5, -10],
       names: ["a", "b", "c"],
     },
-    color: "#60a5fa",
   },
   {
+    color: "#a78bfa",
     equation: wrap(boualiType1),
     id: "bouali_1",
     initCoord: [0.012, 3.69, -0.09],
@@ -536,9 +537,9 @@ export const systems: AttractorSystem[] = [
       min: [-1, -5, -5, -20, -1, -100],
       names: ["k", "b", "μ", "p", "q", "s"],
     },
-    color: "#a78bfa",
   },
   {
+    color: "#fb7185",
     equation: wrap(boualiType2),
     id: "bouali_2",
     initCoord: [0.1, 3, 0.2],
@@ -550,9 +551,9 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10, -10, -10, -10],
       names: ["a", "b", "c", "s", "α", "β"],
     },
-    color: "#fb7185",
   },
   {
+    color: "#22d3ee",
     equation: wrap(boualiType3),
     id: "bouali_3",
     initCoord: [1, 1, 0],
@@ -564,9 +565,9 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10, -10],
       names: ["γ", "μ", "α", "β"],
     },
-    color: "#22d3ee",
   },
   {
+    color: "#facc15",
     equation: wrap(newtonLeipnik),
     id: "newton_leipnik",
     initCoord: [0.349, 0, -0.16],
@@ -578,9 +579,9 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5],
       names: ["α", "β"],
     },
-    color: "#facc15",
   },
   {
+    color: "#4ade80",
     equation: wrap(rikitake),
     id: "rikitake",
     initCoord: [1, 1, 1],
@@ -592,9 +593,9 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5],
       names: ["a", "b"],
     },
-    color: "#4ade80",
   },
   {
+    color: "#e879f9",
     equation: wrap(rabinovichFabrant),
     id: "rabinovich_fabrikant",
     initCoord: [0, 0, 1],
@@ -606,9 +607,9 @@ export const systems: AttractorSystem[] = [
       min: [-3, -5],
       names: ["α", "β"],
     },
-    color: "#e879f9",
   },
   {
+    color: "#38bdf8",
     equation: wrap(threeCellCNN),
     id: "three_cell_cnn",
     initCoord: [0, 0, 1],
@@ -620,7 +621,6 @@ export const systems: AttractorSystem[] = [
       min: [-3, -3, -3, -3, -3],
       names: ["a", "b", "c", "d", "e"],
     },
-    color: "#38bdf8",
   },
 ];
 

@@ -104,7 +104,7 @@ let lastState: Vector3 = [0, 0, 0];
 let resizeObserver: null | ResizeObserver = null;
 let running = false;
 let animId = 0;
-let uScaleUniform: { value: number } | null = null;
+let uScaleUniform: null | { value: number } = null;
 
 const MAX_POINTS = 2_000_000;
 
@@ -322,10 +322,7 @@ export function zoomCamera(direction: number) {
 
   // Zoom in steps shrink, zoom out steps grow
   const step = dist * ZOOM_STEP;
-  const newDist =
-    direction > 0
-      ? Math.max(dist - step, minDist)
-      : dist + step;
+  const newDist = direction > 0 ? Math.max(dist - step, minDist) : dist + step;
 
   dir.normalize().multiplyScalar(newDist);
   camera.position.copy(target).add(dir);
