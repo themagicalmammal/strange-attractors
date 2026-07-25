@@ -345,8 +345,6 @@ function ParamCell({
           <span className="rounded bg-muted dark:bg-white/4 px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-muted-foreground dark:text-white/50 transition-colors group-hover/cell:text-foreground dark:group-hover/cell:text-white/70">
             {formatParam(value)}
           </span>
-        </div>
-        <div className="flex items-center gap-1">
           {onReset && (
             <button
               className="flex size-4 items-center justify-center rounded text-[9px] text-muted-foreground/40 transition hover:text-foreground hover:bg-muted/50 dark:text-white/15 dark:hover:text-white/70"
@@ -358,28 +356,28 @@ function ParamCell({
               ↺
             </button>
           )}
-          {description && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger className="cursor-help text-muted-foreground/40 hover:text-muted-foreground transition-colors dark:text-white/20 dark:hover:text-white/50">
-                  <svg
-                    className="size-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-1M12 13h.01" />
-                  </svg>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs" side="top" sideOffset={8}>
-                  <p>{description}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
         </div>
+        {description && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="-mr-1 cursor-help text-muted-foreground/40 hover:text-muted-foreground transition-colors dark:text-white/20 dark:hover:text-white/50">
+                <svg
+                  className="size-3"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-1M12 13h.01" />
+                </svg>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs" side="top" sideOffset={8}>
+                <p>{description}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
       <StyledSlider
         color={accent}
