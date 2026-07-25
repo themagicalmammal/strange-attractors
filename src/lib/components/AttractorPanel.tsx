@@ -261,9 +261,12 @@ interface AttractorPanelProps {
 // ─── Helpers ────────────────────────────────────────────────
 
 function formatParam(v: number): string {
-  if (Math.abs(v) >= 100) return Math.round(v).toString();
-  if (Math.abs(v) >= 1) return v.toFixed(2);
-  return v.toFixed(4);
+  const abs = Math.abs(v);
+  if (abs === 0) return "0";
+  if (abs >= 100) return Math.round(v).toString();
+  const decimals =
+    abs >= 10 ? 1 : abs >= 1 ? 2 : abs >= 0.01 ? 4 : abs >= 0.0001 ? 6 : 8;
+  return parseFloat(v.toFixed(decimals)).toString();
 }
 
 // ─── Panel shell ────────────────────────────────────────────
