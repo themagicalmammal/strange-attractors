@@ -197,7 +197,6 @@ export function WallpaperDownload({
                     <input
                       className="w-16 rounded-lg border border-border/20 bg-muted/20 py-1 text-center text-sm font-mono tabular-nums text-foreground/80 outline-none transition focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
                       inputMode="numeric"
-                      pattern="[0-9]*"
                       onBlur={(e) => {
                         const v = Math.min(
                           MAX_RESOLUTION,
@@ -205,11 +204,16 @@ export function WallpaperDownload({
                         );
                         setCustomW(v);
                       }}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value) || 1;
+                        setCustomW(Math.min(MAX_RESOLUTION, Math.max(1, v)));
+                      }}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") (e.target as HTMLElement).blur();
                         if (e.key === "Escape")
                           (e.target as HTMLElement).blur();
                       }}
+                      pattern="[0-9]*"
                       type="text"
                       value={customW}
                     />
@@ -239,8 +243,6 @@ export function WallpaperDownload({
                     <input
                       className="w-16 rounded-lg border border-border/20 bg-muted/20 py-1 text-center text-sm font-mono tabular-nums text-foreground/80 outline-none transition focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
                       inputMode="numeric"
-                      pattern="[0-9]*"
-                      style={{ appearance: "none", MozAppearance: "none" }}
                       onBlur={(e) => {
                         const v = Math.min(
                           MAX_RESOLUTION,
@@ -248,11 +250,17 @@ export function WallpaperDownload({
                         );
                         setCustomH(v);
                       }}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value) || 1;
+                        setCustomH(Math.min(MAX_RESOLUTION, Math.max(1, v)));
+                      }}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") (e.target as HTMLElement).blur();
                         if (e.key === "Escape")
                           (e.target as HTMLElement).blur();
                       }}
+                      pattern="[0-9]*"
+                      style={{ appearance: "none", MozAppearance: "none" }}
                       type="text"
                       value={customH}
                     />
