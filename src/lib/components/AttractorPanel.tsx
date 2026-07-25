@@ -166,6 +166,7 @@ function SystemSelector({
   const listRef = useRef<HTMLDivElement>(null);
 
   const selected = systems.find((s) => s.id === selectedId);
+  const activeColor = selected?.color ?? "#6366f1";
 
   useEffect(() => {
     if (!open) return;
@@ -194,7 +195,10 @@ function SystemSelector({
         className="rounded-xl border border-border/20 bg-muted/30 px-3 py-1.5 text-sm font-medium text-foreground/80 transition hover:border-border/40 hover:bg-muted/50 dark:border-white/10 dark:bg-white/5 dark:text-white/70"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="mr-1.5 inline-block size-2 rounded-full bg-indigo-400" />
+        <span
+          className="mr-1.5 inline-block size-2 rounded-full"
+          style={{ backgroundColor: activeColor }}
+        />
         {selected?.name ?? "Select"}
       </button>
       {open && (
@@ -203,24 +207,30 @@ function SystemSelector({
             className="max-h-64 overflow-y-auto rounded-xl border border-border/30 bg-background/95 p-1.5 shadow-xl backdrop-blur-md"
             ref={listRef}
           >
-            {systems.map((s) => (
-              <button
-                className={`w-full rounded-lg px-3 py-2 text-left text-sm transition ${
-                  s.id === selectedId
-                    ? "bg-indigo-500/10 font-semibold text-indigo-600 dark:text-indigo-400"
-                    : "text-foreground/70 hover:bg-muted/50"
-                }`}
-                data-id={s.id}
-                key={s.id}
-                onClick={() => {
-                  onChange(s.id);
-                  setOpen(false);
-                }}
-              >
-                <span className="mr-2 inline-block size-2 rounded-full bg-indigo-400" />
-                {s.name}
-              </button>
-            ))}
+            {systems.map((s) => {
+              const isSel = s.id === selectedId;
+              return (
+                <button
+                  className={`w-full rounded-lg px-3 py-2 text-left text-sm transition ${
+                    isSel
+                      ? "bg-indigo-500/10 font-semibold text-indigo-600 dark:text-indigo-400"
+                      : "text-foreground/70 hover:bg-muted/50"
+                  }`}
+                  data-id={s.id}
+                  key={s.id}
+                  onClick={() => {
+                    onChange(s.id);
+                    setOpen(false);
+                  }}
+                >
+                  <span
+                    className="mr-2 inline-block size-2 rounded-full"
+                    style={{ backgroundColor: s.color }}
+                  />
+                  {s.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

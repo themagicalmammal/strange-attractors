@@ -34,6 +34,7 @@ export interface AttractorSystem {
   limits?: AttractorLimits;
   name: string;
   params: AttractorParams;
+  color: string;
 }
 
 // ─── Equation functions ────────────────────────────────────────
@@ -256,6 +257,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, 0, 0],
       names: ["σ (sigma)", "ρ (rho)", "β (beta)"],
     },
+    color: "#ef4444",
   },
   {
     equation: wrap(roessler),
@@ -269,6 +271,7 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5, -10],
       names: ["a", "b", "c"],
     },
+    color: "#f59e0b",
   },
   {
     equation: wrap(chen),
@@ -282,6 +285,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10],
       names: ["a", "b", "c"],
     },
+    color: "#eab308",
   },
   {
     equation: wrap(thomas),
@@ -290,6 +294,7 @@ export const systems: AttractorSystem[] = [
     limits: { xlim: [-2, 5], ylim: [-2, 4], zlim: [-2, 4] },
     name: "Thomas (1999)",
     params: { defaults: [0.208], max: [1, 1], min: [-1, -1], names: ["b"] },
+    color: "#84cc16",
   },
   {
     equation: wrap(halvorsen),
@@ -298,6 +303,7 @@ export const systems: AttractorSystem[] = [
     limits: { xlim: [-20, 15], ylim: [-12, 8], zlim: [-12, 8] },
     name: "Halvorsen",
     params: { defaults: [1.89], max: [10, 10], min: [-10, -10], names: ["a"] },
+    color: "#22c55e",
   },
   {
     equation: wrap(noseHoover),
@@ -306,6 +312,7 @@ export const systems: AttractorSystem[] = [
     limits: { xlim: [-3, 1], ylim: [-3, 3], zlim: [-3, 3] },
     name: "Nose-Hoover",
     params: { defaults: [1], max: [10, 10], min: [-5, -5], names: ["a"] },
+    color: "#14b8a6",
   },
   {
     equation: wrap(sakarya),
@@ -319,6 +326,7 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5],
       names: ["a", "b"],
     },
+    color: "#06b6d4",
   },
   {
     equation: wrap(burkeShaw),
@@ -332,6 +340,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10],
       names: ["s", "v"],
     },
+    color: "#3b82f6",
   },
   {
     equation: wrap(rucklidge),
@@ -345,6 +354,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10],
       names: ["k", "α (alpha)"],
     },
+    color: "#6366f1",
   },
   {
     equation: wrap(mooreSpiegel),
@@ -358,6 +368,7 @@ export const systems: AttractorSystem[] = [
       min: [-20, -100],
       names: ["t", "r"],
     },
+    color: "#8b5cf6",
   },
   {
     equation: wrap(dequanLi),
@@ -371,6 +382,7 @@ export const systems: AttractorSystem[] = [
       min: [-100, -10, -1, -10, -50, -50],
       names: ["a", "c", "d", "e", "k", "f"],
     },
+    color: "#a855f7",
   },
   {
     equation: wrap(langford),
@@ -384,6 +396,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -5, -10, -2, -5, -2],
       names: ["α", "β", "λ", "ω", "ρ", "ε", "ε₁"],
     },
+    color: "#d946ef",
   },
   {
     equation: wrap(dadras),
@@ -397,6 +410,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10, -10, -50],
       names: ["a", "b", "c", "d", "h"],
     },
+    color: "#ec4899",
   },
   {
     equation: wrap(hadley),
@@ -410,6 +424,7 @@ export const systems: AttractorSystem[] = [
       min: [-5, -10, -10, -5],
       names: ["a", "b", "f", "g"],
     },
+    color: "#f43f5e",
   },
   {
     equation: wrap(chenLee),
@@ -423,6 +438,7 @@ export const systems: AttractorSystem[] = [
       min: [-30, -30, -10],
       names: ["a", "b", "c"],
     },
+    color: "#fb923c",
   },
   {
     equation: wrap(shimizuMorioka),
@@ -436,6 +452,7 @@ export const systems: AttractorSystem[] = [
       min: [-2, -2],
       names: ["a", "B"],
     },
+    color: "#eab308",
   },
   {
     equation: wrap(chenLu),
@@ -449,6 +466,7 @@ export const systems: AttractorSystem[] = [
       min: [-30, -10, -50],
       names: ["a", "b", "c"],
     },
+    color: "#f472b6",
   },
   {
     equation: wrap(yuWang),
@@ -462,6 +480,7 @@ export const systems: AttractorSystem[] = [
       min: [-20, -50, -10, -10],
       names: ["a", "b", "c", "d"],
     },
+    color: "#818cf8",
   },
   {
     equation: wrap(wangSun),
@@ -475,6 +494,7 @@ export const systems: AttractorSystem[] = [
       min: [-3, -3, -3, -3, -5, -5],
       names: ["a", "b", "c", "d", "e", "f"],
     },
+    color: "#34d399",
   },
   {
     equation: wrap(finance),
@@ -488,6 +508,7 @@ export const systems: AttractorSystem[] = [
       min: [-1, -10, -10],
       names: ["a", "b", "c"],
     },
+    color: "#2dd4bf",
   },
   {
     equation: wrap(lotkaVolterra),
@@ -501,6 +522,7 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5, -10],
       names: ["a", "b", "c"],
     },
+    color: "#60a5fa",
   },
   {
     equation: wrap(boualiType1),
@@ -514,6 +536,7 @@ export const systems: AttractorSystem[] = [
       min: [-1, -5, -5, -20, -1, -100],
       names: ["k", "b", "μ", "p", "q", "s"],
     },
+    color: "#a78bfa",
   },
   {
     equation: wrap(boualiType2),
@@ -527,6 +550,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10, -10, -10, -10],
       names: ["a", "b", "c", "s", "α", "β"],
     },
+    color: "#fb7185",
   },
   {
     equation: wrap(boualiType3),
@@ -540,6 +564,7 @@ export const systems: AttractorSystem[] = [
       min: [-10, -10, -10, -10],
       names: ["γ", "μ", "α", "β"],
     },
+    color: "#22d3ee",
   },
   {
     equation: wrap(newtonLeipnik),
@@ -553,6 +578,7 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5],
       names: ["α", "β"],
     },
+    color: "#facc15",
   },
   {
     equation: wrap(rikitake),
@@ -566,6 +592,7 @@ export const systems: AttractorSystem[] = [
       min: [-5, -5],
       names: ["a", "b"],
     },
+    color: "#4ade80",
   },
   {
     equation: wrap(rabinovichFabrant),
@@ -579,6 +606,7 @@ export const systems: AttractorSystem[] = [
       min: [-3, -5],
       names: ["α", "β"],
     },
+    color: "#e879f9",
   },
   {
     equation: wrap(threeCellCNN),
@@ -592,6 +620,7 @@ export const systems: AttractorSystem[] = [
       min: [-3, -3, -3, -3, -3],
       names: ["a", "b", "c", "d", "e"],
     },
+    color: "#38bdf8",
   },
 ];
 
