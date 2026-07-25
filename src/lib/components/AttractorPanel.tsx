@@ -260,6 +260,12 @@ interface AttractorPanelProps {
 
 // ─── Helpers ────────────────────────────────────────────────
 
+function displayName(name: string): string {
+  // "ρ (rho)" → "ρ", "α (alpha)" → "α"
+  const match = name.match(/^([^ ]+)(\s+\(.+\))?$/);
+  return match ? match[1].trim() : name;
+}
+
 function formatParam(v: number): string {
   const abs = Math.abs(v);
   if (abs === 0) return "0";
@@ -532,7 +538,7 @@ export function AttractorPanel({
                       key={system.params.names[i]}
                       max={system.params.max[i] ?? defaultVal * 5}
                       min={system.params.min[i] ?? defaultVal * 0.1}
-                      name={system.params.names[i]}
+                      name={displayName(system.params.names[i])}
                       onChange={(v) => onParamChange(i, v)}
                       onReset={() => onParamChange(i, defaultVal)}
                       step={system.params.steps?.[i]}
@@ -784,7 +790,7 @@ export function AttractorPanel({
                       key={system.params.names[i]}
                       max={system.params.max[i] ?? defaultVal * 5}
                       min={system.params.min[i] ?? defaultVal * 0.1}
-                      name={system.params.names[i]}
+                      name={displayName(system.params.names[i])}
                       onChange={(v) => onParamChange(i, v)}
                       onReset={() => onParamChange(i, defaultVal)}
                       step={system.params.steps?.[i]}
