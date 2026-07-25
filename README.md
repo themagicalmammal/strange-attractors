@@ -1,4 +1,4 @@
-# Strange Attractors
+# Strange Attractorz
 
 An interactive 3D visualization of **28 strange chaotic attractor systems** in the browser, built with React, Three.js, and TypeScript. A faithful port of the mathematical engine from [vdesmond/attractors](https://github.com/vdesmond/attractors) from Python + NumPy to pure JavaScript + Three.js — no WebAssembly, no Rust, no backend.
 
@@ -8,7 +8,7 @@ An interactive 3D visualization of **28 strange chaotic attractor systems** in t
 
 ## Table of Contents
 
-- [Strange Attractors](#strange-attractors)
+- [Strange Attractorz](#strange-attractorz)
   - [Table of Contents](#table-of-contents)
   - [What is a strange attractor?](#what-is-a-strange-attractor)
   - [Features](#features)

@@ -491,7 +491,7 @@ export function AttractorPanel({
               <div className="flex items-center gap-2">
                 <span className="text-base">✦</span>
                 <span className="text-[13px] font-semibold tracking-wide text-foreground/90 dark:text-white/90">
-                  Strange Attractors
+                  Strange Attractorz
                 </span>
               </div>
             </div>
@@ -766,7 +766,7 @@ export function AttractorPanel({
               <div className="flex items-center gap-2">
                 <span className="text-base">✦</span>
                 <span className="text-[13px] font-semibold tracking-wide text-foreground/90 dark:text-white/90">
-                  Strange Attractors
+                  Strange Attractorz
                 </span>
               </div>
             </div>

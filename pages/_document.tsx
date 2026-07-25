@@ -8,7 +8,7 @@ export default function Document() {
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
           name="viewport"
         />
-        <title>Strange Attractors</title>
+        <title>Strange Attractorz</title>
       </Head>
       <body>
         <Main />
