@@ -647,7 +647,7 @@ export function AttractorPanel({
                     <span className="text-[11px] text-muted-foreground dark:text-white/30">
                       Restart
                     </span>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-0.5 mt-1">
                       <button
                         className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-sm font-medium text-foreground/70 transition hover:bg-muted dark:border-white/8 dark:bg-white/4 dark:text-white/60"
                         onClick={() => {
@@ -899,7 +899,7 @@ export function AttractorPanel({
                     <span className="text-[11px] text-muted-foreground dark:text-white/30">
                       Restart
                     </span>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-0.5 mt-1">
                       <button
                         className="flex size-7 items-center justify-center rounded-lg border border-border/20 bg-muted/40 text-sm font-medium text-foreground/70 transition hover:bg-muted dark:border-white/8 dark:bg-white/4 dark:text-white/60"
                         onClick={() => {
