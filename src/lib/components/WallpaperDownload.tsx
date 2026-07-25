@@ -196,8 +196,8 @@ export function WallpaperDownload({
                     </button>
                     <input
                       className="w-16 rounded-lg border border-border/20 bg-muted/20 py-1 text-center text-sm font-mono tabular-nums text-foreground/80 outline-none transition focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
-                      max={MAX_RESOLUTION}
-                      min={1}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       onBlur={(e) => {
                         const v = Math.min(
                           MAX_RESOLUTION,
@@ -210,7 +210,7 @@ export function WallpaperDownload({
                         if (e.key === "Escape")
                           (e.target as HTMLElement).blur();
                       }}
-                      type="number"
+                      type="text"
                       value={customW}
                     />
                     <button
@@ -238,8 +238,9 @@ export function WallpaperDownload({
                     </button>
                     <input
                       className="w-16 rounded-lg border border-border/20 bg-muted/20 py-1 text-center text-sm font-mono tabular-nums text-foreground/80 outline-none transition focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
-                      max={MAX_RESOLUTION}
-                      min={1}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      style={{ appearance: "none", MozAppearance: "none" }}
                       onBlur={(e) => {
                         const v = Math.min(
                           MAX_RESOLUTION,
@@ -252,8 +253,7 @@ export function WallpaperDownload({
                         if (e.key === "Escape")
                           (e.target as HTMLElement).blur();
                       }}
-                      style={{ appearance: "none", MozAppearance: "none" }}
-                      type="number"
+                      type="text"
                       value={customH}
                     />
                     <button
