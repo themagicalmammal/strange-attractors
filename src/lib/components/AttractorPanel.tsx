@@ -471,10 +471,6 @@ export function AttractorPanel({
                   Strange Attractors
                 </span>
               </div>
-              <Separator
-                className="h-4 bg-border/20 dark:bg-white/10"
-                orientation="vertical"
-              />
             </div>
             <div className="flex items-center gap-2">
               <SystemSelector
@@ -745,10 +741,6 @@ export function AttractorPanel({
                   Strange Attractors
                 </span>
               </div>
-              <Separator
-                className="h-4 bg-border/20 dark:bg-white/10"
-                orientation="vertical"
-              />
             </div>
             <SystemSelector
               onChange={onSystemChange}
